@@ -1,0 +1,77 @@
+﻿@model CoolCatCollects.Bricklink.Models.OrdersModel
+@{
+	ViewBag.Title = "Paid Bricklink Orders";
+}
+
+<h2>List of Bricklink Orders - @Model.Status</h2>
+
+<form>
+	<table>
+		<thead>
+			<tr>
+				<th>Status</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<select name="status" class="form-control">
+						<option @if (Model.Status.ToUpper() == "Pending".ToUpper()) { <text> selected</text> }>Pending</option>
+						<option @if (Model.Status.ToUpper() == "Updated".ToUpper()) { <text> selected</text> }>Updated</option>
+						<option @if (Model.Status.ToUpper() == "Processing".ToUpper()) { <text> selected</text> }>Processing</option>
+						<option @if (Model.Status.ToUpper() == "Ready".ToUpper()) { <text> selected</text> }>Ready</option>
+						<option @if (Model.Status.ToUpper() == "Paid".ToUpper()) { <text> selected</text> }>Paid</option>
+						<option @if (Model.Status.ToUpper() == "Packed".ToUpper()) { <text> selected</text> }>Packed</option>
+						<option @if (Model.Status.ToUpper() == "Shipped".ToUpper()) { <text> selected</text> }>Shipped</option>
+						<option @if (Model.Status.ToUpper() == "Received".ToUpper()) { <text> selected</text> }>Received</option>
+						<option @if (Model.Status.ToUpper() == "Completed".ToUpper()) { <text> selected</text> }>Completed</option>
+						<option @if (Model.Status.ToUpper() == "Cancelled".ToUpper()) { <text> selected</text> }>Cancelled</option>
+					</select>
+				</td>
+				<td>
+					<input type="submit" value="Go" class="btn btn-primary" />
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+
+@if (Model.Orders.Any())
+{
+	<table class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>Order Id</th>
+				<th>Total Pieces</th>
+				<th>Unique Pieces</th>
+				<th>Buyer Name</th>
+				<th>Total</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var order in Model.Orders)
+			{
+				<tr>
+					<td>@order.OrderId</td>
+					<td>@order.TotalPieces</td>
+					<td>@order.UniquePieces</td>
+					<td>@order.BuyerName</td>
+					<td>@order.Total</td>
+					<td>
+						@Html.ActionLink("Parts List", "PartsList", new { orderId = order.OrderId }, new { target = "_blank" })
+					</td>
+					<td>
+						@Html.ActionLink("Packing Slip", "PackingSlip", new { orderId = order.OrderId }, new { target = "_blank" })
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<h3>No Orders Found!</h3>
+}

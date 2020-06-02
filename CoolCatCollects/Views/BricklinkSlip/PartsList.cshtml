@@ -1,0 +1,85 @@
+﻿@model CoolCatCollects.Bricklink.Models.OrderWithItemsModel
+
+@{
+	ViewBag.Title = "Parts List";
+	Layout = "~/Views/Shared/_MinimalLayout.cshtml";
+}
+
+@section styles {
+	<link href="~/Content/bricklinkpartlist.css" rel="stylesheet" />
+}
+
+@section scripts {
+	@Scripts.Render("~/bundles/jquery")
+	<script>
+		$(function () {
+			$('table.parts tbody tr').click(function () {
+				var checkbox = $(this).find('input');
+				if (checkbox.prop('checked')) {
+					checkbox.prop('checked', false);
+				} else {
+					checkbox.prop('checked', true);
+				}
+			});
+		});
+	</script>
+}
+
+<table class="top-table">
+	<tr>
+		<td><strong>@Model.UserName</strong></td>
+		<td>@Model.ShippingMethod</td>
+	</tr>
+	<tr>
+		<td><strong>@Model.Buyer.Name</strong></td>
+		<td>Order Total: £@Model.OrderTotal</td>
+	</tr>
+</table>
+<hr />
+<table class="parts">
+	<thead>
+		<tr>
+			<th>Done</th>
+			<th>Image</th>
+			<th class="center">Condition</th>
+			<th class="center">Remark</th>
+			<th>Item</th>
+			<th class="center">Wt.</th>
+			<th class="center">Q.</th>
+			<th class="center">Price</th>
+			<th class="center">Total</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.Items)
+		{
+			<tr>
+				<td class="center">
+					<label class="check">
+						<input type="checkbox" />
+						<span></span>
+					</label>
+				</td>
+				<td class="center image"><img src="@item.Image" /></td>
+				<td class="center">@item.Condition</td>
+				<td class="center"><strong>@item.Remarks</strong></td>
+				<td>
+					@if (!String.IsNullOrEmpty(item.Colour))
+					{
+						@item.Colour<br />
+					}
+					@item.Name<br />
+					<small>@item.Description</small>
+				</td>
+				<td class="center">@item.Weight</td>
+				<td class="center q">
+					@*<input type="hidden" name="inventoryId" value="@item.InventoryId" />*@
+					@item.Quantity
+					<div class="remaining">(@item.ItemsRemaining)</div>
+				</td>
+				<td class="center">£@item.UnitPrice</td>
+				<td class="center">£@item.TotalPrice</td>
+			</tr>
+		}
+	</tbody>
+</table>

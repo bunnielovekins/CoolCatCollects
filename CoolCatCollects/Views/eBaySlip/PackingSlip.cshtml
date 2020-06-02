@@ -1,0 +1,123 @@
+﻿@model CoolCatCollects.Ebay.Models.EbayOrderModel
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<link rel="stylesheet" href="~/Content/PackingSlip.css?v=1" />
+	<title>Peter's Pickled Packing slip Producer</title>
+</head>
+<body>
+	<header>
+		<img src="~/Content/logo.png" />
+		<p>
+			<strong>Cool Cat Collects</strong><br />
+			19 Moorgate<br />
+			Lancaster<br />
+			LA1 3QF<br />
+			United Kingdom
+		</p>
+	</header>
+	@if (Model.Buyer != null)
+	{
+		<div class="buyer">
+			<p>
+				<strong>@Model.Buyer.Name</strong><br />
+				@Model.Buyer.Address1<br />
+				@Model.Buyer.Address2<br />
+				@Model.Buyer.PostCode<br />
+				@Model.Buyer.Country
+			</p>
+		</div>
+	}
+	<hr />
+	<div class="center">
+		<p>
+			<strong>Thank you for your order!</strong><br />
+			We hope that you are delighted with your purchase.
+		</p>
+		<p>If you have any questions or comments, please feel free to contact us via the eBay messaging service.</p>
+		<p>Cool Cat Collects, www.ebay.co.uk/usr/coolcat-collectables</p>
+	</div>
+	<hr />
+	<br />
+	<table class="half">
+		<tr>
+			<td><strong>Order Number:</strong></td>
+			<td>@Model.OrderNumber</td>
+		</tr>
+		<tr>
+			<td>Order Date:</td>
+			<td>@Model.OrderDate</td>
+		</tr>
+		<tr>
+			<td>Paid On:</td>
+			<td>@Model.OrderPaid</td>
+		</tr>
+	</table>
+	<img class="right-float" alt="eBay" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/EBay_logo.svg" style="height: 68px;">
+	<hr class="clear" />
+	<h2>Items in Order</h2>
+	<table class="invoice">
+		<thead>
+			<tr>
+				<th>Image</th>
+				<th>Item Name</th>
+				<th>Price</th>
+				@if (!Model.IsInternationalOrder)
+				{
+					<th>Discount</th>
+				}
+				<th>Quantity</th>
+				<th>Subtotal</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.Items)
+			{
+				<tr>
+					<td><img src="@item.Image" /></td>
+					<td>
+						@item.Name
+						@if (!string.IsNullOrEmpty(item.Variant))
+						{
+							<br /><small>@item.Variant</small>
+						}
+					</td>
+					<td>@item.UnitPrice</td>
+					@if (!Model.IsInternationalOrder)
+					{
+						<td>@item.Discount</td>
+					}
+					<td>@item.Quantity</td>
+					<td>@item.SubTotal</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<div class="totals">
+		<table>
+			<tr>
+				<td>Subtotal:</td>
+				<td class="right">@Model.SubTotal</td>
+			</tr>
+			<tr>
+				<td>Discount:</td>
+				<td class="right">@Model.Discount</td>
+			</tr>
+			<tr>
+				<td>Postage & Packing:</td>
+				<td class="right">@Model.PostagePackaging</td>
+			</tr>
+			<tr>
+				<td><strong>Total:</strong></td>
+				<td class="right">@Model.Total</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

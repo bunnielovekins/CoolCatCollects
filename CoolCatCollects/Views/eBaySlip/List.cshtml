@@ -1,0 +1,150 @@
+﻿@model CoolCatCollects.Ebay.Models.EbayOrdersListModel
+
+@{
+	ViewBag.Title = "eBay Orders";
+}
+
+
+<h2>List of eBay Orders</h2>
+
+@Pagination()
+
+<button id="loadMore" type="button" class="btn btn-primary">Load More Order Information</button>
+<br />
+<br />
+<table class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>Order Id</th>
+			<th>Date</th>
+			<th>Status</th>
+			<th>Buyer UserName/Name</th>
+			<th>Price</th>
+			<th></th>
+		</tr>
+		<tr>
+			<th>Image</th>
+			<th>Character</th>
+			<th>Shipping</th>
+			<th>Item Name</th>
+			<th></th>
+			<th>Q.</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var order in Model.Orders)
+		{
+			<tr>
+				<td>@order.OrderId</td>
+				<td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+				<td>@order.Status</td>
+				<td>@order.BuyerUsername - @order.BuyerName</td>
+				<td>@order.PriceTotal</td>
+				<td style="width: 100px;">
+					@Html.ActionLink("Packing Slip", "PackingSlip", new { orderId = order.OrderId }, new { target = "_blank" })
+				</td>
+			</tr>
+			foreach (var item in order.Items)
+			{
+				<tr class="item">
+					<td>
+						<input type="hidden" name="LineItemId" value="@item.LineItemId" />
+						<input type="hidden" name="LegacyItemId" value="@item.LegacyItemId" />
+						<input type="hidden" name="LegacyVariationId" value="@item.LegacyVariationId" />
+						<span class="image"></span>
+					</td>
+					<td class="character"></td>
+					<td>@order.ShippingMethod</td>
+					<td>@item.Name</td>
+					<td>@item.Cost</td>
+					<td>@item.Quantity</td>
+				</tr>
+			}
+			<tr>
+				<td colspan="6"><span style="color: white">Spacing</span></td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+@Pagination()
+
+@helper Pagination()
+{
+
+	<form>
+		<table style="text-align:center;">
+			<thead>
+				<tr>
+					@if (Model.Pagination.HasPrevious)
+					{
+						<th></th>
+					}
+					<th>Page</th>
+					<th>Items Per Page</th>
+					<th></th>
+					@if (Model.Pagination.HasNext)
+					{
+						<th></th>
+					}
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					@if (Model.Pagination.HasPrevious)
+					{
+						<td><a href="?page=@Model.Pagination.PreviousPage&perPage=@Model.Pagination.ItemsPerPage" class="btn btn-default">Previous Page</a></td>
+					}
+					<td>
+						<select name="page" class="form-control">
+							@foreach (int page in Model.Pagination.Pages)
+							{
+								<option @if (page == Model.Pagination.Page) { <text> selected</text> }>@page</option>
+							}
+						</select>
+					</td>
+					<td>
+						<select name="perPage" class="form-control">
+							<option @if (Model.Pagination.ItemsPerPage == 10) { <text> selected</text> }>10</option>
+							<option @if (Model.Pagination.ItemsPerPage == 25) { <text> selected</text> }>25</option>
+							<option @if (Model.Pagination.ItemsPerPage == 50) { <text> selected</text> }>50</option>
+							<option @if (Model.Pagination.ItemsPerPage == 100) { <text> selected</text> }>100</option>
+						</select>
+					</td>
+					<td><input type="submit" value="Go" class="btn" /></td>
+					@if (Model.Pagination.HasNext)
+					{
+						<td><a href="?page=@Model.Pagination.NextPage&perPage=@Model.Pagination.ItemsPerPage" class="btn btn-default">Next Page</a></td>
+					}
+				</tr>
+			</tbody>
+		</table>
+	</form>
+
+}
+
+
+@section scripts{
+	<script>
+		$(function () {
+			$('#loadMore').click(function () {
+				$('tr.item').each(function () {
+					var elem = $(this);
+
+					var legacyItemId = elem.find('input[name=LegacyItemId]').val();
+					var legacyVariationId = elem.find('input[name=LegacyVariationId]').val();
+
+					$.get('@Url.Action("GetItemDetails", "eBaySlip")?legacyItemId=' + legacyItemId + '&legacyVariationId=' + legacyVariationId, '', function (data) {
+						console.log(data);
+
+						elem.find('.character').text(data.character);
+						elem.find('.sku').text(data.sku);
+						elem.find('.image').append($('<img src="' + data.imageUrl + '" />'));
+					});
+				});
+
+				return false;
+			});
+		});
+	</script>
+}

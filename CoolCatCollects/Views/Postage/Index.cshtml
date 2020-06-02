@@ -1,0 +1,137 @@
+﻿@model CoolCatCollects.Models.PostageModel
+
+
+
+@if (Model == null)
+{
+	<h2>Postage Calculator</h2>
+
+	<form>
+		<div class="input-group mb-3">
+			<div class="input-group-addon">
+				<span class="input-group-text">£</span>
+			</div>
+			<input type="text" class="form-control" placeholder="Item Price" id="price" name="price">
+		</div>
+		<br />
+		<label for="weight">
+			Item Weight <br />
+			<select name="weight" id="weight" class="form-control">
+				<option value="0.1">0-100g</option>
+				<option value="0.25">100-250g</option>
+				<option value="0.5">250-500g</option>
+				<option value="0.75">500-750g</option>
+				<option value="1">750g-1kg</option>
+				<option value="2">1-2kg</option>
+				<option value="5">2-5kg</option>
+			</select>
+		</label>
+		<br />
+		<label for="size">
+			Item Size <br />
+			<select name="size" id="size" class="form-control">
+				<option value="LL">Large Letter</option>
+				<option value="SP">Small Parcel</option>
+				<option value="MP">Parcel</option>
+			</select>
+		</label>
+		<br />
+		<input type="submit" value="Calculate" class="btn btn-primary" />
+	</form>
+}
+else
+{
+	<h2>
+		Postage - £@Model.Price, @(Model.Weight)kg, @Model.Size
+
+		<a class="btn btn-primary" style="float: right;" href="?_=">Reset</a>
+		<a class="btn btn-default" style="float: right;" href="#" id="showPrices">Show Actual Prices</a>
+	</h2>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Type</th>
+				<th>Name</th>
+				<th class="price">Price</th>
+				<th>Our Price</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model.Economy != null)
+			{
+				<tr>
+					<td>@Model.Economy.Type</td>
+					<td>@Model.Economy.Name</td>
+					<td class="price">@Model.Economy.Price.ToString("C")</td>
+					<td><strong>£0.00</strong></td>
+				</tr>
+			}
+			@if (Model.Standard != null)
+			{
+				<tr>
+					<td>@Model.Standard.Type</td>
+					<td>@Model.Standard.Name</td>
+					<td class="price">@Model.Standard.Price.ToString("C")</td>
+					<td><strong>@((Model.Standard.Price - (Model.Economy?.Price ?? 0)).ToString("C"))</strong></td>
+				</tr>
+			}
+			@if (Model.Express != null)
+			{
+				<tr>
+					<td>@Model.Express.Type</td>
+					<td>@Model.Express.Name</td>
+					<td class="price">@Model.Express.Price.ToString("C")</td>
+					<td><strong>@((Model.Express.Price - (Model.Economy?.Price ?? 0)).ToString("C"))</strong></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<h3>Remember to set same day dispatch!</h3>
+
+	if (Model.Alternatives.Any())
+	{
+
+		<br />
+		<br />
+
+		<h4>Alternatives</h4>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Type</th>
+					<th>Name</th>
+					<th class="price">Price</th>
+					<th>Our Price</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var post in Model.Alternatives)
+				{
+					<tr>
+						<td>@post.Type</td>
+						<td>@post.Name</td>
+						<td class="price">@post.Price.ToString("C")</td>
+						<td><strong>@((post.Price - (Model.Economy?.Price ?? 0)).ToString("C"))</strong></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+	}
+}
+
+@section scripts{
+	<script>
+		$(function () {
+			$('.price').hide();
+
+			$('#showPrices').click(function () {
+				$('.price').show();
+				return false;
+			});
+		});
+	</script>
+}

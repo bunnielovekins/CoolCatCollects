@@ -1,0 +1,48 @@
+﻿@model CoolCatCollects.Bricklink.Models.SubsetPartsListModel
+
+<h1>Parts List</h1>
+
+<table class="partstable table table-striped table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>Status</th>
+			<th>Image</th>
+			<th>Name</th>
+			<th>Number</th>
+			<th title="Quantity">Q.</th>
+			<th>Type</th>
+			<th></th>
+			<th>Colour</th>
+			<th>Remark</th>
+			<th>My Price</th>
+			<th>Avg Price</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var part in Model.Parts)
+		{
+			<tr class="part">
+				<td title="CP = Complementary. Alt = Alternative">@part.Status</td>
+				<td><img src="@part.Image" /></td>
+				<td>@HttpUtility.HtmlDecode(part.Name)</td>
+				<td class="no">@part.Number</td>
+				<td>@part.Quantity</td>
+				<td>@part.Type</td>
+				@if (part.Colour != null)
+				{
+					<td class="colour"><span class="colbox" style="background-color: #@part.Colour.ColourCode; color: #@part.Colour.ColourCode;">&nbsp;</span></td>
+					<td style="white-space: nowrap;">
+						@part.ColourName
+					</td>
+				}
+				else
+				{
+					<td></td><td></td>
+				}
+				<td>@part.Remark</td>
+				<td>@part.MyPrice</td>
+				<td>@part.AveragePrice</td>
+			</tr>
+		}
+	</tbody>
+</table>
