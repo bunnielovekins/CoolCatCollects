@@ -19,6 +19,7 @@ namespace CoolCatCollects.Data
 		public DbSet<Part> Parts { get; set; }
 		public DbSet<PartInventory> PartInventorys { get; set; }
 		public DbSet<PartPriceInfo> PartPriceInfos { get; set; }
+		public DbSet<PartInventoryLocationHistory> PartInventoryLocationHistorys { get; set; }
 		public DbSet<Colour> Colours { get; set; }
 	}
 }

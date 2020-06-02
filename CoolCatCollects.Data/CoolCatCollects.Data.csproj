@@ -62,6 +62,7 @@
     <Compile Include="Entities\Colour.cs" />
     <Compile Include="Entities\Part\Part.cs" />
     <Compile Include="Entities\Part\PartInventory.cs" />
+    <Compile Include="Entities\Part\PartInventoryLocationHistory.cs" />
     <Compile Include="Entities\Part\PartPriceInfo.cs" />
     <Compile Include="Migrations\202005291502315_InitialCreate.cs" />
     <Compile Include="Migrations\202005291502315_InitialCreate.designer.cs">

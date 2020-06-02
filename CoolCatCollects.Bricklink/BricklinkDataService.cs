@@ -3,6 +3,7 @@ using CoolCatCollects.Bricklink.Models.Responses;
 using CoolCatCollects.Data.Entities;
 using CoolCatCollects.Data.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CoolCatCollects.Bricklink
@@ -12,6 +13,7 @@ namespace CoolCatCollects.Bricklink
 		private readonly BaseRepository<Part> _partrepo;
 		private readonly PartInventoryRepository _partInventoryRepo;
 		private readonly BaseRepository<PartPriceInfo> _partPricingRepo;
+		private readonly BaseRepository<PartInventoryLocationHistory> _partLocationHistoryRepo;
 		private readonly BricklinkApiService _api;
 
 		public BricklinkDataService()
@@ -19,10 +21,11 @@ namespace CoolCatCollects.Bricklink
 			_partrepo = new BaseRepository<Part>();
 			_partInventoryRepo = new PartInventoryRepository();
 			_partPricingRepo = new BaseRepository<PartPriceInfo>();
+			_partLocationHistoryRepo = new BaseRepository<PartInventoryLocationHistory>();
 			_api = new BricklinkApiService();
 		}
 
-		public PartModel GetPartModel(string number, int colourId, string type, char condition = 'N', 
+		public PartModel GetPartModel(string number, int colourId, string type, char condition = 'N',
 			bool updateInv = false, bool updatePrice = false, bool updatePart = false,
 			DateTime? updateInvDate = null)
 		{
@@ -37,7 +40,11 @@ namespace CoolCatCollects.Bricklink
 
 				if (partInv.Quantity == 0 && condition == 'A')
 				{
-					partInv = UpdateInventoryFromApi(partInv, type, part.CategoryId, colourId, number, 'U');
+					var usedPart = UpdateInventoryFromApi(new PartInventory(), type, part.CategoryId, colourId, number, 'U');
+					if (usedPart.Quantity > 0)
+					{
+						partInv = usedPart;
+					}
 				}
 
 				if (partInv.ColourId != 0)
@@ -88,9 +95,118 @@ namespace CoolCatCollects.Bricklink
 			}
 		}
 
+		private string GetItemImage(string type, string number, int colourId)
+		{
+			var response = _api.GetRequest<GetItemImageResponse>($"/items/{type}/{number}/images/{colourId}");
+
+			return response.data.thumbnail_url;
+		}
+
+		private Part GetPart(string number, string type)
+		{
+			var part = _partrepo.FindOne(x => x.ItemType == type && x.Number == number);
+
+			if (part != null && part.LastUpdated >= DateTime.Now.AddDays(-14))
+			{
+				return part;
+			}
+
+			if (part == null)
+			{
+				part = new Part();
+			}
+
+			part = UpdatePartFromApi(part, number, type);
+			return part;
+		}
+
+		private Part UpdatePartFromApi(Part part, string number, string type)
+		{
+			var response = _api.GetRequest<GetItemResponse>($"items/{type}/{number}");
+
+			part.Number = response.data.no;
+			part.Name = response.data.name;
+			part.CategoryId = response.data.category_id;
+			part.ImageUrl = response.data.image_url;
+			part.ThumbnailUrl = response.data.thumbnail_url;
+			part.Weight = response.data.weight;
+			part.Description = response.data.description;
+			part.LastUpdated = DateTime.Now;
+			part.ItemType = response.data.type;
+
+			return part;
+		}
+
+		#region api
+
 		private PartInventory UpdateInventoryFromApi(PartInventory partInv)
 		{
 			return UpdateInventoryFromApi(partInv, partInv.Part.ItemType, partInv.Part.CategoryId, partInv.ColourId, partInv.Part.Number, partInv.Condition);
+		}
+
+		private PartPriceInfo UpdatePartPricingFromApi(PartPriceInfo price, string number, string type, int colourId, char condition = 'N')
+		{
+			var response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&country_code=UK&new_or_used={condition}&color_id={colourId}");
+
+			var loc = "";
+
+			// Fall back to EU
+			if (response.data.avg_price == "0.0000")
+			{
+				response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&region=europe&new_or_used={condition}&color_id={colourId}");
+				loc = "(EU)";
+			}
+
+			// Fall back to world
+			if (response.data.avg_price == "0.0000")
+			{
+				response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&new_or_used={condition}&color_id={colourId}");
+				loc = "(World)";
+			}
+
+			if (decimal.TryParse(response.data.avg_price, out decimal tmp))
+			{
+				price.AveragePrice = tmp;
+			}
+			else
+			{
+				price.AveragePrice = 0;
+			}
+			price.AveragePriceLocation = loc;
+			price.LastUpdated = DateTime.Now;
+
+			return price;
+		}
+
+		public PartInventory UpdateInventoryFromApi(PartInventory partInv, int inventoryId, out string number, out string type)
+		{
+			var response = _api.GetRequest<GetInventoryResponseModel>("/inventories/" + inventoryId);
+
+			var item = response.data;
+
+			partInv.InventoryId = inventoryId;
+			partInv.Quantity = item.quantity;
+			partInv.MyPrice = decimal.Parse(item.unit_price);
+			partInv.ColourId = item.color_id;
+			partInv.ColourName = Statics.Colours[item.color_id].Name;
+			partInv.Condition = item.new_or_used[0];
+			partInv.Location = item.remarks;
+			partInv.LastUpdated = DateTime.Now;
+			partInv.Description = item.description;
+			if (partInv.Part != null)
+			{
+				partInv.Image = GetItemImage(partInv.Part.ItemType, partInv.Part.Number, partInv.ColourId);
+			}
+
+			if (string.IsNullOrEmpty(partInv.Location))
+			{
+				partInv.Location = item.description;
+			}
+
+			number = item.item.no;
+			type = item.item.type;
+
+			return partInv;
 		}
 
 		private PartInventory UpdateInventoryFromApi(PartInventory partInv, string type, int categoryId, int colourId, string number, char condition = 'N')
@@ -134,111 +250,6 @@ namespace CoolCatCollects.Bricklink
 			return partInv;
 		}
 
-		private string GetItemImage(string type, string number, int colourId)
-		{
-			var response = _api.GetRequest<GetItemImageResponse>($"/items/{type}/{number}/images/{colourId}");
-
-			return response.data.thumbnail_url;
-		}
-
-		public PartInventory UpdateInventoryFromApi(PartInventory partInv, int inventoryId, out string number, out string type)
-		{
-			var response = _api.GetRequest<GetInventoryResponseModel>("/inventories/" + inventoryId);
-
-			var item = response.data;
-
-			partInv.InventoryId = inventoryId;
-			partInv.Quantity = item.quantity;
-			partInv.MyPrice = decimal.Parse(item.unit_price);
-			partInv.ColourId = item.color_id;
-			partInv.ColourName = Statics.Colours[item.color_id].Name;
-			partInv.Condition = item.new_or_used[0];
-			partInv.Location = item.remarks;
-			partInv.LastUpdated = DateTime.Now;
-			partInv.Description = item.description;
-			if (partInv.Part != null)
-			{
-				partInv.Image = GetItemImage(partInv.Part.ItemType, partInv.Part.Number, partInv.ColourId);
-			}
-
-			if (string.IsNullOrEmpty(partInv.Location))
-			{
-				partInv.Location = item.description;
-			}
-
-			number = item.item.no;
-			type = item.item.type;
-
-			return partInv;
-		}
-
-		private PartPriceInfo UpdatePartPricingFromApi(PartPriceInfo price, string number, string type, int colourId, char condition = 'N')
-		{
-			var response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&country_code=UK&new_or_used={condition}&color_id={colourId}");
-
-			var loc = "";
-
-			// Fall back to EU
-			if (response.data.avg_price == "0.0000")
-			{
-				response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&region=europe&new_or_used={condition}&color_id={colourId}");
-				loc = "(EU)";
-			}
-
-			// Fall back to world
-			if (response.data.avg_price == "0.0000")
-			{
-				response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&new_or_used={condition}&color_id={colourId}");
-				loc = "(World)";
-			}
-
-			if (decimal.TryParse(response.data.avg_price, out decimal tmp))
-			{
-				price.AveragePrice = tmp;
-			}
-			else
-			{
-				price.AveragePrice = 0;
-			}
-			price.AveragePriceLocation = loc;
-			price.LastUpdated = DateTime.Now;
-
-			return price;
-		}
-
-		private Part GetPart(string number, string type)
-		{
-			var part = _partrepo.FindOne(x => x.ItemType == type && x.Number == number);
-
-			if (part != null && part.LastUpdated >= DateTime.Now.AddDays(-14))
-			{
-				return part;
-			}
-
-			if (part == null)
-			{
-				part = new Part();
-			}
-
-			part = UpdatePartFromApi(part, number, type);
-			return part;
-		}
-
-		private Part UpdatePartFromApi(Part part, string number, string type)
-		{
-			var response = _api.GetRequest<GetItemResponse>($"items/{type}/{number}");
-
-			part.Number = response.data.no;
-			part.Name = response.data.name;
-			part.CategoryId = response.data.category_id;
-			part.ImageUrl = response.data.image_url;
-			part.ThumbnailUrl = response.data.thumbnail_url;
-			part.Weight = response.data.weight;
-			part.Description = response.data.description;
-			part.LastUpdated = DateTime.Now;
-			part.ItemType = response.data.type;
-
-			return part;
-		}
+		#endregion
 	}
 }

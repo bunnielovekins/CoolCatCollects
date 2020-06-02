@@ -219,7 +219,7 @@ namespace CoolCatCollects.Bricklink
 					x.MyPrice = part.PartInventory.MyPrice.ToString();
 					x.Remark = part.PartInventory.Location;
 					x.AveragePrice = part.PartPriceInfo.AveragePrice +
-						(string.IsNullOrEmpty(part.PartPriceInfo.AveragePriceLocation) ? "" : "(" + part.PartPriceInfo.AveragePriceLocation + ")");
+						(string.IsNullOrEmpty(part.PartPriceInfo.AveragePriceLocation) ? "" : " " + part.PartPriceInfo.AveragePriceLocation);
 
 					if (part.PartInventory.ColourId != 0)
 					{

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CoolCatCollects.Data.Entities
@@ -7,7 +8,7 @@ namespace CoolCatCollects.Data.Entities
 	{
 		[Required]
 		public virtual Part Part { get; set; }
-
+		public virtual ICollection<PartInventoryLocationHistory> LocationHistory { get; set; }
 		public virtual PartPriceInfo Pricing { get; set; }
 
 		public int InventoryId { get; set; }

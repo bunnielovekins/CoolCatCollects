@@ -1,4 +1,5 @@
 ﻿using CoolCatCollects.Data.Entities;
+using System;
 using System.Data.Entity;
 using System.Linq;
 
@@ -30,7 +31,39 @@ namespace CoolCatCollects.Data.Repositories
 			price.InventoryItem = inv;
 			price = _ctx.PartPriceInfos.Add(price);
 
+			if (inv.Location != "")
+			{
+				var history = new PartInventoryLocationHistory
+				{
+					Location = inv.Location,
+					Date = DateTime.Now,
+					PartInventory = inv
+				};
+				_ctx.PartInventoryLocationHistorys.Add(history);
+			}
+
 			_ctx.SaveChanges();
+		}
+
+		public override PartInventory Update(PartInventory entity)
+		{
+			entity = base.Update(entity);
+
+			if (!entity.LocationHistory.Any(x => x.Location == entity.Location))
+			{
+				entity = _ctx.PartInventorys.Attach(entity);
+
+				_ctx.PartInventoryLocationHistorys.Add(new PartInventoryLocationHistory
+				{
+					Date = DateTime.Now,
+					Location = entity.Location,
+					PartInventory = entity
+				});
+
+				_ctx.SaveChanges();
+			}
+
+			return entity;
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace CoolCatCollects.Data.Repositories
 			return _ctx.Set<T>().FirstOrDefault(conditions);
 		}
 
-		public T Update(T entity)
+		public virtual T Update(T entity)
 		{
 			var obj = _ctx.Set<T>().Find(entity.Id);
 
