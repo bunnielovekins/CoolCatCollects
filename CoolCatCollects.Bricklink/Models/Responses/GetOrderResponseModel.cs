@@ -18,6 +18,7 @@ namespace CoolCatCollects.Bricklink.Models
 		public bool require_insurance { get; set; }
 		public string status { get; set; }
 		public bool is_invoiced { get; set; }
+		public string remarks { get; set; }
 		public int total_count { get; set; }
 		public int unique_count { get; set; }
 		public string total_weight { get; set; }
@@ -86,5 +87,6 @@ namespace CoolCatCollects.Bricklink.Models
 		public string vat_rate { get; set; }
 		public string vat_amount { get; set; }
 	}
+
 
 }

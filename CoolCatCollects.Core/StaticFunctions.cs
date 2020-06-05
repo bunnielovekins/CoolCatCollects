@@ -24,5 +24,10 @@ namespace CoolCatCollects.Core
 			}
 			return FormatCurrencyStr(d);
 		}
+
+		public static bool IsEmpty(this string str)
+		{
+			return string.IsNullOrEmpty(str);
+		}
 	}
 }

@@ -148,12 +148,14 @@ namespace CoolCatCollects.Bricklink
 						Quantity = item.quantity,
 						UnitPrice = unitPrice,
 						TotalPrice = totalPrice,
-						Description = inv.PartInventory.Description,
-						Type = item.item.type,
-						Weight = item.weight,
+						Description = item.description,
+						Type = inv.Part.ItemType,
+						Weight = inv.Part.Weight,
 						ItemsRemaining = inv.PartInventory.Quantity,
 						Image = inv.PartInventory.Image
 					};
+
+					_dataService.UpdatePartInventoryFromOrder(inv.PartInventory, item.remarks, item.unit_price_final, item.description, item.inventory_id);
 
 					itemModel.FillRemarks();
 
@@ -178,6 +180,7 @@ namespace CoolCatCollects.Bricklink
 				OrderNumber = data.order_id.ToString(),
 				OrderDate = data.date_ordered.ToString("yyyy-MM-dd"),
 				OrderPaid = data.payment.date_paid.ToString("yyyy-MM-dd"),
+				OrderRemarks = data.remarks,
 				SubTotal = StaticFunctions.FormatCurrencyStr(data.cost.subtotal),
 				ServiceCharge = StaticFunctions.FormatCurrencyStr(data.cost.etc1),
 				Coupon = StaticFunctions.FormatCurrencyStr(data.cost.coupon),

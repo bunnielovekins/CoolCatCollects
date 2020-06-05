@@ -57,6 +57,7 @@ namespace CoolCatCollects.Bricklink.Models
 		public string Coupon { get; set; }
 		public string PostagePackaging { get; set; }
 		public string Total { get; set; }
+		public string OrderRemarks { get; internal set; }
 	}
 
 	public class Buyer
@@ -150,7 +151,7 @@ namespace CoolCatCollects.Bricklink.Models
 				var match = regex.Match(Remarks);
 				if (match.Success)
 				{
-					if (match.Groups.Count > 0)
+					if (match.Groups.Count > 0 && !string.IsNullOrEmpty(match.Groups[1].Value))
 					{
 						RemarkLetter1 = match.Groups[1].Value[0];
 						RemarkLetter2 = match.Groups[1].Value.Length > 1 ? match.Groups[1].Value[1] : ' ';

@@ -34,6 +34,14 @@
 		<td><strong>@Model.Buyer.Name</strong></td>
 		<td>Order Total: £@Model.OrderTotal</td>
 	</tr>
+	@if (!Model.OrderRemarks.IsEmpty())
+	{
+		<tr>
+			<td colspan="2">
+				@Model.OrderRemarks
+			</td>
+		</tr>
+	}
 </table>
 <hr />
 <table class="parts">

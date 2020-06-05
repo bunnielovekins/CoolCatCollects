@@ -18,10 +18,10 @@ namespace CoolCatCollects.Bricklink
 
 		public BricklinkDataService()
 		{
-			_partrepo = new BaseRepository<Part>();
 			_partInventoryRepo = new PartInventoryRepository();
-			_partPricingRepo = new BaseRepository<PartPriceInfo>();
-			_partLocationHistoryRepo = new BaseRepository<PartInventoryLocationHistory>();
+			_partrepo = new BaseRepository<Part>(_partInventoryRepo.Context);
+			_partPricingRepo = new BaseRepository<PartPriceInfo>(_partInventoryRepo.Context);
+			_partLocationHistoryRepo = new BaseRepository<PartInventoryLocationHistory>(_partInventoryRepo.Context);
 			_api = new BricklinkApiService();
 		}
 
@@ -176,6 +176,20 @@ namespace CoolCatCollects.Bricklink
 			price.LastUpdated = DateTime.Now;
 
 			return price;
+		}
+
+		public void UpdatePartInventoryFromOrder(PartInventory inv, string remarks, string unit_price_final, string description, int inventory_id)
+		{
+			inv.Location = remarks;
+			inv.MyPrice = decimal.Parse(unit_price_final);
+			inv.Description = description;
+
+			if (inv.InventoryId == 0)
+			{
+				inv.InventoryId = inventory_id;
+			}
+
+			_partInventoryRepo.Update(inv);
 		}
 
 		public PartInventory UpdateInventoryFromApi(PartInventory partInv, int inventoryId, out string number, out string type)

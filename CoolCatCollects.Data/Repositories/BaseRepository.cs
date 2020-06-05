@@ -10,9 +10,16 @@ namespace CoolCatCollects.Data.Repositories
 	{
 		protected EfContext _ctx;
 
+		public EfContext Context { get => _ctx; }
+
 		public BaseRepository()
 		{
 			_ctx = new EfContext();
+		}
+
+		public BaseRepository(EfContext context)
+		{
+			_ctx = context;
 		}
 
 		public void Dispose()
@@ -53,6 +60,8 @@ namespace CoolCatCollects.Data.Repositories
 			}
 
 			_ctx.Entry(obj).CurrentValues.SetValues(entity);
+
+			_ctx.SaveChanges();
 			return obj;
 		}
 	}
