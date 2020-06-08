@@ -5,7 +5,7 @@ namespace CoolCatCollects.Data
 {
 	public class EfContext : DbContext
 	{
-		public EfContext() : base("coolcat.sdf")
+		public EfContext() : base("DataModelContext")
 		{
 			Database.SetInitializer(new CreateDatabaseIfNotExists<EfContext>());
 		}

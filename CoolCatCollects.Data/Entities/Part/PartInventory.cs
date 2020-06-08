@@ -6,6 +6,11 @@ namespace CoolCatCollects.Data.Entities
 {
 	public class PartInventory : BaseEntity
 	{
+		public PartInventory()
+		{
+			LocationHistory = new List<PartInventoryLocationHistory>();
+		}
+
 		[Required]
 		public virtual Part Part { get; set; }
 		public virtual ICollection<PartInventoryLocationHistory> LocationHistory { get; set; }

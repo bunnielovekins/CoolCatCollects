@@ -1,5 +1,4 @@
-﻿using CoolCatCollects.Bricklink.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 

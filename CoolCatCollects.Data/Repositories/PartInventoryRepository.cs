@@ -49,7 +49,7 @@ namespace CoolCatCollects.Data.Repositories
 		{
 			entity = base.Update(entity);
 
-			if (!entity.LocationHistory.Any(x => x.Location == entity.Location))
+			if (!string.IsNullOrEmpty(entity.Location) && (entity.LocationHistory == null || !entity.LocationHistory.Any(x => x.Location == entity.Location)))
 			{
 				entity = _ctx.PartInventorys.Attach(entity);
 
