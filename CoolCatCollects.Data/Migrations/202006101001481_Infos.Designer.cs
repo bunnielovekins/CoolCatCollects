@@ -7,13 +7,13 @@ namespace CoolCatCollects.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class one : IMigrationMetadata
+    public sealed partial class Infos : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(one));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Infos));
         
         string IMigrationMetadata.Id
         {
-            get { return "202005291946029_one"; }
+            get { return "202006101001481_Infos"; }
         }
         
         string IMigrationMetadata.Source

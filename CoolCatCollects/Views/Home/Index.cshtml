@@ -1,4 +1,6 @@
-﻿<div class="jumbotron">
+﻿@model CoolCatCollects.Models.HomepageModel
+
+<div class="jumbotron">
 	<img src="~/Content/logo.png" style="float:right" />
 	<h1>Cool Cat Collects</h1>
 	<p class="lead">Pick what you want to do below</p>
@@ -23,5 +25,10 @@
 	<div class="col-md-4">
 		<h2>Bricklink Catalog</h2>
 		<p><a class="btn btn-default" href="@Url.Action("Index", "BricklinkCatalog")">Go</a></p>
+	</div>
+	<div class="col-md-4">
+		<h2>Database</h2>
+		<p>Last Updated: @Model.InventoryLastUpdated</p>
+		<p><a class="btn btn-default" href="@Url.Action("Index", "Database")">Go</a></p>
 	</div>
 </div>

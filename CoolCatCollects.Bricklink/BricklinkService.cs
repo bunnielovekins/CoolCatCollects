@@ -3,6 +3,7 @@ using CoolCatCollects.Bricklink.Models.Responses;
 using CoolCatCollects.Core;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
@@ -28,6 +29,26 @@ namespace CoolCatCollects.Bricklink
 			var model = new OrdersModel(responseModel, status);
 
 			return model;
+		}
+
+		public IEnumerable<string> UpdateInventoryForColour(int colourId)
+		{
+			var result = _apiService.GetRequest<GetInventoriesResponseModel>("inventories?color_id=" + colourId);
+			var errors = new List<string>();
+
+			foreach(BricklinkInventoryItemModel inv in result.data)
+			{
+				try
+				{
+					_dataService.GetPartModel(inv.item.no, inv.color_id, inv.item.type, inv.new_or_used[0], true);
+				}
+				catch(Exception ex)
+				{
+					errors.Add(ex.Message);
+				}
+			}
+
+			return errors;
 		}
 
 		public OrderCsvModel GetOrderForCsv(string orderId)
@@ -155,7 +176,10 @@ namespace CoolCatCollects.Bricklink
 						Image = inv.PartInventory.Image
 					};
 
-					_dataService.UpdatePartInventoryFromOrder(inv.PartInventory, item.remarks, item.unit_price_final, item.description, item.inventory_id);
+					if (order.data.date_ordered > inv.PartInventory.LastUpdated)
+					{
+						_dataService.UpdatePartInventoryFromOrder(inv.PartInventory, item.remarks, item.unit_price_final, item.description, item.inventory_id);
+					}
 
 					itemModel.FillRemarks();
 

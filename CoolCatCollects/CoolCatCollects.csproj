@@ -155,6 +155,7 @@
     <Compile Include="Controllers\BricklinkCatalogController.cs" />
     <Compile Include="Controllers\BricklinkPostageController.cs" />
     <Compile Include="Controllers\BricklinkSlipController.cs" />
+    <Compile Include="Controllers\DatabaseController.cs" />
     <Compile Include="Controllers\eBaySlipController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PostageController.cs" />
@@ -162,6 +163,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DatabaseUpdateModel.cs" />
+    <Compile Include="Models\HomepageModel.cs" />
     <Compile Include="Models\PostageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -178,6 +181,7 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Views\Database\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -268,6 +272,10 @@
     <ProjectReference Include="..\CoolCatCollects.Core\CoolCatCollects.Core.csproj">
       <Project>{C8471305-87E0-4C2D-9687-A4702BDCB93B}</Project>
       <Name>CoolCatCollects.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CoolCatCollects.Data\CoolCatCollects.Data.csproj">
+      <Project>{17F36315-BC21-4E4B-A589-E7BA374A0F4A}</Project>
+      <Name>CoolCatCollects.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\CoolCatCollects.Ebay\CoolCatCollects.Ebay.csproj">
       <Project>{18600F41-D413-436C-9D27-4FF59E82E173}</Project>

@@ -9,8 +9,7 @@
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
-            ContextKey = "CoolCatCollects.Data.EfContext";
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(CoolCatCollects.Data.EfContext context)

@@ -16,6 +16,8 @@ namespace CoolCatCollects.Bricklink
 		private readonly BaseRepository<PartInventoryLocationHistory> _partLocationHistoryRepo;
 		private readonly BricklinkApiService _api;
 
+
+
 		public BricklinkDataService()
 		{
 			_partInventoryRepo = new PartInventoryRepository();

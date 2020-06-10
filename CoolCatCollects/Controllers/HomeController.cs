@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using CoolCatCollects.Data.Repositories;
+using CoolCatCollects.Models;
+using System.Web.Mvc;
 
 namespace CoolCatCollects.Controllers
 {
@@ -8,7 +10,9 @@ namespace CoolCatCollects.Controllers
 		{
 			ViewBag.Title = "Cool Cat Collects";
 
-			return View();
+			var repo = new InfoRepository();
+
+			return View(new HomepageModel(repo.GetInfo()));
 		}
 	}
 }

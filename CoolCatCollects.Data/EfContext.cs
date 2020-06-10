@@ -16,6 +16,7 @@ namespace CoolCatCollects.Data
 			modelBuilder.Entity<PartPriceInfo>().Property(x => x.AveragePrice).HasPrecision(18, 4);
 		}
 
+		public DbSet<Info> Infos { get; set; }
 		public DbSet<Part> Parts { get; set; }
 		public DbSet<PartInventory> PartInventorys { get; set; }
 		public DbSet<PartPriceInfo> PartPriceInfos { get; set; }

@@ -60,32 +60,34 @@
     <Compile Include="EfContext.cs" />
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\Colour.cs" />
+    <Compile Include="Entities\Info.cs" />
     <Compile Include="Entities\Part\Part.cs" />
     <Compile Include="Entities\Part\PartInventory.cs" />
     <Compile Include="Entities\Part\PartInventoryLocationHistory.cs" />
     <Compile Include="Entities\Part\PartPriceInfo.cs" />
-    <Compile Include="Migrations\202005291502315_InitialCreate.cs" />
-    <Compile Include="Migrations\202005291502315_InitialCreate.designer.cs">
-      <DependentUpon>202005291502315_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202006100959464_Initial.cs" />
+    <Compile Include="Migrations\202006100959464_Initial.designer.cs">
+      <DependentUpon>202006100959464_Initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202005291946029_one.cs" />
-    <Compile Include="Migrations\202005291946029_one.designer.cs">
-      <DependentUpon>202005291946029_one.cs</DependentUpon>
+    <Compile Include="Migrations\202006101001481_Infos.cs" />
+    <Compile Include="Migrations\202006101001481_Infos.designer.cs">
+      <DependentUpon>202006101001481_Infos.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
+    <Compile Include="Repositories\InfoRepository.cs" />
     <Compile Include="Repositories\PartInventoryRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202005291502315_InitialCreate.resx">
-      <DependentUpon>202005291502315_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202006100959464_Initial.resx">
+      <DependentUpon>202006100959464_Initial.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005291946029_one.resx">
-      <DependentUpon>202005291946029_one.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202006101001481_Infos.resx">
+      <DependentUpon>202006101001481_Infos.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
