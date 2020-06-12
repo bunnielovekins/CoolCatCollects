@@ -248,14 +248,12 @@ namespace CoolCatCollects.Bricklink
 				}
 			}
 
-			var parts = responseModel.data.SelectMany(x => x.entries).Take(1).Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N")).ToList();
-
 			var model = new SubsetPartsListModel(responseModel);
 
 			model.Parts = model.Parts
 				.Select(x =>
 				{
-					var part = _dataService.GetPartModel(x.Number, x.ColourId, x.Type, "N");
+					var part = _dataService.GetPartModel(x.Number, x.ColourId, x.Type, "N", true);
 
 					x.MyPrice = part.PartInventory.MyPrice.ToString();
 					x.Remark = part.PartInventory.Location;

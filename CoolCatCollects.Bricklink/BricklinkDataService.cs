@@ -240,7 +240,15 @@ namespace CoolCatCollects.Bricklink
 
 		public void UpdatePartInventoryFromOrder(PartInventory inv, string remarks, string unit_price_final, string description, int inventory_id)
 		{
-			inv.Location = remarks;
+			if (inv.Quantity == 0)
+			{
+				inv.Location = "";
+			}
+			else
+			{
+				inv.Location = remarks;
+			}
+			
 			inv.MyPrice = decimal.Parse(unit_price_final);
 			inv.Description = description;
 
