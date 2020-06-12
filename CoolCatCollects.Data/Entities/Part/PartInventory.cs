@@ -21,7 +21,7 @@ namespace CoolCatCollects.Data.Entities
 		public decimal MyPrice { get; set; }
 		public int ColourId { get; set; }
 		public string ColourName { get; set; }
-		public char Condition { get; set; }
+		public string Condition { get; set; }
 		public string Location { get; set; }
 		public string Image { get; set; }
 		public string Description { get; set; }

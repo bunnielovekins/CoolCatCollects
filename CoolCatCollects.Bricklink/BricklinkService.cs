@@ -31,6 +31,29 @@ namespace CoolCatCollects.Bricklink
 			return model;
 		}
 
+		public object GetOrdersNotInDb()
+		{
+			var result = _apiService.GetRequest($"orders?direction=in&status=shipped,received,completed");
+
+			var responseModel = JsonConvert.DeserializeObject<GetOrdersResponseModel>(result);
+
+			var dbOrders = _dataService.GetOrderIds().ToList();
+
+			var items = responseModel.data.Where(x => !dbOrders.Contains(x.order_id.ToString()));
+
+			var model = new
+			{
+				count = items.Count(),
+				items = items
+					.Select(x => new
+					{
+						id = x.order_id
+					})
+			};
+
+			return model;
+		}
+
 		public IEnumerable<string> UpdateInventoryForColour(int colourId)
 		{
 			var result = _apiService.GetRequest<GetInventoriesResponseModel>("inventories?color_id=" + colourId);
@@ -49,31 +72,6 @@ namespace CoolCatCollects.Bricklink
 			}
 
 			return errors;
-		}
-
-		public OrderCsvModel GetOrderForCsv(string orderId)
-		{
-			var result = _apiService.GetRequest("orders/" + orderId);
-
-			var responseModel = JsonConvert.DeserializeObject<GetOrderResponseModel>(result);
-
-			if (responseModel.data == null)
-			{
-				result = _apiService.GetRequest("orders/" + orderId);
-
-				responseModel = JsonConvert.DeserializeObject<GetOrderResponseModel>(result);
-
-				if (responseModel.data == null)
-				{
-					throw new Exception("An error has occurred! Order ID: " + orderId + ", Error code: " + responseModel.meta.code +
-						", Error Message: " + responseModel.meta.message +
-						", Error Description: " + responseModel.meta.description);
-				}
-			}
-
-			var model = new OrderCsvModel(responseModel);
-
-			return model;
 		}
 
 		public int GetItemsRemaining(string inventoryId)
@@ -97,6 +95,15 @@ namespace CoolCatCollects.Bricklink
 			}
 
 			return responseModel.data.quantity;
+		}
+
+		public OrderCsvModel GetOrderForCsv(string orderId)
+		{
+			var response = GetOrder(orderId);
+
+			var model = new OrderCsvModel(response);
+
+			return model;
 		}
 
 		public GetOrderResponseModel GetOrder(string orderId)
@@ -150,11 +157,18 @@ namespace CoolCatCollects.Bricklink
 			var order = GetOrder(orderId);
 
 			var orderItems = GetOrderItems(orderId);
+
+			var orderEntity = _dataService.AddOrder(order, orderItems);
+
 			var items = orderItems.data
 				.SelectMany(x => x)
 				.Select(item =>
 				{
-					var inv = _dataService.GetPartModel(item.item.no, item.color_id, item.item.type, item.new_or_used[0], updateInvDate: order.data.date_ordered);
+					var itemEntity = orderEntity.OrderItems.FirstOrDefault(x => 
+						item.item.no == x.Part.Part.Number && 
+						item.color_id == x.Part.ColourId &&
+						item.item.type == x.Part.Part.ItemType &&
+						item.new_or_used == x.Part.Condition);
 
 					var unitPrice = decimal.Parse(item.unit_price_final);
 					var totalPrice = unitPrice * item.quantity;
@@ -164,21 +178,21 @@ namespace CoolCatCollects.Bricklink
 						InventoryId = item.inventory_id.ToString(),
 						Name = HttpUtility.HtmlDecode(item.item.name),
 						Condition = item.new_or_used == "N" ? "New" : "Used",
-						Colour = inv.PartInventory.ColourName,
+						Colour = itemEntity.Part.ColourName,
 						Remarks = item.remarks,
 						Quantity = item.quantity,
 						UnitPrice = unitPrice,
 						TotalPrice = totalPrice,
 						Description = item.description,
-						Type = inv.Part.ItemType,
-						Weight = inv.Part.Weight,
-						ItemsRemaining = inv.PartInventory.Quantity,
-						Image = inv.PartInventory.Image
+						Type = itemEntity.Part.Part.ItemType,
+						Weight = itemEntity.Part.Part.Weight,
+						ItemsRemaining = itemEntity.Part.Quantity,
+						Image = itemEntity.Part.Image
 					};
 
-					if (order.data.date_ordered > inv.PartInventory.LastUpdated)
+					if (order.data.date_ordered > itemEntity.Part.LastUpdated)
 					{
-						_dataService.UpdatePartInventoryFromOrder(inv.PartInventory, item.remarks, item.unit_price_final, item.description, item.inventory_id);
+						_dataService.UpdatePartInventoryFromOrder(itemEntity.Part, item.remarks, item.unit_price_final, item.description, item.inventory_id);
 					}
 
 					itemModel.FillRemarks();
@@ -196,13 +210,13 @@ namespace CoolCatCollects.Bricklink
 
 			return new OrderWithItemsModel
 			{
-				BuyerName = data.shipping.address.name.full,
+				BuyerName = orderEntity.BuyerName,
 				UserName = data.buyer_name,
-				ShippingMethod = data.shipping.method,
-				OrderTotal = data.cost.subtotal,
+				ShippingMethod = orderEntity.ShippingMethod,
+				OrderTotal = orderEntity.Subtotal.ToString(),
 				Buyer = new Buyer(data.shipping.address),
-				OrderNumber = data.order_id.ToString(),
-				OrderDate = data.date_ordered.ToString("yyyy-MM-dd"),
+				OrderNumber = orderEntity.OrderId,
+				OrderDate = orderEntity.OrderDate.ToString("yyyy-MM-dd"),
 				OrderPaid = data.payment.date_paid.ToString("yyyy-MM-dd"),
 				OrderRemarks = data.remarks,
 				SubTotal = StaticFunctions.FormatCurrencyStr(data.cost.subtotal),

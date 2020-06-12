@@ -64,5 +64,12 @@ namespace CoolCatCollects.Data.Repositories
 			_ctx.SaveChanges();
 			return obj;
 		}
+
+		public void Remove(T entity)
+		{
+			_ctx.Set<T>().Remove(entity);
+
+			_ctx.SaveChanges();
+		}
 	}
 }

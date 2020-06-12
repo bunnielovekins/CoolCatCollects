@@ -1,64 +1,131 @@
 ﻿@model CoolCatCollects.Models.DatabaseUpdateModel
 
-<h2>Update Inventory</h2>
-<p>Could take a while</p>
-<p>
-    Last updated: @Model.InventoryLastUpdated
-</p>
-<a class="btn btn-default go">Go</a>
+<div class="inventory">
+	<h2>Update Inventory</h2>
+	<p>Could take a while</p>
+	<p>
+		Last updated: @Model.InventoryLastUpdated
+	</p>
+	<a class="btn btn-default go-inv">Go</a>
 
-<div class="alert alert-info working" data-colour="0" role="alert" style="display: none;">Working! Colour: <span class="col">None</span></div>
-@foreach (var colour in Model.Colours)
-{
-    <div data-colour="@colour.Id" class="alert alert-info working" role="alert" style="display: none;">Working! Colour: <span class="col" style="background-color: #@colour.ColourCode">@colour.Name</span></div>
-}
+	<div class="alert alert-info working" data-colour="0" role="alert" style="display: none;">Working! Colour: <span class="col">None</span></div>
+	@foreach (var colour in Model.Colours)
+	{
+		<div data-colour="@colour.Id" class="alert alert-info working" role="alert" style="display: none;">Working! Colour: <span class="col" style="background-color: #@colour.ColourCode">@colour.Name</span></div>
+	}
 
-<div class="progress">
-    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="@Model.Colours.Count()" style="width: 0;">
-        <span class="num">0</span>/@Model.Colours.Count()
-    </div>
+	<div class="progress" style="display: none;">
+		<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="@Model.Colours.Count()" style="width: 0;">
+			<span class="num">0</span>/@Model.Colours.Count()
+		</div>
+	</div>
+
+	<ul class="errors">
+	</ul>
+
+	<h3 style="display: none;">Done!</h3>
 </div>
 
-<ul class="errors">
-</ul>
+<div class="orders">
+	<h2>Update Orders</h2>
+	<p>
+		Last updated: @Model.OrdersLastUpdated
+	</p>
+	<a class="btn btn-default go-orders">Go</a>
 
-<h3 style="display: none;">Done!</h3>
+	<div class="alert alert-info working" role="alert" style="display: none;">Working!</div>
+
+	<div class="progress" style="display: none;">
+		<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="0" style="width: 0;">
+			<span class="num">0</span>/<span class="max">0</span>
+		</div>
+	</div>
+
+	<ul class="errors">
+	</ul>
+
+	<h3 style="display: none;">Done!</h3>
+</div>
 
 @section scripts {
-    <script>
-        $(function () {
-            $('.go').click(function () {
-                var btn = $(this);
-                btn.hide();
+	<script>
+		$(function () {
+			$('.inventory .go-inv').click(function () {
+				var btn = $(this);
+				btn.hide();
 
-                var working = $('.working');
-                working.show();
+				var working = $('.inventory .working');
+				working.show();
 
-                var num = $('.num');
-                var bar = $('.progress-bar');
+				var num = $('.inventory .num');
+				$('.inventory .progress').show();
+				var bar = $('.inventory .progress-bar');
 
-                for (var i = 0; i < @Model.Colours.Count() + 1; i++) {
-                    num.text(i);
+				for (var i = 0; i < @Model.Colours.Count() + 1; i++) {
+					num.text(i);
 
-                    bar.attr('aria-valuenow', i);
-                    bar.css('width', ((i / parseFloat(@Model.Colours.Count())) * 100) + '%');
+					bar.attr('aria-valuenow', i);
+					bar.css('width', ((i / parseFloat(@Model.Colours.Count())) * 100) + '%');
 
-                    $('.working').hide();
-                    $('.working[data-colour=' + i + ']').show();
+					$('.inventory .working').hide();
+					$('.inventory .working[data-colour=' + i + ']').show();
 
-                    $.ajax('@Url.Action("UpdateInventory")?colourId=' + i, {
-                        async: false,
-                        cache: false,
-                        error: function (xhr, status, err) {
-                            $('.errors').append($('<li></li>').text('Colour: ' + i + ', Error: ' + err))
-                        }
-                    });
-                }
+					$.ajax('@Url.Action("UpdateInventory")?colourId=' + i, {
+						async: false,
+						cache: false,
+						error: function (xhr, status, err) {
+							$('.inventory .errors').append($('<li></li>').text('Colour: ' + i + ', Error: ' + err))
+						}
+					});
+				}
 
-                $.ajax('@Url.Action("UpdateInventoryDone")')
+				$.ajax('@Url.Action("UpdateInventoryDone")');
 
-                $('h3').show();
-            });
-        });
-    </script>
+				$('.inventory h3').show();
+			});
+
+			$('.orders .go-orders').click(function () {
+				var btn = $(this);
+				btn.hide();
+
+				var working = $('.orders .working');
+				working.show();
+
+				$.ajax('@Url.Action("GetAllOrders")', {
+					success: function (data) {
+						var count = data.count;
+
+						$('.orders .progress').show();
+
+						var bar = $('.orders .progress-bar');
+
+						bar.attr('aria-valuemax', count);
+						bar.find('.max').text(count);
+
+						var num = bar.find('.num');
+
+						for (var i = 0; i < count; i++) {
+							$.ajax('@Url.Action("AddOrder")?orderId=' + data.items[i].id, {
+								async: false,
+								cache: false,
+								success: function (data) {
+									if (!data.success) {
+										$('.orders .errors').append($('<li></li>').text('Order id: ' + data.items[i].id + ', Error: ' + data.error));
+									} else {
+										bar.attr('aria-valuenow', i);
+										num.text(i);
+										bar.css('width', ((i / parseFloat(count)) * 100) + '%');
+									}
+								}
+							});
+						}
+
+						$.ajax('@Url.Action("UpdateOrdersDone")');
+
+						$('.orders h3').show();
+					}
+				});
+			});
+		});
+	</script>
 }

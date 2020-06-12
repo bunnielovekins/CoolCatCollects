@@ -14,6 +14,7 @@ namespace CoolCatCollects.Bricklink
 		private readonly PartInventoryRepository _partInventoryRepo;
 		private readonly BaseRepository<PartPriceInfo> _partPricingRepo;
 		private readonly BaseRepository<PartInventoryLocationHistory> _partLocationHistoryRepo;
+		private readonly OrderRepository _orderRepo;
 		private readonly BricklinkApiService _api;
 
 
@@ -24,7 +25,15 @@ namespace CoolCatCollects.Bricklink
 			_partrepo = new BaseRepository<Part>(_partInventoryRepo.Context);
 			_partPricingRepo = new BaseRepository<PartPriceInfo>(_partInventoryRepo.Context);
 			_partLocationHistoryRepo = new BaseRepository<PartInventoryLocationHistory>(_partInventoryRepo.Context);
+
+			_orderRepo = new OrderRepository(_partInventoryRepo.Context);
+
 			_api = new BricklinkApiService();
+		}
+
+		public IEnumerable<string> GetOrderIds()
+		{
+			return _orderRepo.FindAll().Select(x => x.OrderId);
 		}
 
 		public PartModel GetPartModel(string number, int colourId, string type, char condition = 'N',
@@ -55,7 +64,7 @@ namespace CoolCatCollects.Bricklink
 				}
 
 				var partPrice = new PartPriceInfo();
-				var pricing = UpdatePartPricingFromApi(partPrice, number, type, colourId, partInv.Condition);
+				var pricing = UpdatePartPricingFromApi(partPrice, number, type, colourId, partInv.Condition[0]);
 
 				_partInventoryRepo.AddPartInv(ref partInv, ref partPrice, ref part);
 
@@ -139,11 +148,55 @@ namespace CoolCatCollects.Bricklink
 			return part;
 		}
 
+		public Data.Entities.BricklinkOrder AddOrder(GetOrderResponseModel order, GetOrderItemsResponseModel orderItems)
+		{
+			var o = _orderRepo.FindOne(x => x.OrderId == order.data.order_id.ToString()) as Data.Entities.BricklinkOrder;
+			if (o != null)
+			{
+				return o;
+			}
+
+			var orderEntity = new Data.Entities.BricklinkOrder
+			{
+				TotalCount = order.data.total_count,
+				UniqueCount = order.data.unique_count,
+				Weight = order.data.total_weight,
+				DriveThruSent = false,
+				ShippingMethod = order.data.shipping?.method,
+				OrderId = order.data.order_id.ToString(),
+				OrderDate = order.data.date_ordered,
+				BuyerName = order.data.buyer_name,
+				BuyerEmail = order.data.buyer_email,
+				Subtotal = decimal.Parse(order.data.cost.subtotal),
+				Deductions = decimal.Parse(order.data.cost.credit) + decimal.Parse(order.data.cost.coupon),
+				Shipping = decimal.Parse(order.data.cost.shipping),
+				ExtraCosts = decimal.Parse(order.data.cost.salesTax) + decimal.Parse(order.data.cost.vat_amount) + 
+					decimal.Parse(order.data.cost.etc1) + decimal.Parse(order.data.cost.etc2) + decimal.Parse(order.data.cost.insurance),
+				GrandTotal = decimal.Parse(order.data.cost.grand_total),
+				Status = order.data.status == "CANCELLED" ? OrderStatus.Cancelled : OrderStatus.Complete
+			};
+
+			var orderItemEntities = orderItems.data
+				.SelectMany(x => x)
+				.Select(x => new BricklinkOrderItem
+			{
+				Order = orderEntity,
+				Name = x.item.name,
+				Quantity = x.quantity,
+				UnitPrice = decimal.Parse(x.unit_price_final),
+				Part = GetPartModel(x.item.no, x.color_id, x.item.type, condition: x.new_or_used[0], updateInvDate: order.data.date_ordered).PartInventory
+			}).ToList();
+
+			orderEntity = _orderRepo.AddOrderWithItems(orderEntity, orderItemEntities);
+
+			return _orderRepo.FindOne(x => x.Id == orderEntity.Id) as Data.Entities.BricklinkOrder;
+		}
+
 		#region api
 
 		private PartInventory UpdateInventoryFromApi(PartInventory partInv)
 		{
-			return UpdateInventoryFromApi(partInv, partInv.Part.ItemType, partInv.Part.CategoryId, partInv.ColourId, partInv.Part.Number, partInv.Condition);
+			return UpdateInventoryFromApi(partInv, partInv.Part.ItemType, partInv.Part.CategoryId, partInv.ColourId, partInv.Part.Number, partInv.Condition[0]);
 		}
 
 		private PartPriceInfo UpdatePartPricingFromApi(PartPriceInfo price, string number, string type, int colourId, char condition = 'N')
@@ -205,7 +258,7 @@ namespace CoolCatCollects.Bricklink
 			partInv.MyPrice = decimal.Parse(item.unit_price);
 			partInv.ColourId = item.color_id;
 			partInv.ColourName = Statics.Colours[item.color_id].Name;
-			partInv.Condition = item.new_or_used[0];
+			partInv.Condition = item.new_or_used;
 			partInv.Location = item.remarks;
 			partInv.LastUpdated = DateTime.Now;
 			partInv.Description = item.description;
@@ -238,7 +291,7 @@ namespace CoolCatCollects.Bricklink
 				partInv.MyPrice = 0;
 				partInv.ColourId = colourId;
 				partInv.ColourName = Statics.Colours[colourId].Name;
-				partInv.Condition = condition;
+				partInv.Condition = condition.ToString();
 				partInv.Location = "";
 				partInv.LastUpdated = DateTime.Now;
 				partInv.Image = GetItemImage(type, number, colourId);
@@ -251,7 +304,7 @@ namespace CoolCatCollects.Bricklink
 			partInv.MyPrice = decimal.Parse(item.unit_price);
 			partInv.ColourId = colourId;
 			partInv.ColourName = Statics.Colours[colourId].Name;
-			partInv.Condition = condition;
+			partInv.Condition = condition.ToString();
 			partInv.Location = item.remarks;
 			partInv.Description = item.description;
 			partInv.Image = GetItemImage(type, number, colourId);
