@@ -65,5 +65,22 @@ namespace CoolCatCollects.Data.Repositories
 
 			return entity;
 		}
+
+		public void CascadeDelete(PartInventory entity)
+		{
+			foreach(var hist in entity.LocationHistory)
+			{
+				var hist1 = _ctx.PartInventoryLocationHistorys.Find(hist.Id);
+				_ctx.PartInventoryLocationHistorys.Remove(hist1);
+			}
+
+			var price = _ctx.PartPriceInfos.Find(entity.Pricing.Id);
+			_ctx.PartPriceInfos.Remove(price);
+
+			var ent = _ctx.PartInventorys.Find(entity.Id);
+			_ctx.PartInventorys.Remove(ent);
+
+			_ctx.SaveChanges();
+		}
 	}
 }

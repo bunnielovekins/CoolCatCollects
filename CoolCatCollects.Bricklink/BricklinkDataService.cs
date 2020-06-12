@@ -36,22 +36,27 @@ namespace CoolCatCollects.Bricklink
 			return _orderRepo.FindAll().Select(x => x.OrderId);
 		}
 
-		public PartModel GetPartModel(string number, int colourId, string type, char condition = 'N',
+		public PartModel GetPartModel(string number, int colourId, string type, string condition = "N",
 			bool updateInv = false, bool updatePrice = false, bool updatePart = false,
 			DateTime? updateInvDate = null)
 		{
-			var partInv = _partInventoryRepo.FindOne(x => x.Part.ItemType == type && x.Part.Number == number && x.ColourId == colourId);
+			string cond = condition == "A" ? "N" : condition;
+			var partInv = _partInventoryRepo.FindOne(x => 
+				x.Part.ItemType == type && 
+				x.Part.Number == number && 
+				x.ColourId == colourId && 
+				x.Condition == cond);
 
 			if (partInv == null)
 			{
 				var part = GetPart(number, type);
 
 				partInv = new PartInventory();
-				partInv = UpdateInventoryFromApi(partInv, type, part.CategoryId, colourId, number, condition == 'A' ? 'N' : condition);
+				partInv = UpdateInventoryFromApi(partInv, type, part.CategoryId, colourId, number, condition == "A" ? "N" : condition);
 
-				if (partInv.Quantity == 0 && condition == 'A')
+				if (partInv.Quantity == 0 && condition == "A")
 				{
-					var usedPart = UpdateInventoryFromApi(new PartInventory(), type, part.CategoryId, colourId, number, 'U');
+					var usedPart = UpdateInventoryFromApi(new PartInventory(), type, part.CategoryId, colourId, number, "U");
 					if (usedPart.Quantity > 0)
 					{
 						partInv = usedPart;
@@ -64,7 +69,7 @@ namespace CoolCatCollects.Bricklink
 				}
 
 				var partPrice = new PartPriceInfo();
-				var pricing = UpdatePartPricingFromApi(partPrice, number, type, colourId, partInv.Condition[0]);
+				var pricing = UpdatePartPricingFromApi(partPrice, number, type, colourId, partInv.Condition);
 
 				_partInventoryRepo.AddPartInv(ref partInv, ref partPrice, ref part);
 
@@ -184,7 +189,7 @@ namespace CoolCatCollects.Bricklink
 				Name = x.item.name,
 				Quantity = x.quantity,
 				UnitPrice = decimal.Parse(x.unit_price_final),
-				Part = GetPartModel(x.item.no, x.color_id, x.item.type, condition: x.new_or_used[0], updateInvDate: order.data.date_ordered).PartInventory
+				Part = GetPartModel(x.item.no, x.color_id, x.item.type, condition: x.new_or_used, updateInvDate: order.data.date_ordered).PartInventory
 			}).ToList();
 
 			orderEntity = _orderRepo.AddOrderWithItems(orderEntity, orderItemEntities);
@@ -196,10 +201,10 @@ namespace CoolCatCollects.Bricklink
 
 		private PartInventory UpdateInventoryFromApi(PartInventory partInv)
 		{
-			return UpdateInventoryFromApi(partInv, partInv.Part.ItemType, partInv.Part.CategoryId, partInv.ColourId, partInv.Part.Number, partInv.Condition[0]);
+			return UpdateInventoryFromApi(partInv, partInv.Part.ItemType, partInv.Part.CategoryId, partInv.ColourId, partInv.Part.Number, partInv.Condition);
 		}
 
-		private PartPriceInfo UpdatePartPricingFromApi(PartPriceInfo price, string number, string type, int colourId, char condition = 'N')
+		private PartPriceInfo UpdatePartPricingFromApi(PartPriceInfo price, string number, string type, int colourId, string condition = "N")
 		{
 			var response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&country_code=UK&new_or_used={condition}&color_id={colourId}");
 
@@ -278,11 +283,11 @@ namespace CoolCatCollects.Bricklink
 			return partInv;
 		}
 
-		private PartInventory UpdateInventoryFromApi(PartInventory partInv, string type, int categoryId, int colourId, string number, char condition = 'N')
+		private PartInventory UpdateInventoryFromApi(PartInventory partInv, string type, int categoryId, int colourId, string number, string condition = "N")
 		{
 			var response = _api.GetRequest<GetInventoriesResponseModel>($"inventories?item_type={type}&category_id={categoryId}&color_id={colourId}");
 
-			var item = response.data.FirstOrDefault(x => x.item.no == number);
+			var item = response.data.FirstOrDefault(x => x.item.no == number && x.new_or_used == condition);
 
 			if (item == null)
 			{
@@ -291,7 +296,7 @@ namespace CoolCatCollects.Bricklink
 				partInv.MyPrice = 0;
 				partInv.ColourId = colourId;
 				partInv.ColourName = Statics.Colours[colourId].Name;
-				partInv.Condition = condition.ToString();
+				partInv.Condition = condition;
 				partInv.Location = "";
 				partInv.LastUpdated = DateTime.Now;
 				partInv.Image = GetItemImage(type, number, colourId);
@@ -304,7 +309,7 @@ namespace CoolCatCollects.Bricklink
 			partInv.MyPrice = decimal.Parse(item.unit_price);
 			partInv.ColourId = colourId;
 			partInv.ColourName = Statics.Colours[colourId].Name;
-			partInv.Condition = condition.ToString();
+			partInv.Condition = condition;
 			partInv.Location = item.remarks;
 			partInv.Description = item.description;
 			partInv.Image = GetItemImage(type, number, colourId);

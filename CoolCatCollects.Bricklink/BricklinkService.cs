@@ -63,7 +63,7 @@ namespace CoolCatCollects.Bricklink
 			{
 				try
 				{
-					_dataService.GetPartModel(inv.item.no, inv.color_id, inv.item.type, inv.new_or_used[0], true);
+					_dataService.GetPartModel(inv.item.no, inv.color_id, inv.item.type, inv.new_or_used, true);
 				}
 				catch(Exception ex)
 				{
@@ -248,14 +248,14 @@ namespace CoolCatCollects.Bricklink
 				}
 			}
 
-			var parts = responseModel.data.SelectMany(x => x.entries).Take(1).Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, 'N')).ToList();
+			var parts = responseModel.data.SelectMany(x => x.entries).Take(1).Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N")).ToList();
 
 			var model = new SubsetPartsListModel(responseModel);
 
 			model.Parts = model.Parts
 				.Select(x =>
 				{
-					var part = _dataService.GetPartModel(x.Number, x.ColourId, x.Type, 'A');
+					var part = _dataService.GetPartModel(x.Number, x.ColourId, x.Type, "N");
 
 					x.MyPrice = part.PartInventory.MyPrice.ToString();
 					x.Remark = part.PartInventory.Location;
