@@ -1,4 +1,5 @@
 ﻿using CoolCatCollects.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -40,6 +41,8 @@ namespace CoolCatCollects.Bricklink.Models
 				.ThenBy(x => x.RemarkNumber)
 				.ThenBy(x => x.Colour)
 				.ThenBy(x => x.Name);
+
+			Messages = new List<BricklinkMessage>();
 		}
 
 		public string BuyerName { get; set; }
@@ -57,7 +60,16 @@ namespace CoolCatCollects.Bricklink.Models
 		public string Coupon { get; set; }
 		public string PostagePackaging { get; set; }
 		public string Total { get; set; }
-		public string OrderRemarks { get; internal set; }
+		public string OrderRemarks { get; set; }
+		public IEnumerable<BricklinkMessage> Messages { get; set; }
+	}
+
+	public class BricklinkMessage
+	{
+		public string InOrOut { get; set; }
+		public string Subject { get; set; }
+		public string Body { get; set; }
+		public DateTime Date { get; set; }
 	}
 
 	public class Buyer

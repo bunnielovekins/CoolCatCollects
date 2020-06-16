@@ -44,6 +44,21 @@
 	}
 </table>
 <hr />
+@if (Model.Messages.Any())
+{
+	<table class="wide">
+		@foreach (var message in Model.Messages)
+		{
+			<tr>
+				<td>@message.InOrOut</td>
+				<td>@message.Date</td>
+				@*<td>@message.Subject</td>*@
+				<td class="center">@HttpUtility.HtmlDecode(message.Body)</td>
+			</tr>
+		}
+	</table>
+	<hr />
+}
 <table class="parts">
 	<thead>
 		<tr>

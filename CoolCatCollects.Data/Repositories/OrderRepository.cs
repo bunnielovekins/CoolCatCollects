@@ -19,11 +19,33 @@ namespace CoolCatCollects.Data.Repositories
 		{
 			orderEntity = _ctx.BricklinkOrders.Add(orderEntity);
 
-			foreach(var item in orderItemEntities)
+			foreach (var item in orderItemEntities)
 			{
-				item.Part = _ctx.PartInventorys.Attach(item.Part);
+				if (item.Part != null)
+				{
+					item.Part = _ctx.PartInventorys.Attach(item.Part);
+				}
 
 				_ctx.BricklinkOrderItems.Add(item);
+			}
+
+			_ctx.SaveChanges();
+
+			return orderEntity;
+		}
+
+		public EbayOrder AddOrderWithItems(EbayOrder orderEntity, List<EbayOrderItem> orderItemEntities)
+		{
+			orderEntity = _ctx.EbayOrders.Add(orderEntity);
+
+			foreach (var item in orderItemEntities)
+			{
+				if (item.Part != null)
+				{ 
+					item.Part = _ctx.PartInventorys.Attach(item.Part);
+				}
+
+				_ctx.EbayOrderItems.Add(item);
 			}
 
 			_ctx.SaveChanges();

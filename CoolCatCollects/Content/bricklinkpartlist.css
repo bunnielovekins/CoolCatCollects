@@ -28,6 +28,10 @@
 	text-align: center;
 }
 
+.wide {
+	width: 100%;
+}
+
 .right {
 	text-align: right;
 }

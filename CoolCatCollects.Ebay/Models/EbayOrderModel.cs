@@ -13,19 +13,19 @@ namespace CoolCatCollects.Ebay.Models
 
 		}
 
-		public EbayOrderModel(GetOrderResponseModel data)
+		public EbayOrderModel(GetOrderResponseModel data, Data.Entities.EbayOrder orderEntity)
 		{
 			if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep?.shipTo?.contactAddress?.countryCode != "GB")
 			{
-				InitInternational(data);
+				InitInternational(data, orderEntity);
 			}
 			else
 			{
-				Init(data);
+				Init(data, orderEntity);
 			}
 		}
 
-		private void InitInternational(GetOrderResponseModel data)
+		private void InitInternational(GetOrderResponseModel data, Data.Entities.EbayOrder orderEntity)
 		{
 			IsInternationalOrder = true;
 			OrderNumber = data.orderId;
@@ -46,13 +46,13 @@ namespace CoolCatCollects.Ebay.Models
 			{
 				Buyer = new EbayOrderModelBuyer(data.fulfillmentStartInstructions[0].shippingStep.shipTo);
 			}
-			Items = data.lineItems.Select(x => new EbayOrderModelItem(x, true));
+			Items = data.lineItems.Select(x => new EbayOrderModelItem(x, orderEntity, true));
 
 			HasDiscount = string.IsNullOrEmpty(Discount) || Items.Any(x => string.IsNullOrEmpty(x.Discount));
 			HasVariants = Items.Any(x => !string.IsNullOrEmpty(x.LegacyVariationId));
 		}
 
-		private void Init(GetOrderResponseModel data)
+		private void Init(GetOrderResponseModel data, Data.Entities.EbayOrder orderEntity)
 		{
 			IsInternationalOrder = false;
 			OrderNumber = data.orderId;
@@ -73,7 +73,7 @@ namespace CoolCatCollects.Ebay.Models
 			{
 				Buyer = new EbayOrderModelBuyer(data.fulfillmentStartInstructions[0].shippingStep.shipTo);
 			}
-			Items = data.lineItems.Select(x => new EbayOrderModelItem(x, false));
+			Items = data.lineItems.Select(x => new EbayOrderModelItem(x, orderEntity, false));
 
 			HasDiscount = string.IsNullOrEmpty(Discount) || Items.Any(x => string.IsNullOrEmpty(x.Discount));
 			HasVariants = Items.Any(x => !string.IsNullOrEmpty(x.LegacyVariationId));
@@ -122,19 +122,24 @@ namespace CoolCatCollects.Ebay.Models
 
 			}
 
-			public EbayOrderModelItem(Lineitem item, bool international)
+			public EbayOrderModelItem(Lineitem item, Data.Entities.EbayOrder orderEntity, bool international)
 			{
+				var entity = orderEntity.OrderItems.Cast<Data.Entities.EbayOrderItem>().FirstOrDefault(x => 
+					x.LegacyItemId == item.legacyItemId && 
+					x.LegacyVariationId == item.legacyVariationId &&
+					x.LineItemId == item.lineItemId);
+
 				if (international)
 				{
-					InitInternational(item);
+					InitInternational(item, entity);
 				}
 				else
 				{
-					Init(item);
+					Init(item, entity);
 				}
 			}
 
-			private void InitInternational(Lineitem item)
+			private void InitInternational(Lineitem item, Data.Entities.EbayOrderItem entity)
 			{
 				Id = item.lineItemId;
 				Name = item.title;
@@ -144,11 +149,11 @@ namespace CoolCatCollects.Ebay.Models
 				SubTotal = item.lineItemCost.ToString();
 				LegacyVariationId = item.legacyVariationId;
 				LegacyItemId = item.legacyItemId;
-				Variant = "";
-				Image = "";
+				Variant = entity.CharacterName;
+				Image = entity.Image;
 			}
 
-			private void Init(Lineitem item)
+			private void Init(Lineitem item, Data.Entities.EbayOrderItem entity)
 			{
 				Id = item.lineItemId;
 				Name = item.title;
@@ -165,8 +170,8 @@ namespace CoolCatCollects.Ebay.Models
 				SubTotal = StaticFunctions.FormatCurrencyStr(item.total.convertedFromValue);
 				LegacyVariationId = item.legacyVariationId;
 				LegacyItemId = item.legacyItemId;
-				Variant = "";
-				Image = "";
+				Variant = entity.CharacterName;
+				Image = entity.Image;
 			}
 
 			private string GetUnitCost(string lineItemCost, int quantity)

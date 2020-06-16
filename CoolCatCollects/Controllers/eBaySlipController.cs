@@ -24,27 +24,6 @@ namespace CoolCatCollects.Controllers
 		{
 			var order = _service.GetOrder(orderId);
 
-			order.Items = order.Items.Select(x =>
-			{
-				var item = _service.GetItem(x.LegacyItemId, x.LegacyVariationId);
-
-				if (item.localizedAspects != null && item.localizedAspects.Any())
-				{
-					foreach (var aspect in item.localizedAspects)
-					{
-						if (aspect.name == "Character")
-						{
-							x.Variant = aspect.value;
-							break;
-						}
-					}
-				}
-
-				x.Image = item.image.imageUrl;
-
-				return x;
-			});
-
 			return View(order);
 		}
 

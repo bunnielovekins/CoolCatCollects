@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="eBayApiService.cs" />
+    <Compile Include="eBayDataService.cs" />
     <Compile Include="Models\EbayOrderModel.cs" />
     <Compile Include="eBayService.cs" />
     <Compile Include="Models\OrdersListModel.cs" />
@@ -64,6 +65,10 @@
     <ProjectReference Include="..\CoolCatCollects.Core\CoolCatCollects.Core.csproj">
       <Project>{C8471305-87E0-4C2D-9687-A4702BDCB93B}</Project>
       <Name>CoolCatCollects.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CoolCatCollects.Data\CoolCatCollects.Data.csproj">
+      <Project>{17F36315-BC21-4E4B-A589-E7BA374A0F4A}</Project>
+      <Name>CoolCatCollects.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

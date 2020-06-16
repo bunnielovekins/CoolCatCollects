@@ -29,6 +29,8 @@ namespace CoolCatCollects.Controllers
 		{
 			var order = _service.GetOrderWithItems(orderId);
 
+			order.Messages = _service.GetOrderMessages(orderId);
+
 			return View(order);
 		}
 

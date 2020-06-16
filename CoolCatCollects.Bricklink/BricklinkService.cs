@@ -54,6 +54,23 @@ namespace CoolCatCollects.Bricklink
 			return model;
 		}
 
+		public IEnumerable<BricklinkMessage> GetOrderMessages(string orderId)
+		{
+			var result = _apiService.GetRequest<GetOrderMessagesResponse>($"orders/{orderId}/messages");
+
+			return result.data.Select(x => new BricklinkMessage
+			{
+				InOrOut = x.from == "mroseives" ? "Out" : "In",
+				Subject = x.subject,
+				Body = x.body,
+				Date = x.dateSent
+			}).Where(x => 
+				x.Body != "You left seller feedback." && 
+				x.Body != "Seller left you feedback." &&
+				!x.Subject.Contains("Invoice for BrickLink Order")
+			);
+		}
+
 		public IEnumerable<string> UpdateInventoryForColour(int colourId)
 		{
 			var result = _apiService.GetRequest<GetInventoriesResponseModel>("inventories?color_id=" + colourId);

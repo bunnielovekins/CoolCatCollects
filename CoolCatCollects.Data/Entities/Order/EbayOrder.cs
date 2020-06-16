@@ -6,5 +6,6 @@ namespace CoolCatCollects.Data.Entities
 	{
 		public string LegacyOrderId { get; set; }
 		public string SalesRecordReference { get; set; }
+		public string BuyerUsername { get; set; }
 	}
 }

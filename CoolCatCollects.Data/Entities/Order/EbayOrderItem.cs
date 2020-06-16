@@ -8,5 +8,7 @@ namespace CoolCatCollects.Data.Entities
 		public string LegacyItemId { get; set; }
 		public string LegacyVariationId { get; set; }
 		public string SKU { get; set; }
+		public string Image { get; set; }
+		public string CharacterName { get; set; }
 	}
 }

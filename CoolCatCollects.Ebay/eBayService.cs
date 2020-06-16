@@ -1,17 +1,21 @@
-﻿using CoolCatCollects.Ebay.Models;
+﻿using CoolCatCollects.Data.Entities;
+using CoolCatCollects.Ebay.Models;
 using CoolCatCollects.Ebay.Models.Responses;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 
 namespace CoolCatCollects.Ebay
 {
 	public class eBayService
 	{
 		private readonly eBayApiService _service;
+		private readonly eBayDataService _dataService;
 
 		public eBayService()
 		{
 			_service = new eBayApiService();
+			_dataService = new eBayDataService();
 		}
 
 		public EbayOrderModel GetOrder(string orderNumber)
@@ -20,7 +24,43 @@ namespace CoolCatCollects.Ebay
 
 			var obj = JsonConvert.DeserializeObject<GetOrderResponseModel>(response);
 
-			return new EbayOrderModel(obj);
+			var orderEntity = _dataService.AddOrder(obj);
+
+			bool updated = false;
+			foreach(var item in orderEntity.OrderItems.Cast<EbayOrderItem>())
+			{
+				if (!string.IsNullOrEmpty(item.Image))
+				{
+					continue;
+				}
+
+				updated = true;
+
+				var itemFromApi = GetItem(item.LegacyItemId, item.LegacyVariationId);
+
+				item.Image = itemFromApi.image.imageUrl;
+
+				if (itemFromApi.localizedAspects != null && itemFromApi.localizedAspects.Any())
+				{
+					foreach (var aspect in itemFromApi.localizedAspects)
+					{
+						if (aspect.name == "Character")
+						{
+							item.CharacterName = aspect.value;
+							break;
+						}
+					}
+				}
+
+				_dataService.UpdateOrderItem(item);
+			}
+
+			if (updated)
+			{
+				orderEntity = _dataService.AddOrder(obj);
+			}
+
+			return new EbayOrderModel(obj, orderEntity);
 		}
 
 		public EbayOrdersListModel GetOrders(int limit, int page)
@@ -38,11 +78,6 @@ namespace CoolCatCollects.Ebay
 			return model;
 		}
 
-		public object GetItemInfo(string legacyItemId, string legacyVariationId)
-		{
-			throw new NotImplementedException();
-		}
-
 		public GetItemResponse GetItem(string legacyItemId, string legacyVariationId)
 		{
 			if (string.IsNullOrEmpty(legacyVariationId))
@@ -55,21 +90,6 @@ namespace CoolCatCollects.Ebay
 			var obj = JsonConvert.DeserializeObject<GetItemResponse>(response);
 
 			return obj;
-		}
-
-		public string GetVariant(string legacyItemId, string legacyVariationId)
-		{
-			var item = GetItem(legacyItemId, legacyVariationId);
-
-			foreach(var aspect in item.localizedAspects)
-			{
-				if (aspect.name == "Character")
-				{
-					return aspect.value;
-				}
-			}
-
-			return "";
 		}
 	}
 }
