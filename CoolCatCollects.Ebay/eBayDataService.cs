@@ -1,11 +1,8 @@
 ﻿using CoolCatCollects.Data.Entities;
 using CoolCatCollects.Data.Repositories;
+using CoolCatCollects.Ebay.Models;
 using CoolCatCollects.Ebay.Models.Responses;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoolCatCollects.Ebay
 {
@@ -54,7 +51,7 @@ namespace CoolCatCollects.Ebay
 				Order = entity,
 				LineItemId = x.lineItemId,
 				LegacyItemId = x.legacyItemId,
-				LegacyVariationId = x.legacyVariationId,
+				LegacyVariationId = x.legacyVariationId ?? "0",
 				SKU = x.sku,
 				Image = "",
 				CharacterName = "",
@@ -76,6 +73,19 @@ namespace CoolCatCollects.Ebay
 		public EbayOrderItem GetOrderItem(string legacyItemId, string legacyVariationId)
 		{
 			return _orderItemRepo.FindOne(x => x.LegacyItemId == legacyItemId && x.LegacyVariationId == legacyVariationId);
+		}
+
+		public void UpdateOrderItemsByLegacyId(string legacyItemId, string legacyVariationId, GetItemModel model)
+		{
+			var items = _orderItemRepo.Find(x => x.LegacyItemId == legacyItemId && x.LegacyVariationId == legacyVariationId);
+
+			foreach(var item in items)
+			{
+				item.Image = model.Image;
+				item.CharacterName = model.Character;
+
+				_orderItemRepo.Update(item);
+			}
 		}
 	}
 }

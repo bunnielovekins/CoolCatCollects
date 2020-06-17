@@ -126,7 +126,7 @@ namespace CoolCatCollects.Ebay.Models
 			{
 				var entity = orderEntity.OrderItems.Cast<Data.Entities.EbayOrderItem>().FirstOrDefault(x => 
 					x.LegacyItemId == item.legacyItemId && 
-					x.LegacyVariationId == item.legacyVariationId &&
+					x.LegacyVariationId == (item.legacyVariationId ?? "0") &&
 					x.LineItemId == item.lineItemId);
 
 				if (international)
@@ -147,7 +147,7 @@ namespace CoolCatCollects.Ebay.Models
 				Discount = "£0.00";
 				Quantity = item.quantity;
 				SubTotal = item.lineItemCost.ToString();
-				LegacyVariationId = item.legacyVariationId;
+				LegacyVariationId = item.legacyVariationId ?? "0";
 				LegacyItemId = item.legacyItemId;
 				Variant = entity.CharacterName;
 				Image = entity.Image;
@@ -168,7 +168,7 @@ namespace CoolCatCollects.Ebay.Models
 				}
 				Quantity = item.quantity;
 				SubTotal = StaticFunctions.FormatCurrencyStr(item.total.convertedFromValue);
-				LegacyVariationId = item.legacyVariationId;
+				LegacyVariationId = item.legacyVariationId ?? "0";
 				LegacyItemId = item.legacyItemId;
 				Variant = entity.CharacterName;
 				Image = entity.Image;

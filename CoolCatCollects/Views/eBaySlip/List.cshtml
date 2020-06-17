@@ -46,12 +46,21 @@
 			</tr>
 			foreach (var item in order.Items)
 			{
-				<tr class="item">
+				<tr class="item @if (string.IsNullOrEmpty(item.Image)) { <text>load</text> } ">
 					<td>
-						<input type="hidden" name="LineItemId" value="@item.LineItemId" />
-						<input type="hidden" name="LegacyItemId" value="@item.LegacyItemId" />
-						<input type="hidden" name="LegacyVariationId" value="@item.LegacyVariationId" />
-						<span class="image"></span>
+						@if (string.IsNullOrEmpty(item.Image))
+						{
+							<input type="hidden" name="LineItemId" value="@item.LineItemId" />
+							<input type="hidden" name="LegacyItemId" value="@item.LegacyItemId" />
+							<input type="hidden" name="LegacyVariationId" value="@item.LegacyVariationId" />
+							<span class="image"></span>
+						}
+						else
+						{
+							<span class="image">
+								<img src="@item.Image" />
+							</span>
+						}
 					</td>
 					<td class="character"></td>
 					<td>@order.ShippingMethod</td>
@@ -128,7 +137,7 @@
 	<script>
 		$(function () {
 			$('#loadMore').click(function () {
-				$('tr.item').each(function () {
+				$('tr.item.load').each(function () {
 					var elem = $(this);
 
 					var legacyItemId = elem.find('input[name=LegacyItemId]').val();

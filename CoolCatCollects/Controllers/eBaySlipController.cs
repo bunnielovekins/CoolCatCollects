@@ -31,25 +31,11 @@ namespace CoolCatCollects.Controllers
 		{
 			var item = _service.GetItem(legacyItemId, legacyVariationId);
 
-			var character = "";
-			var sku = "";
-			foreach (var aspect in item.localizedAspects)
-			{
-				if (aspect.name == "Character")
-				{
-					character = aspect.value;
-				}
-				else if (aspect.name == "SKU")
-				{
-					sku = aspect.value;
-				}
-			}
-
 			return Json(new
 			{
-				item.image.imageUrl,
-				character,
-				sku
+				imageUrl = item.Image,
+				character = item.Character,
+				sku = item.SKU
 			}, "application/json", JsonRequestBehavior.AllowGet);
 		}
 	}

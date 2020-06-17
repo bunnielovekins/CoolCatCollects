@@ -51,6 +51,7 @@
     <Compile Include="eBayDataService.cs" />
     <Compile Include="Models\EbayOrderModel.cs" />
     <Compile Include="eBayService.cs" />
+    <Compile Include="Models\GetItemModel.cs" />
     <Compile Include="Models\OrdersListModel.cs" />
     <Compile Include="Models\Responses\AuthResponseModel.cs" />
     <Compile Include="Models\Responses\GetItemResponse.cs" />

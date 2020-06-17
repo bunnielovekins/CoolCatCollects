@@ -53,6 +53,15 @@ namespace CoolCatCollects.Ebay.Models
 			Pagination = new PaginationModel(data.total, page, perPage);
 		}
 
+		public EbayOrdersListModel(IEnumerable<EbayOrdersListItemModel> items, int page, int perPage)
+		{
+			Total = items.Count();
+			Page = page;
+			Orders = items;
+
+			Pagination = new PaginationModel(items.Count(), page, perPage);
+		}
+
 		public IEnumerable<EbayOrdersListItemModel> Orders { get; set; }
 		public int Total { get; set; }
 		public int Page { get; set; }
@@ -141,11 +150,14 @@ namespace CoolCatCollects.Ebay.Models
 			Quantity = item.quantity;
 		}
 
+		public int OrderItemId { get; set; }
 		public string LineItemId { get; set; }
 		public string LegacyItemId { get; set; }
 		public string LegacyVariationId { get; set; }
 		public string Name { get; set; }
 		public string Cost { get; set; }
 		public int Quantity { get; set; }
+		public string Image { get; set; }
+		public string Character { get; set; }
 	}
 }
