@@ -67,7 +67,7 @@ namespace CoolCatCollects.Bricklink
 			}).Where(x => 
 				x.Body != "You left seller feedback." && 
 				x.Body != "Seller left you feedback." &&
-				!x.Subject.Contains("Invoice for BrickLink Order")
+				!(x.Subject ?? "").Contains("Invoice for BrickLink Order")
 			);
 		}
 
