@@ -1,4 +1,6 @@
 ﻿using CoolCatCollects.Data.Entities;
+using CoolCatCollects.Data.Entities.Expenses;
+using CoolCatCollects.Data.Entities.Purchases;
 using System.Data.Entity;
 
 namespace CoolCatCollects.Data
@@ -32,5 +34,10 @@ namespace CoolCatCollects.Data
 		public DbSet<EbayOrderItem> EbayOrderItems { get; set; }
 		public DbSet<BricklinkOrder> BricklinkOrders { get; set; }
 		public DbSet<BricklinkOrderItem> BricklinkOrderItems { get; set; }
+		public DbSet<Expense> Expenses { get; set; }
+		public DbSet<ExpenseItem> ExpenseItems { get; set; }
+		public DbSet<NewPurchase> NewPurchases { get; set; }
+		public DbSet<UsedPurchase> UsedPurchases { get; set; }
+		public DbSet<Log> Logs { get; set; }
 	}
 }

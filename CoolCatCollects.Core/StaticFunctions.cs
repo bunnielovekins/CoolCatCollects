@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 
 namespace CoolCatCollects.Core
 {
@@ -28,6 +29,11 @@ namespace CoolCatCollects.Core
 		public static bool IsEmpty(this string str)
 		{
 			return string.IsNullOrEmpty(str);
+		}
+
+		public static IHtmlString FormatNewLines(string str)
+		{
+			return new HtmlString(str.Replace("\n", "<br/>"));
 		}
 	}
 }

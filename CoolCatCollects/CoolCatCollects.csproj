@@ -157,7 +157,9 @@
     <Compile Include="Controllers\BricklinkSlipController.cs" />
     <Compile Include="Controllers\DatabaseController.cs" />
     <Compile Include="Controllers\eBaySlipController.cs" />
+    <Compile Include="Controllers\ExpensesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\PostageController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -182,6 +184,10 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Views\Database\Index.cshtml" />
+    <Content Include="Views\Logs\Create.cshtml" />
+    <Content Include="Views\Logs\Delete.cshtml" />
+    <Content Include="Views\Logs\Edit.cshtml" />
+    <Content Include="Views\Logs\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -234,6 +240,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Expenses\" />
+    <Folder Include="Views\Log\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -280,6 +288,14 @@
     <ProjectReference Include="..\CoolCatCollects.Ebay\CoolCatCollects.Ebay.csproj">
       <Project>{18600F41-D413-436C-9D27-4FF59E82E173}</Project>
       <Name>CoolCatCollects.Ebay</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CoolCatCollects.Models\CoolCatCollects.Models.csproj">
+      <Project>{673d7aa3-a5b6-4b12-b9bb-5904b8405fee}</Project>
+      <Name>CoolCatCollects.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CoolCatCollects.Services\CoolCatCollects.Services.csproj">
+      <Project>{6cd1bd98-682b-48e8-b1a7-d90bc1f127a1}</Project>
+      <Name>CoolCatCollects.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

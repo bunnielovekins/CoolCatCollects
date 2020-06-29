@@ -60,7 +60,11 @@
     <Compile Include="EfContext.cs" />
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\Colour.cs" />
+    <Compile Include="Entities\Expenses\Expense.cs" />
+    <Compile Include="Entities\Expenses\ExpenseItem.cs" />
+    <Compile Include="Entities\Expenses\Postage.cs" />
     <Compile Include="Entities\Info.cs" />
+    <Compile Include="Entities\Log.cs" />
     <Compile Include="Entities\Order\BricklinkOrder.cs" />
     <Compile Include="Entities\Order\BricklinkOrderItem.cs" />
     <Compile Include="Entities\Order\EbayOrder.cs" />
@@ -71,6 +75,8 @@
     <Compile Include="Entities\Part\PartInventory.cs" />
     <Compile Include="Entities\Part\PartInventoryLocationHistory.cs" />
     <Compile Include="Entities\Part\PartPriceInfo.cs" />
+    <Compile Include="Entities\Purchases\NewPurchase.cs" />
+    <Compile Include="Entities\Purchases\UsedPurchase.cs" />
     <Compile Include="Migrations\202006100959464_Initial.cs" />
     <Compile Include="Migrations\202006100959464_Initial.designer.cs">
       <DependentUpon>202006100959464_Initial.cs</DependentUpon>
@@ -90,6 +96,14 @@
     <Compile Include="Migrations\202006121458067_EbayOrders.cs" />
     <Compile Include="Migrations\202006121458067_EbayOrders.designer.cs">
       <DependentUpon>202006121458067_EbayOrders.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006291036057_Expenses.cs" />
+    <Compile Include="Migrations\202006291036057_Expenses.designer.cs">
+      <DependentUpon>202006291036057_Expenses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006291048121_Logs.cs" />
+    <Compile Include="Migrations\202006291048121_Logs.designer.cs">
+      <DependentUpon>202006291048121_Logs.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -116,6 +130,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006121458067_EbayOrders.resx">
       <DependentUpon>202006121458067_EbayOrders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006291036057_Expenses.resx">
+      <DependentUpon>202006291036057_Expenses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006291048121_Logs.resx">
+      <DependentUpon>202006291048121_Logs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
