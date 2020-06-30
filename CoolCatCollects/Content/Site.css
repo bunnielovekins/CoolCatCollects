@@ -31,16 +31,18 @@ table a:visited:not(.btn) {
 }
 
 form .form-control {
-	display:inline;
+	display: inline;
 	width: inherit;
 }
 
 .left {
 	text-align: left;
 }
+
 .center {
 	text-align: center;
 }
+
 .right {
 	text-align: right;
 }
@@ -54,13 +56,35 @@ table.partstable td {
 	padding: 0 !important;
 }
 
-table.partstable td.colour {
-	position: relative;
+	table.partstable td.colour {
+		position: relative;
+	}
+
+		table.partstable td.colour span.colbox {
+			padding: 22px 16px;
+			float: left;
+			height: 100%;
+			user-select: none;
+		}
+
+a.textlink {
+	color: #333 !important;
+	text-decoration: none !important;
 }
 
-	table.partstable td.colour span.colbox {
-		padding: 22px 16px;
-		float: left;
-		height: 100%;
-		user-select: none;
+	a.textlink:visited {
+		color: #333 !important;
+		text-decoration: none !important;
 	}
+
+.clear {
+	clear: both;
+}
+
+.f-left {
+	float: left;
+}
+
+.f-right {
+	float: right;
+}

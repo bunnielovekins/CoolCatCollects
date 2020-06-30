@@ -1,6 +1,7 @@
 ﻿using CoolCatCollects.Data.Entities;
 using CoolCatCollects.Data.Entities.Expenses;
 using CoolCatCollects.Data.Entities.Purchases;
+using CoolCatCollects.Data.Migrations;
 using System.Data.Entity;
 
 namespace CoolCatCollects.Data
@@ -9,7 +10,7 @@ namespace CoolCatCollects.Data
 	{
 		public EfContext() : base("DataModelContext")
 		{
-			Database.SetInitializer(new CreateDatabaseIfNotExists<EfContext>());
+			Database.SetInitializer(new MigrateDatabaseToLatestVersion<EfContext, Configuration>());
 		}
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)

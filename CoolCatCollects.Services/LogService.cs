@@ -16,7 +16,7 @@ namespace CoolCatCollects.Services
 		{
 			var logs = await _repo.FindAllAsync();
 
-			return logs.Select(ToModel).OrderByDescending(x => x.Date);
+			return logs.Select(ToModel);
 		}
 
 		public async Task<LogModel> FindAsync(int id)
@@ -33,6 +33,7 @@ namespace CoolCatCollects.Services
 				Date = DateTime.Now,
 				Title = model.Title,
 				Note = model.Note,
+				FurtherNote = model.FurtherNote,
 				Category = model.Category
 			};
 
@@ -45,6 +46,7 @@ namespace CoolCatCollects.Services
 
 			log.Title = model.Title;
 			log.Note = model.Note;
+			log.FurtherNote = model.FurtherNote;
 			log.Category = model.Category;
 
 			await _repo.UpdateAsync(log);
@@ -65,6 +67,7 @@ namespace CoolCatCollects.Services
 				Date = log.Date,
 				Title = log.Title,
 				Note = log.Note,
+				FurtherNote = log.FurtherNote,
 				Category = log.Category
 			};
 		}

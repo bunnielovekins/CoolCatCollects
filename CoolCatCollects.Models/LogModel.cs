@@ -17,6 +17,8 @@ namespace CoolCatCollects.Models
 		[Required]
 		[DataType(DataType.MultilineText)]
 		public string Note { get; set; }
+		[DataType(DataType.MultilineText)]
+		public string FurtherNote { get; set; }
 		[Required]
 		public string Category { get; set; }
 	}
