@@ -79,23 +79,23 @@
 		<tbody>
 			@foreach (var item in Model.Items)
 			{
-				<tr>
-					<td><img src="@item.Image" /></td>
-					<td>
-						@item.Name
-						@if (!string.IsNullOrEmpty(item.Variant))
-						{
-							<br /><small>@item.Variant</small>
-						}
-					</td>
-					<td>@item.UnitPrice</td>
-					@if (!Model.IsInternationalOrder)
+			<tr>
+				<td><img src="@item.Image" /></td>
+				<td>
+					@item.Name
+					@if (!string.IsNullOrEmpty(item.Variant))
 					{
-						<td>@item.Discount</td>
+						<br /><small>@item.Variant</small>
 					}
-					<td>@item.Quantity</td>
-					<td>@item.SubTotal</td>
-				</tr>
+				</td>
+				<td>@item.UnitPrice</td>
+				@if (!Model.IsInternationalOrder)
+				{
+					<td>@item.Discount</td>
+				}
+				<td>@item.Quantity</td>
+				<td>@item.SubTotal</td>
+			</tr>
 			}
 		</tbody>
 	</table>
@@ -109,6 +109,13 @@
 				<td>Discount:</td>
 				<td class="right">@Model.Discount</td>
 			</tr>
+			@if (!string.IsNullOrEmpty(Model.Tax))
+			{
+				<tr>
+					<td>Tax:</td>
+					<td class="right">@Model.Tax</td>
+				</tr>
+			}
 			<tr>
 				<td>Postage & Packing:</td>
 				<td class="right">@Model.PostagePackaging</td>

@@ -67,6 +67,7 @@
     <Compile Include="Models\ColourModel.cs" />
     <Compile Include="Models\OrderWithItemsModel.cs" />
     <Compile Include="Models\PartModel.cs" />
+    <Compile Include="Models\Responses\GetCategoryResponse.cs" />
     <Compile Include="Models\Responses\GetItemImageResponse.cs" />
     <Compile Include="Models\Responses\GetOrderMessagesResponse.cs" />
     <Compile Include="Models\SubsetPartsListModel.cs" />

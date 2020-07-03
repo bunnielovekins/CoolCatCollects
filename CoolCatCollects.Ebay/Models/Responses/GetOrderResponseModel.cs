@@ -35,6 +35,7 @@ namespace CoolCatCollects.Ebay.Models.Responses
 		public PriceValue deliveryCost { get; set; }
 		public PriceValue adjustment { get; set; }
 		public PriceValue total { get; set; }
+		public PriceValue tax { get; set; }
 	}
 
 	public class PriceValue

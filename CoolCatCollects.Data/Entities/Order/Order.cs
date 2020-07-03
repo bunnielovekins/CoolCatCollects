@@ -14,6 +14,7 @@ namespace CoolCatCollects.Data.Entities
 		public decimal Deductions { get; set; }
 		public decimal ExtraCosts { get; set; }
 		public decimal GrandTotal { get; set; }
+		public decimal Tax { get; set; }
 		public OrderStatus Status { get; set; }
 		public virtual ICollection<OrderItem> OrderItems { get; set; }
 	}

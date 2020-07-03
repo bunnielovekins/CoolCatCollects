@@ -1,6 +1,7 @@
 ﻿using CoolCatCollects.Bricklink.Models;
 using CoolCatCollects.Bricklink.Models.Responses;
 using CoolCatCollects.Core;
+using CoolCatCollects.Data.Entities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -247,23 +248,7 @@ namespace CoolCatCollects.Bricklink
 
 		public SubsetPartsListModel GetPartsFromSet(string set)
 		{
-			var result = _apiService.GetRequest("items/SET/" + set + "/subsets");
-
-			var responseModel = JsonConvert.DeserializeObject<GetSubsetResponse>(result);
-
-			if (responseModel.data == null)
-			{
-				result = _apiService.GetRequest("items/SET/" + set + "/subsets");
-
-				responseModel = JsonConvert.DeserializeObject<GetSubsetResponse>(result);
-
-				if (responseModel.data == null)
-				{
-					throw new Exception("An error has occurred! Set ID: " + set + ", Error code: " + responseModel.meta.code +
-						", Error Message: " + responseModel.meta.message +
-						", Error Description: " + responseModel.meta.description);
-				}
-			}
+			var responseModel = GetSubset(set);
 
 			var model = new SubsetPartsListModel(responseModel);
 
@@ -290,6 +275,65 @@ namespace CoolCatCollects.Bricklink
 				.ThenBy(x => x.Number);
 
 			return model;
+		}
+
+		public GetSubsetResponse GetSubset(string set, string type = "SET")
+		{
+			var result = _apiService.GetRequest<GetSubsetResponse>($"items/{type}/{set}/subsets");
+
+			return result;
+		}
+
+		public object GetSetDetails(string set)
+		{
+			var setInfo = GetItem("SET", set);
+
+			var categoryInfo = GetCategory(setInfo.data.category_id);
+
+			var parts = GetSubset(set);
+
+			var minifigs = parts.data.SelectMany(x => x.entries).Where(x => x.item.type == "MINIFIG").Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N"));
+
+			var minifigParts = minifigs.Select(x => GetSubset(x.Part.Number, "MINIFIG")).
+				SelectMany(x => x.data).
+				SelectMany(x => x.entries).
+				Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N")).ToList();
+
+			var allParts = parts.data.SelectMany(x => x.entries).Where(x => x.item.type == "PART").Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N"));
+
+			var minifigValue = minifigParts.Sum(x => x.PartPriceInfo.AveragePrice);
+			var partsValue = allParts.Sum(x => x.PartPriceInfo.AveragePrice);
+
+			return new
+			{
+				SetName = HttpUtility.HtmlDecode(setInfo.data.name),
+				Theme = HttpUtility.HtmlDecode(categoryInfo.data.category_name),
+				Image = setInfo.data.image_url,
+				Parts = parts.data.SelectMany(x => x.entries).Where(x => x.item.type == "PART").Sum(x => x.quantity),
+				MinifigValue = minifigValue,
+				PartsValue = partsValue
+			};
+		}
+
+		private GetPriceGuideResponse GetPriceGuide(string type, string set)
+		{
+			var result = _apiService.GetRequest<GetPriceGuideResponse>($"items/{type}/{set}/price");
+
+			return result;
+		}
+
+		private GetCategoryResponse GetCategory(int category_id)
+		{
+			var result = _apiService.GetRequest<GetCategoryResponse>($"categories/{category_id}");
+
+			return result;
+		}
+
+		private GetItemResponse GetItem(string type, string number)
+		{
+			var result = _apiService.GetRequest<GetItemResponse>($"items/{type}/{number}");
+
+			return result;
 		}
 	}
 }

@@ -13,7 +13,6 @@
 input,
 select,
 textarea {
-	max-width: 280px;
 }
 
 table tr td,
@@ -31,8 +30,6 @@ table a:visited:not(.btn) {
 }
 
 form .form-control {
-	display: inline;
-	width: inherit;
 }
 
 .left {
@@ -87,4 +84,8 @@ a.textlink {
 
 .f-right {
 	float: right;
+}
+
+#ui-datepicker-div {
+	z-index: 10 !important;
 }

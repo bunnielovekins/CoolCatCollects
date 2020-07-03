@@ -1,0 +1,112 @@
+﻿@model IEnumerable<CoolCatCollects.Models.NewPurchaseModel>
+
+@{
+	ViewBag.Title = "New Purchases";
+}
+
+<h1>New Purchases</h1>
+
+<p>
+	@Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-primary" })
+</p>
+
+@if (Model.Any())
+{
+	<table class="table">
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Date)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.SetName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Theme)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Price)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.UnitPrice)
+			</th>
+			<th>
+				Qty
+			</th>
+			<th>
+				Ratio
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Source)
+			</th>
+			<th></th>
+		</tr>
+
+		@foreach (var item in Model)
+		{
+			<tr data-toggle="collapse" data-target="#accordion-@item.Id">
+				<td>
+					@Html.DisplayFor(modelItem => item.Date)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.SetName)<br />
+					@Html.DisplayFor(modelItem => item.SetNumber)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Theme)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Price)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.UnitPrice)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Quantity)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.PriceToPartOutRatio)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Source)
+				</td>
+				<td style="width: 140px;">
+					@Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
+					@Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+				</td>
+			</tr>
+			<tr id="accordion-@item.Id" class="collapse">
+				<td>
+					<strong>@Html.DisplayNameFor(model => model.Status)</strong><br />
+					@Html.DisplayFor(modelItem => item.Status)<br />
+					<strong>Avg Part Out Value</strong><br />
+					@Html.DisplayFor(modelItem => item.AveragePartOutValue)
+				</td>
+				<td>
+					<strong>Parts/Total</strong><br />
+					@Html.DisplayFor(modelItem => item.Parts)/@Html.DisplayFor(modelItem => item.TotalParts)<br />
+					<strong>My Part Out Value</strong><br />
+					@Html.DisplayFor(modelItem => item.MyPartOutValue)
+				</td>
+				<td>
+					<strong>Pmt Method</strong><br />
+					@Html.DisplayFor(modelItem => item.PaymentMethod)<br />
+					<strong>Exp. Gross Profit</strong><br />
+					@Html.DisplayFor(modelItem => item.ExpectedGrossProfit)
+				</td>
+				<td>
+					<strong>@Html.DisplayNameFor(model => model.Promotions)</strong><br />
+					@Html.DisplayFor(modelItem => item.Promotions)<br />
+					<strong>Exp. Next Profit</strong><br />
+					@Html.DisplayFor(modelItem => item.ExpectedNetProfit)
+				</td>
+				<td colspan="2" style="white-space: pre-wrap"><strong>@Html.DisplayNameFor(model => model.SellingNotes)</strong><br/>@Html.DisplayFor(modelItem => item.SellingNotes)</td>
+				<td colspan="3" style="white-space: pre-wrap"><strong>@Html.DisplayNameFor(model => model.Notes)</strong><br/>@Html.DisplayFor(modelItem => item.Notes)</td>
+			</tr>
+		}
+
+	</table>
+}
+else
+{
+	<p>No Items Found</p>
+}

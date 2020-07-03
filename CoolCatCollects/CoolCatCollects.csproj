@@ -160,6 +160,7 @@
     <Compile Include="Controllers\ExpensesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LogsController.cs" />
+    <Compile Include="Controllers\NewPurchasesController.cs" />
     <Compile Include="Controllers\PostageController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -190,6 +191,10 @@
     <Content Include="Views\Logs\Edit.cshtml" />
     <Content Include="Views\Logs\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FTP.pubxml" />
+    <Content Include="Views\NewPurchases\Create.cshtml" />
+    <Content Include="Views\NewPurchases\Delete.cshtml" />
+    <Content Include="Views\NewPurchases\Edit.cshtml" />
+    <Content Include="Views\NewPurchases\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

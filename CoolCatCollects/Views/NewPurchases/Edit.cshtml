@@ -1,0 +1,310 @@
+﻿@model CoolCatCollects.Models.NewPurchaseModel
+
+@{
+	ViewBag.Title = "Edit";
+	var statuses = CoolCatCollects.Models.NewPurchaseModel.Statuses.All.Select(x => new SelectListItem
+	{
+		Text = x,
+		Value = x,
+		Selected = x == Model.Status
+	});
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+	<div class="form-horizontal">
+		<h4>New Purchase</h4>
+		<hr />
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		@Html.HiddenFor(model => model.Id)
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control js-price" } })
+				@Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Promotions, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Promotions, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Promotions, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.PaymentMethod, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.PaymentMethod, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Source, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Source, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Source, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control js-quantity" } })
+				@Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.SetNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				<div class="input-group">
+					@Html.EditorFor(model => model.SetNumber, new { htmlAttributes = new { @class = "form-control js-set" } })
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="button" id="set-fill">Fill</button>
+					</span>
+				</div>
+				@Html.ValidationMessageFor(model => model.SetNumber, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<hr />
+
+		<div class="alert" role="alert" style="display: none;">Part out ratio: <strong></strong></div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.SetName, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.SetName, new { htmlAttributes = new { @class = "form-control js-set-name" } })
+				@Html.ValidationMessageFor(model => model.SetName, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Theme, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Theme, new { htmlAttributes = new { @class = "form-control js-theme" } })
+				@Html.ValidationMessageFor(model => model.Theme, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.UnitPrice, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.UnitPrice, new { htmlAttributes = new { @class = "form-control js-unit-price" } })
+				@Html.ValidationMessageFor(model => model.UnitPrice, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Parts, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Parts, new { htmlAttributes = new { @class = "form-control js-parts" } })
+				@Html.ValidationMessageFor(model => model.Parts, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.TotalParts, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.TotalParts, new { htmlAttributes = new { @class = "form-control js-total-parts" } })
+				@Html.ValidationMessageFor(model => model.TotalParts, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.MinifigureValue, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				<div class="input-group">
+					@Html.EditorFor(model => model.MinifigureValue, new { htmlAttributes = new { @class = "form-control js-minifig" } })
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="button" id="minifig-recalculate">Recalculate</button>
+					</span>
+				</div>
+				@Html.ValidationMessageFor(model => model.MinifigureValue, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.PriceToPartOutRatio, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.PriceToPartOutRatio, new { htmlAttributes = new { @class = "form-control js-ratio" } })
+				@Html.ValidationMessageFor(model => model.PriceToPartOutRatio, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.AveragePartOutValue, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.AveragePartOutValue, new { htmlAttributes = new { @class = "form-control js-parts-out" } })
+				@Html.ValidationMessageFor(model => model.AveragePartOutValue, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.MyPartOutValue, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.MyPartOutValue, new { htmlAttributes = new { @class = "form-control js-my-part-out" } })
+				@Html.ValidationMessageFor(model => model.MyPartOutValue, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.ExpectedGrossProfit, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.ExpectedGrossProfit, new { htmlAttributes = new { @class = "form-control js-gross-profit" } })
+				@Html.ValidationMessageFor(model => model.ExpectedGrossProfit, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.ExpectedNetProfit, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.ExpectedNetProfit, new { htmlAttributes = new { @class = "form-control js-net-profit" } })
+				@Html.ValidationMessageFor(model => model.ExpectedNetProfit, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<hr />
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				<div class="checkbox">
+					@Html.DropDownListFor(model => model.Status, statuses, new { @class = "form-control" })
+					@Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.SellingNotes, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.SellingNotes, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.SellingNotes, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Notes, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Notes, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Notes, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-4">
+				<input type="submit" value="Save" class="btn btn-default" />
+			</div>
+		</div>
+	</div>
+}
+
+<div>
+	@Html.ActionLink("Back to List", "Index")
+</div>
+
+@section scripts
+{
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script>
+		$(function () {
+			$('input[type=datetime]').datepicker({
+				dateFormat: "yy-mm-dd"
+			});
+
+			$('#set-fill').click(function () {
+				var btn = $(this);
+				btn.text('Loading...');
+				btn.attr('disabled', 'disabled');
+
+				var set = $('.js-set').val();
+
+				$.getJSON('@Url.Action("GetSetInfo")?set=' + set, function (data) {
+					var price = $('.js-price').val();
+					var quantity = $('.js-quantity').val();
+
+					$('.js-set-name').val(data.SetName);
+					$('.js-theme').val(data.Theme);
+					$('.js-parts').val(data.Parts);
+
+					var unitPrice = price / quantity;
+
+					$('.js-total-parts').val(round(quantity * data.Parts));
+					$('.js-unit-price').val(round(unitPrice));
+
+					var myPartOut = data.MinifigValue + data.PartsValue;
+					var ratio = myPartOut / unitPrice;
+
+					$('.js-minifig').val(round(data.MinifigValue));
+					$('.js-ratio').val(round(ratio));
+
+					$('.js-parts-out').val(round(data.PartsValue));
+
+					$('.js-my-part-out').val(round(myPartOut));
+
+					var grossProfit = (myPartOut - unitPrice) * quantity;
+
+					$('.js-gross-profit').val(round(grossProfit));
+					$('.js-net-profit').val(round(grossProfit * 0.88))
+
+					var alert = $('.alert');
+					alert.find('strong').text(round(ratio));
+
+					alert.removeClass('alert-success');
+					alert.removeClass('alert-warning');
+					alert.removeClass('alert-danger');
+					if (ratio > 2.5) {
+						alert.addClass('alert-success');
+					}
+					else if (ratio > 1.8) {
+						alert.addClass('alert-warning');
+					}
+					else {
+						alert.addClass('alert-danger');
+					}
+					alert.show();
+
+					btn.text('Fill');
+					btn.removeAttr('disabled');
+				});
+			});
+
+			$('#minifig-recalculate').click(function () {
+				var partOut = $('.js-parts-out').val();
+				var minifig = $('.js-minifig').val();
+
+				var myPartOut = parseFloat(partOut) + parseFloat(minifig);
+
+				$('.js-my-part-out').val(round(myPartOut));
+
+				var grossProfit = (myPartOut - parseFloat($('.js-unit-price').val())) * parseFloat($('.js-quantity').val());
+
+				$('.js-gross-profit').val(round(grossProfit));
+				$('.js-net-profit').val(round(grossProfit * 0.88))
+			});
+		});
+
+		function round(num) {
+			return Math.round((num + Number.EPSILON) * 100) / 100
+		}
+	</script>
+}
+

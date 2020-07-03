@@ -42,6 +42,10 @@ namespace CoolCatCollects.Ebay.Models
 				Discount = "£0.00";
 			}
 			Total = StaticFunctions.FormatCurrencyStr(data.pricingSummary.total.convertedFromValue);
+			if (data.pricingSummary.tax != null)
+			{
+				Tax = StaticFunctions.FormatCurrencyStr(data.pricingSummary.tax.convertedFromValue);
+			}
 			if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep?.shipTo != null)
 			{
 				Buyer = new EbayOrderModelBuyer(data.fulfillmentStartInstructions[0].shippingStep.shipTo);
@@ -69,6 +73,10 @@ namespace CoolCatCollects.Ebay.Models
 				Discount = "£0.00";
 			}
 			Total = StaticFunctions.FormatCurrencyStr(data.pricingSummary.total.convertedFromValue);
+			if (data.pricingSummary.tax != null)
+			{
+				Tax = StaticFunctions.FormatCurrencyStr(data.pricingSummary.tax.convertedFromValue);
+			}
 			if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep?.shipTo != null)
 			{
 				Buyer = new EbayOrderModelBuyer(data.fulfillmentStartInstructions[0].shippingStep.shipTo);
@@ -85,6 +93,7 @@ namespace CoolCatCollects.Ebay.Models
 		public string SubTotal { get; set; }
 		public string PostagePackaging { get; set; }
 		public string Discount { get; set; }
+		public string Tax { get; set; }
 		public string Total { get; set; }
 		public EbayOrderModelBuyer Buyer { get; set; }
 		public IEnumerable<EbayOrderModelItem> Items { get; set; }
