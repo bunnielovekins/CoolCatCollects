@@ -230,6 +230,10 @@
 
 				var set = $('.js-set').val();
 
+				if (set.indexOf('-1') === -1) {
+					set += '-1';
+				}
+
 				$.getJSON('@Url.Action("GetSetInfo")?set=' + set, function (data) {
 					var price = $('.js-price').val();
 					var quantity = $('.js-quantity').val();
@@ -278,6 +282,20 @@
 					btn.text('Fill');
 					btn.removeAttr('disabled');
 				});
+			});
+
+			$('#minifig-recalculate').click(function () {
+				var partOut = $('.js-parts-out').val();
+				var minifig = $('.js-minifig').val();
+
+				var myPartOut = parseFloat(partOut) + parseFloat(minifig);
+
+				$('.js-my-part-out').val(round(myPartOut));
+
+				var grossProfit = (myPartOut - parseFloat($('.js-unit-price').val())) * parseFloat($('.js-quantity').val());
+
+				$('.js-gross-profit').val(round(grossProfit));
+				$('.js-net-profit').val(round(grossProfit * 0.88))
 			});
 		});
 

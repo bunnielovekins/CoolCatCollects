@@ -237,6 +237,10 @@
 
 				var set = $('.js-set').val();
 
+				if (set.indexOf('-1') === -1) {
+					set += '-1';
+				}
+
 				$.getJSON('@Url.Action("GetSetInfo")?set=' + set, function (data) {
 					var price = $('.js-price').val();
 					var quantity = $('.js-quantity').val();
