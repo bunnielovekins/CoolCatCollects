@@ -128,7 +128,12 @@
 		<div class="form-group">
 			@Html.LabelFor(model => model.MinifigureValue, htmlAttributes: new { @class = "control-label col-md-2" })
 			<div class="col-md-4">
-				@Html.EditorFor(model => model.MinifigureValue, new { htmlAttributes = new { @class = "form-control js-minifig" } })
+				<div class="input-group">
+					@Html.EditorFor(model => model.MinifigureValue, new { htmlAttributes = new { @class = "form-control js-minifig" } })
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="button" id="minifig-recalculate">Recalculate</button>
+					</span>
+				</div>
 				@Html.ValidationMessageFor(model => model.MinifigureValue, "", new { @class = "text-danger" })
 			</div>
 		</div>
@@ -173,7 +178,7 @@
 			</div>
 		</div>
 
-		<hr/>
+		<hr />
 
 		<div class="form-group">
 			@Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
