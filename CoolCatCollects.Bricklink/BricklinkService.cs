@@ -297,12 +297,13 @@ namespace CoolCatCollects.Bricklink
 			var minifigParts = minifigs.Select(x => GetSubset(x.Part.Number, "MINIFIG")).
 				SelectMany(x => x.data).
 				SelectMany(x => x.entries).
-				Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N")).ToList();
+				Select(x => new { model = _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N"), quantity = x.quantity + x.extra_quantity }).ToList();
 
-			var allParts = parts.data.SelectMany(x => x.entries).Where(x => x.item.type == "PART").Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N"));
+			var allParts = parts.data.SelectMany(x => x.entries).Where(x => x.item.type == "PART").
+				Select(x => new { model = _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N"), quantity = x.quantity + x.extra_quantity });
 
-			var minifigValue = minifigParts.Sum(x => x.PartPriceInfo.AveragePrice);
-			var partsValue = allParts.Sum(x => x.PartPriceInfo.AveragePrice);
+			var minifigValue = minifigParts.Sum(x => x.model.PartPriceInfo.AveragePrice * x.quantity);
+			var partsValue = allParts.Sum(x => x.model.PartPriceInfo.AveragePrice * x.quantity);
 
 			return new
 			{

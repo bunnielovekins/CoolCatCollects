@@ -1,0 +1,107 @@
+﻿@model IEnumerable<CoolCatCollects.Models.UsedPurchaseModel>
+
+@{
+	ViewBag.Title = "Used Purchases";
+}
+
+<h2>Index</h2>
+
+<p>
+	@Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-primary" })
+</p>
+
+@if (Model.Any())
+{
+	<table class="table">
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Date)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Source)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.SourceUsername)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Price)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Location)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Weight)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.PricePerKilo)
+			</th>
+			<th>
+				
+			</th>
+			<th></th>
+		</tr>
+
+		@foreach (var item in Model)
+		{
+			<tr data-toggle="collapse" data-target="#accordion-@item.Id">
+				<td>
+					@Html.DisplayFor(modelItem => item.Date)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Source)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.SourceUsername)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Price)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Location)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Weight)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.PricePerKilo)
+				</td>
+				<td style="width: 140px;">
+					@Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
+					@Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+				</td>
+			</tr>
+			<tr id="accordion-@item.Id" class="collapse">
+				<td>
+					<strong>@Html.DisplayNameFor(model => model.OrderNumber)</strong><br />
+					@Html.DisplayFor(modelItem => item.OrderNumber)
+				</td>
+				<td>
+					<strong>@Html.DisplayNameFor(model => model.CompleteSets)</strong><br />
+					@Html.DisplayFor(modelItem => item.CompleteSets)
+				</td>
+				<td>
+					<strong>@Html.DisplayNameFor(model => model.Receipt)</strong><br />
+					@Html.DisplayFor(modelItem => item.Receipt)
+				</td>
+				<td>
+					<strong>@Html.DisplayNameFor(model => model.PaymentMethod)</strong><br />
+					@Html.DisplayFor(modelItem => item.PaymentMethod)
+				</td>
+				<td>
+					<strong>@Html.DisplayNameFor(model => model.DistanceTravelled)</strong><br />
+					@Html.DisplayFor(modelItem => item.DistanceTravelled)
+				</td>
+				<td>
+					<strong>@Html.DisplayNameFor(model => model.Postage)</strong><br />
+					@Html.DisplayFor(modelItem => item.Postage)
+				</td>
+				<td colspan="2" style="white-space: pre-wrap"><strong>@Html.DisplayNameFor(model => model.Notes)</strong><br />@Html.DisplayFor(modelItem => item.Notes)</td>
+			</tr>
+		}
+
+	</table>
+}
+else
+{
+	<p>No Items Found</p>
+}

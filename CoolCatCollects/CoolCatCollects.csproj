@@ -162,6 +162,7 @@
     <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\NewPurchasesController.cs" />
     <Compile Include="Controllers\PostageController.cs" />
+    <Compile Include="Controllers\UsedPurchasesController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -195,6 +196,10 @@
     <Content Include="Views\NewPurchases\Delete.cshtml" />
     <Content Include="Views\NewPurchases\Edit.cshtml" />
     <Content Include="Views\NewPurchases\Index.cshtml" />
+    <Content Include="Views\UsedPurchases\Create.cshtml" />
+    <Content Include="Views\UsedPurchases\Delete.cshtml" />
+    <Content Include="Views\UsedPurchases\Edit.cshtml" />
+    <Content Include="Views\UsedPurchases\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
