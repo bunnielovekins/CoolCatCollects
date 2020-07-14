@@ -39,6 +39,7 @@ namespace CoolCatCollects.Data
 		public DbSet<ExpenseItem> ExpenseItems { get; set; }
 		public DbSet<NewPurchase> NewPurchases { get; set; }
 		public DbSet<UsedPurchase> UsedPurchases { get; set; }
+		public DbSet<UsedPurchaseWeight> UsedPurchaseWeights { get; set; }
 		public DbSet<Log> Logs { get; set; }
 	}
 }

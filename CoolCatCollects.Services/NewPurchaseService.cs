@@ -16,7 +16,7 @@ namespace CoolCatCollects.Services
 		{
 			var newPurchases = await _repo.FindAllAsync();
 
-			return newPurchases.Select(ToModel);
+			return newPurchases.Select(ToModel).OrderByDescending(x => x.Date);
 		}
 
 		public async Task<NewPurchaseModel> FindAsync(int id)

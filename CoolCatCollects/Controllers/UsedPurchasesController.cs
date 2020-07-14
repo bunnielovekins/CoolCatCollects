@@ -3,6 +3,11 @@ using System.Net;
 using System.Web.Mvc;
 using CoolCatCollects.Services;
 using CoolCatCollects.Models;
+using CoolCatCollects.Data.Entities.Purchases;
+using System.Collections.Generic;
+using CoolCatCollects.Bricklink.Models;
+using CoolCatCollects.Bricklink;
+using System.Linq;
 
 namespace CoolCatCollects.Controllers
 {
@@ -100,6 +105,60 @@ namespace CoolCatCollects.Controllers
 			await _service.Delete(id);
 
 			return RedirectToAction("Index");
+		}
+
+		// GET: UsedPurchases/Edit/5
+		public async Task<ActionResult> Weights(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			var entity = await _service.GetPurchaseWithWeights(id.Value);
+
+			if (entity == null)
+			{
+				return HttpNotFound();
+			}
+
+			var model = new UsedPurchaseWeightsViewModel
+			{
+				Purchase = entity,
+				Weights = entity.Weights,
+				Colours = new List<string> {
+					"Grey",
+					"White",
+					"Black",
+					"Technic",
+					"Red",
+					"Yellow",
+					"Blue",
+					"Tan",
+					"Brown",
+					"Green",
+					"Orange",
+					"Dark Red",
+					"Pink"
+				}.Select(x => new SelectListItem { Text = x, Value = x })
+			};
+
+			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<ActionResult> Weights(UsedPurchaseWeightsViewModel model)
+		{
+			await _service.UpdateWeights(model.Purchase.Id, model.Weights);
+
+			return RedirectToAction("Index");
+		}
+
+		public class UsedPurchaseWeightsViewModel
+		{
+			public UsedPurchaseModel Purchase { get; set; }
+			public IEnumerable<UsedPurchaseWeightModel> Weights { get; set; }
+			public IEnumerable<SelectListItem> Colours { get; set; }
 		}
 
 		protected override void Dispose(bool disposing)

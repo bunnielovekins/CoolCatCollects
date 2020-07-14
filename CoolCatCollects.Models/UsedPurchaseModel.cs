@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -33,5 +35,18 @@ namespace CoolCatCollects.Models
 		public bool CompleteSets { get; set; }
 		[DataType(DataType.MultilineText)]
 		public string Notes { get; set; }
+
+		public IEnumerable<UsedPurchaseWeightModel> Weights { get; set; }
+	}
+
+	public class UsedPurchaseWeightModel
+	{
+		public int Id { get; set; }
+		public string Colour { get; set; }
+		[DisplayName("Weight (g)")]
+		public decimal Weight { get; set; }
+		public int UsedPurchaseId { get; set; }
+
+		public bool Delete { get; set; }
 	}
 }

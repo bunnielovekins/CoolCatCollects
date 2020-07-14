@@ -119,5 +119,19 @@ namespace CoolCatCollects.Data.Repositories
 
 			await _ctx.SaveChangesAsync();
 		}
+
+		public void RemoveMany(IEnumerable<T> entities)
+		{
+			_ctx.Set<T>().RemoveRange(entities);
+
+			_ctx.SaveChanges();
+		}
+
+		public async Task RemoveManyAsync(IEnumerable<T> entities)
+		{
+			_ctx.Set<T>().RemoveRange(entities);
+
+			await _ctx.SaveChangesAsync();
+		}
 	}
 }

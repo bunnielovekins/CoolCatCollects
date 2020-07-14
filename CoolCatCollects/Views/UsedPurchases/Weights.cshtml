@@ -1,0 +1,96 @@
+﻿@model CoolCatCollects.Controllers.UsedPurchasesController.UsedPurchaseWeightsViewModel
+@{
+	ViewBag.Title = "Weights";
+	var empty = new CoolCatCollects.Models.UsedPurchaseWeightModel();
+	int i = 0;
+}
+
+<h2>Weights</h2>
+
+<form method="post">
+	@Html.Hidden("model.Purchase.Id", Model.Purchase.Id)
+	<table>
+		<thead>
+			<tr>
+				<th>@Html.LabelFor(x => empty.Colour)</th>
+				<th>@Html.LabelFor(x => empty.Weight)</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var wt in Model.Weights)
+			{
+				<tr data-id="@i">
+					@Html.Hidden("model.Weights[" + i + "].Id", wt.Id, new { @class = "id" })
+					@Html.Hidden("model.Weights[" + i + "].UsedPurchaseId", wt.UsedPurchaseId)
+					@Html.Hidden("model.Weights[" + i + "].Colour", wt.Colour)
+					@Html.Hidden("model.Weights[" + i + "].Delete", false, new { @class = "delete" })
+					<td>@Html.DisplayFor(weight => wt.Colour)</td>
+					<td>@Html.TextBox("model.Weights[" + i + "].Weight", wt.Weight, htmlAttributes: new { @class = "form-control" })</td>
+					<td><button class="js-remove btn btn-danger">Remove</button></td>
+				</tr>
+
+				i++;
+			}
+		</tbody>
+		<tfoot>
+			<tr>
+				<td></td>
+				<td></td>
+				<td><button class="js-add btn btn-primary">Add</button></td>
+			</tr>
+		</tfoot>
+	</table>
+
+	<br/><br/>
+	<input type="submit" class="btn btn-primary" value="Submit" />
+</form>
+
+<div style="display: none">
+	@Html.DropDownList("Colour", Model.Colours, new { @class = "js-colour form-control" })
+</div>
+
+@section scripts {
+	<script>
+		$(function () {
+			$('.js-add').click(function () {
+				var count = 0;
+				if ($('tbody tr').length !== 0) {
+					count = parseInt($($('tbody tr')[$('tbody tr').length - 1]).attr('data-id')) + 1;
+				}
+
+				var newElem = $('<tr data-id="' + count + '"><input type="hidden" name="model.Weights[' + count + '].Delete" class="delete" value="False" /><td class="colour"></td><td>' +
+					'<input class="form-control" name="model.Weights[' + count + '].Weight" type="text" /></td><td>' +
+					'<button class="js-remove btn btn-danger">Remove</button></td></tr>');
+
+				var dd = $($('.js-colour')[0]);
+
+				newElem.find('.colour').append(dd.clone().attr('name', 'model.Weights[' + count + '].Colour'));
+				newElem.find('.js-remove').click(removeClick);
+
+				$('table tbody').append(newElem);
+
+				return false;
+			});
+
+			$('.js-remove').click(removeClick);
+		});
+
+		function removeClick() {
+			var tr = $(this).parents('tr');
+
+			if (tr.find('.id').length > 0) {
+				tr.hide();
+
+				tr.find('.delete').val("True");
+			}
+			else {
+				tr.remove();
+			}
+
+
+			return false;
+		}
+	</script>
+}
+

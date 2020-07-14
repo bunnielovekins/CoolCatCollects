@@ -11,12 +11,18 @@ namespace CoolCatCollects.Services
 	public class UsedPurchaseService : IDisposable
 	{
 		public BaseRepository<UsedPurchase> _repo = new BaseRepository<UsedPurchase>();
+		public BaseRepository<UsedPurchaseWeight> _weightRepo;
+
+		public UsedPurchaseService()
+		{
+			_weightRepo = new BaseRepository<UsedPurchaseWeight>(_repo.Context);
+		}
 
 		public async Task<IEnumerable<UsedPurchaseModel>> GetAll()
 		{
 			var UsedPurchases = await _repo.FindAllAsync();
 
-			return UsedPurchases.Select(ToModel);
+			return UsedPurchases.Select(ToModel).OrderByDescending(x => x.Date);
 		}
 
 		public async Task<UsedPurchaseModel> FindAsync(int id)
@@ -102,9 +108,85 @@ namespace CoolCatCollects.Services
 			};
 		}
 
+		public UsedPurchaseWeightModel ToModel(UsedPurchaseWeight wt)
+		{
+			return new UsedPurchaseWeightModel
+			{
+				Id = wt.Id,
+				Colour = wt.Colour,
+				Weight = wt.Weight,
+				UsedPurchaseId = wt.UsedPurchase.Id
+			};
+		}
+
+		public UsedPurchaseWeight ToEntity(UsedPurchaseWeightModel wt, UsedPurchase purchase)
+		{
+			return new UsedPurchaseWeight
+			{
+				Id = wt.Id,
+				Colour = wt.Colour,
+				Weight = wt.Weight,
+				UsedPurchase = purchase
+			};
+		}
+
+		public async Task<UsedPurchaseModel> GetPurchaseWithWeights(int id)
+		{
+			var purchase = await _repo.FindOneAsync(id);
+
+			var model = ToModel(purchase);
+
+			var weights = purchase.Weights.Select(ToModel);
+
+			model.Weights = weights;
+
+			return model;
+		}
+
 		public void Dispose()
 		{
 			_repo.Dispose();
+		}
+
+		public async Task UpdateWeights(int id, IEnumerable<UsedPurchaseWeightModel> weights)
+		{
+			if (weights == null)
+			{
+				weights = new List<UsedPurchaseWeightModel>();
+			}
+
+			var purchase = await _repo.FindOneAsync(id);
+
+			var existingWeights = purchase.Weights;
+			var existingIds = existingWeights.Select(x => x.Id);
+
+			var toAdd = weights.Where(x => !existingIds.Contains(x.Id) && !x.Delete).ToList();
+			var toUpdate = weights.Where(x => existingIds.Contains(x.Id) && !x.Delete).ToList();
+			var toDelete = weights.Where(x => x.Delete).ToList();
+
+			var all = _weightRepo.FindAll().ToList();
+
+			// Add
+			foreach (var wt in toAdd.Select(x => ToEntity(x, purchase)))
+			{
+				await _weightRepo.AddAsync(wt);
+			}
+
+			all = _weightRepo.FindAll().ToList();
+
+			// Update
+			foreach (var wt in toUpdate)
+			{
+				var entity = await _weightRepo.FindOneAsync(wt.Id);
+
+				entity.Colour = wt.Colour;
+				entity.Weight = wt.Weight;
+
+				await _weightRepo.UpdateAsync(entity);
+			}
+
+			// Delete
+			await _weightRepo.RemoveManyAsync(toDelete.Select(x => _weightRepo.FindOne(x.Id)));
 		}
 	}
 }
