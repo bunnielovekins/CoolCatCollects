@@ -1,4 +1,5 @@
-﻿using CoolCatCollects.Ebay.Models.Responses;
+﻿using CoolCatCollects.Core;
+using CoolCatCollects.Ebay.Models.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,7 +86,7 @@ namespace CoolCatCollects.Ebay.Models
 			BuyerUsername = data.buyer.username;
 			PriceSubtotal = data.pricingSummary.priceSubtotal.ToString();
 			PriceDiscount = data.pricingSummary.priceDiscount?.ToString();
-			PriceDelivery = data.pricingSummary.deliveryCost.ToString();
+			PriceDelivery = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0"));
 			PriceTotal = data.pricingSummary.total.ToString();
 			if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep != null)
 			{

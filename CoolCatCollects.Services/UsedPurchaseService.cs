@@ -164,15 +164,11 @@ namespace CoolCatCollects.Services
 			var toUpdate = weights.Where(x => existingIds.Contains(x.Id) && !x.Delete).ToList();
 			var toDelete = weights.Where(x => x.Delete).ToList();
 
-			var all = _weightRepo.FindAll().ToList();
-
 			// Add
 			foreach (var wt in toAdd.Select(x => ToEntity(x, purchase)))
 			{
 				await _weightRepo.AddAsync(wt);
 			}
-
-			all = _weightRepo.FindAll().ToList();
 
 			// Update
 			foreach (var wt in toUpdate)

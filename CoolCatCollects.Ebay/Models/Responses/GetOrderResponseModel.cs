@@ -33,6 +33,7 @@ namespace CoolCatCollects.Ebay.Models.Responses
 		public PriceValue priceSubtotal { get; set; }
 		public PriceValue priceDiscount { get; set; }
 		public PriceValue deliveryCost { get; set; }
+		public PriceValue deliveryDiscount { get; set; }
 		public PriceValue adjustment { get; set; }
 		public PriceValue total { get; set; }
 		public PriceValue tax { get; set; }

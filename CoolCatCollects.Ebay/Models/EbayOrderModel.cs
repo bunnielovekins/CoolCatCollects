@@ -32,7 +32,7 @@ namespace CoolCatCollects.Ebay.Models
 			OrderDate = data.creationDate.ToString("yyyy-MM-dd");
 			OrderPaid = data.paymentSummary.payments[0].paymentDate.ToString("yyyy-MM-dd");
 			SubTotal = StaticFunctions.FormatCurrencyStr(data.pricingSummary.priceSubtotal.convertedFromValue);
-			PostagePackaging = StaticFunctions.FormatCurrencyStr(data.pricingSummary.deliveryCost.convertedFromValue);
+			PostagePackaging = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0"));
 			if (data.pricingSummary.adjustment != null)
 			{
 				Discount = data.pricingSummary.adjustment.ToString();
@@ -63,7 +63,7 @@ namespace CoolCatCollects.Ebay.Models
 			OrderDate = data.creationDate.ToString("yyyy-MM-dd");
 			OrderPaid = data.paymentSummary.payments[0].paymentDate.ToString("yyyy-MM-dd");
 			SubTotal = StaticFunctions.FormatCurrencyStr(data.pricingSummary.priceSubtotal.convertedFromValue);
-			PostagePackaging = StaticFunctions.FormatCurrencyStr(data.pricingSummary.deliveryCost.convertedFromValue);
+			PostagePackaging = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0"));
 			if (data.pricingSummary.priceDiscount != null)
 			{
 				Discount = data.pricingSummary.priceDiscount.ToString();

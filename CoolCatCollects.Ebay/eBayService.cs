@@ -1,4 +1,5 @@
-﻿using CoolCatCollects.Data.Entities;
+﻿using CoolCatCollects.Core;
+using CoolCatCollects.Data.Entities;
 using CoolCatCollects.Ebay.Models;
 using CoolCatCollects.Ebay.Models.Responses;
 using Newtonsoft.Json;
@@ -71,7 +72,7 @@ namespace CoolCatCollects.Ebay
 					BuyerUsername = data.buyer.username,
 					PriceSubtotal = data.pricingSummary.priceSubtotal.ToString(),
 					PriceDiscount = data.pricingSummary.priceDiscount?.ToString(),
-					PriceDelivery = data.pricingSummary.deliveryCost.ToString(),
+					PriceDelivery = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0")),
 					PriceTotal = data.pricingSummary.total.ToString(),
 					ItemCount = data.lineItems.Sum(x => x.quantity),
 					Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x))

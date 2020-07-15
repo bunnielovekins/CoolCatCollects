@@ -33,7 +33,7 @@ namespace CoolCatCollects.Ebay
 				OrderDate = obj.creationDate,
 				BuyerUsername = obj.buyer.username,
 				Subtotal = decimal.Parse(obj.pricingSummary.priceSubtotal.convertedFromValue),
-				Shipping = decimal.Parse(obj.pricingSummary.deliveryCost.convertedFromValue),
+				Shipping = decimal.Parse(obj.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(obj.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0"),
 				Deductions = decimal.Parse(obj.pricingSummary.priceDiscount?.convertedFromValue ?? "0"),
 				ExtraCosts = decimal.Parse(obj.pricingSummary.adjustment?.convertedFromValue ?? "0"),
 				GrandTotal = decimal.Parse(obj.pricingSummary.total.convertedFromValue),
