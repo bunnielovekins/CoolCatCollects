@@ -34,6 +34,14 @@
 		<td><strong>@Model.Buyer.Name</strong></td>
 		<td>Order Total: £@Model.OrderTotal</td>
 	</tr>
+	@if (Model.Items.Count() > 100)
+	{
+		<tr>
+			<td colspan="2">
+				Weight(g): <strong>@Model.Items.Sum(x => decimal.Parse(x.Weight))</strong>
+			</td>
+		</tr>
+	}
 	@if (!Model.OrderRemarks.IsEmpty())
 	{
 		<tr>
@@ -106,3 +114,4 @@
 		}
 	</tbody>
 </table>
+<hr />
