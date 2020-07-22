@@ -27,10 +27,20 @@
 		<div class="buyer">
 			<p>
 				<strong>@Model.Buyer.Name</strong><br />
-				@Model.Buyer.Address1<br />
-				@Model.Buyer.Address2<br />
-				@Model.Buyer.PostCode<br />
-				@Model.Buyer.Country
+				@HttpUtility.HtmlDecode(Model.Buyer.Address1)<br />
+				@if (!string.IsNullOrEmpty(Model.Buyer.Address2))
+				{
+					@HttpUtility.HtmlDecode(Model.Buyer.Address2)<br />
+				}
+				@if (!string.IsNullOrEmpty(Model.Buyer.City))
+				{
+					@HttpUtility.HtmlDecode(Model.Buyer.City)<br />
+				}
+				@if (!string.IsNullOrEmpty(Model.Buyer.PostCode))
+				{
+					@HttpUtility.HtmlDecode(Model.Buyer.PostCode)<br />
+				}
+				@HttpUtility.HtmlDecode(Model.Buyer.Country)
 			</p>
 		</div>
 	}

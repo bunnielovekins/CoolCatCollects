@@ -81,6 +81,8 @@ namespace CoolCatCollects.Bricklink.Models
 			Address2 = address.address2;
 			PostCode = address.postal_code;
 			Country = address.country_code;
+			City = address.city;
+			FullAddress = address.full;
 		}
 
 		public Buyer()
@@ -93,6 +95,8 @@ namespace CoolCatCollects.Bricklink.Models
 		public string Address2 { get; set; }
 		public string PostCode { get; set; }
 		public string Country { get; set; }
+		public string City { get; set; }
+		public string FullAddress { get; set; }
 	}
 
 	public class OrderItemModel
