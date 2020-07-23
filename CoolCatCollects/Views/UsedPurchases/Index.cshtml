@@ -30,7 +30,8 @@
 				@Html.DisplayNameFor(model => model.Location)
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Weight)
+				@Html.DisplayNameFor(model => model.Weight)<br />
+				@Html.DisplayNameFor(model => model.TotalBundleWeight)
 			</th>
 			<th>
 				@Html.DisplayNameFor(model => model.PricePerKilo)
@@ -58,6 +59,11 @@
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.Weight)
+					@if (item.TotalBundleWeight != 0)
+					{
+						<br />
+						@Html.DisplayFor(modelItem => item.TotalBundleWeight)
+					}
 				</td>
 				<td>
 					@Html.DisplayFor(modelItem => item.PricePerKilo)

@@ -37,6 +37,8 @@ namespace CoolCatCollects.Models
 		public string Notes { get; set; }
 
 		public IEnumerable<UsedPurchaseWeightModel> Weights { get; set; }
+		[DisplayName("Bundle Weight")]
+		public decimal TotalBundleWeight { get; set; }
 	}
 
 	public class UsedPurchaseWeightModel

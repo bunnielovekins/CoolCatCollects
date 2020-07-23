@@ -104,7 +104,8 @@ namespace CoolCatCollects.Services
 				Weight = usedPurchase.Weight,
 				PricePerKilo = usedPurchase.PricePerKilo,
 				CompleteSets = usedPurchase.CompleteSets,
-				Notes = usedPurchase.Notes
+				Notes = usedPurchase.Notes,
+				TotalBundleWeight = usedPurchase.Weights.Sum(x => x.Weight / 1000)
 			};
 		}
 
