@@ -42,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Expenses\ExpenseItemModel.cs" />
     <Compile Include="Expenses\ExpenseModel.cs" />
     <Compile Include="LogModel.cs" />
     <Compile Include="NewPurchaseModel.cs" />

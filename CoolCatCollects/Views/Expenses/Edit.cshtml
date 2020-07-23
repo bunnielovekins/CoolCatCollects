@@ -1,0 +1,197 @@
+﻿@model CoolCatCollects.Models.Expenses.ExpenseModel
+
+@{
+	ViewBag.Title = "Edit";
+
+	var categories = new List<SelectListItem>();
+
+	categories.AddRange(new List<string>
+	{
+		"Office Equipment",
+		"Packing Material",
+		"Online Selling Fees",
+		"Processing Equipment",
+		"Other"
+	}.Select(x =>
+	new SelectListItem
+	{
+		Text = x,
+		Value = x,
+		Selected = x == Model.Category
+	}));
+
+	var taxCategories = new List<SelectListItem>();
+
+	taxCategories.AddRange(new List<string>
+	{
+		"Phone, fax, stationery and other office costs",
+		"Stock Purchase",
+		"Wages, salaries and other staff costs",
+		"Car, van and travel expenses",
+		"Rent, rates, power and insurance costs",
+		"Repairs and maintenance of property and equipment",
+		"Advertising and business entertainment costs",
+		"Interest on bank and other business loans",
+		"Bank, credit card and other financial charges",
+		"Irrecoverable debts written off",
+		"Accountancy, legal and other professional fees",
+		"Depreciation and loss/profit on sale of assets",
+		"Other business expenses"
+	}.Select(x =>
+	new SelectListItem
+	{
+		Text = x,
+		Value = x,
+		Selected = x == Model.TaxCategory
+	}));
+
+	var types = new List<SelectListItem>();
+
+	types.AddRange(new List<string>
+	{
+		"One Off",
+		"Recurring",
+		"Monthly"
+	}.Select(x =>
+	new SelectListItem
+	{
+		Text = x,
+		Value = x,
+		Selected = x == Model.ExpenditureType
+	}));
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+	<div class="form-horizontal">
+		<h4>Expense</h4>
+		<hr />
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		@Html.HiddenFor(model => model.Id)
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.TaxCategory, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.DropDownListFor(model => model.TaxCategory, taxCategories, new { @class = "form-control" })
+				@Html.ValidationMessageFor(model => model.TaxCategory, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.DropDownListFor(model => model.Category, categories, new { @class = "form-control" })
+				@Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Source, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Source, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Source, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Item, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Item, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Item, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.ExpenditureType, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.DropDownListFor(model => model.ExpenditureType, types, new { @class = "form-control" })
+				@Html.ValidationMessageFor(model => model.ExpenditureType, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.OrderNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.OrderNumber, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.OrderNumber, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Postage, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Postage, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Postage, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Receipt, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				<div class="checkbox">
+					@Html.EditorFor(model => model.Receipt)
+					@Html.ValidationMessageFor(model => model.Receipt, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Notes, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Notes, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Notes, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-4">
+				<input type="submit" value="Save" class="btn btn-primary" />
+			</div>
+		</div>
+	</div>
+}
+
+<div>
+	@Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-default" })
+</div>
+
+@section scripts
+{
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script>
+		$(function () {
+			$('input[type=datetime]').datepicker({
+				dateFormat: "yy-mm-dd"
+			});
+		});
+	</script>
+}

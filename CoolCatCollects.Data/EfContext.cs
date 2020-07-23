@@ -36,7 +36,6 @@ namespace CoolCatCollects.Data
 		public DbSet<BricklinkOrder> BricklinkOrders { get; set; }
 		public DbSet<BricklinkOrderItem> BricklinkOrderItems { get; set; }
 		public DbSet<Expense> Expenses { get; set; }
-		public DbSet<ExpenseItem> ExpenseItems { get; set; }
 		public DbSet<NewPurchase> NewPurchases { get; set; }
 		public DbSet<UsedPurchase> UsedPurchases { get; set; }
 		public DbSet<UsedPurchaseWeight> UsedPurchaseWeights { get; set; }
