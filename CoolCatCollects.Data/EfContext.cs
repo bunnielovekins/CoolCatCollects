@@ -15,6 +15,7 @@ namespace CoolCatCollects.Data
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
+			// Setting precision for decimals that come from BrickLink
 			modelBuilder.Entity<PartInventory>().Property(x => x.MyPrice).HasPrecision(18, 4);
 			modelBuilder.Entity<PartPriceInfo>().Property(x => x.AveragePrice).HasPrecision(18, 4);
 			modelBuilder.Entity<Order>().Property(x => x.Subtotal).HasPrecision(18, 4);

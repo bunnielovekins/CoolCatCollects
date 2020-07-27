@@ -3,6 +3,9 @@
 @{
 	ViewBag.Title = "Parts List";
 	Layout = "~/Views/Shared/_MinimalLayout.cshtml";
+
+	var newItems = Model.Items.Where(x => x.Condition == "New");
+	var usedItems = Model.Items.Where(x => x.Condition == "Used");
 }
 
 @section styles {
@@ -60,7 +63,6 @@
 			<tr>
 				<td>@message.InOrOut</td>
 				<td>@message.Date</td>
-				@*<td>@message.Subject</td>*@
 				<td class="center">@HttpUtility.HtmlDecode(message.Body)</td>
 			</tr>
 		}
@@ -72,46 +74,78 @@
 		<tr>
 			<th>Done</th>
 			<th>Image</th>
-			<th class="center">Condition</th>
-			<th class="center">Remark</th>
+			<th>Condition</th>
+			<th>Colour</th>
+			<th>Remark</th>
 			<th>Item</th>
-			<th class="center">Wt.</th>
-			<th class="center">Q.</th>
-			<th class="center">Price</th>
-			<th class="center">Total</th>
+			<th>Wt.</th>
+			<th>Q.</th>
+			<th>Price</th>
+			<th>Total</th>
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model.Items)
+		@if (newItems.Any())
 		{
 			<tr>
-				<td class="center">
-					<label class="check">
-						<input type="checkbox" />
-						<span></span>
-					</label>
+				<td colspan="10" class="center border-top">
+					<strong>New Items</strong>
 				</td>
-				<td class="center image"><img src="@item.Image" /></td>
-				<td class="center">@item.Condition</td>
-				<td class="center"><strong>@item.Remarks</strong></td>
-				<td>
-					@if (!String.IsNullOrEmpty(item.Colour))
-					{
-						@item.Colour<br />
-					}
-					@item.Name<br />
-					<small>@item.Description</small>
-				</td>
-				<td class="center">@item.Weight</td>
-				<td class="center q">
-					@*<input type="hidden" name="inventoryId" value="@item.InventoryId" />*@
-					@item.Quantity
-					<div class="remaining">(@item.ItemsRemaining)</div>
-				</td>
-				<td class="center">£@item.UnitPrice</td>
-				<td class="center">£@item.TotalPrice</td>
 			</tr>
+			foreach (var item in newItems)
+			{
+				@row(item)
+			}
+		}
+		@if (usedItems.Any())
+		{
+			<tr>
+				<td colspan="10" class="center border-top">
+					<strong>Used Items</strong>
+				</td>
+			</tr>
+			foreach (var item in usedItems)
+			{
+				@row(item)
+			}
 		}
 	</tbody>
 </table>
 <hr />
+
+
+@helper row(CoolCatCollects.Bricklink.Models.OrderItemModel item)
+{
+	<tr>
+		<td class="center">
+			<label class="check">
+				<input type="checkbox" />
+				<span></span>
+			</label>
+		</td>
+		<td class="center image"><img src="@item.Image" /></td>
+		<td class="center">@item.Condition</td>
+		@if (!string.IsNullOrEmpty(item.Colour))
+		{
+			<td class="center">@item.Colour</td>
+		}
+		<td class="center" @if (string.IsNullOrEmpty(item.Colour)){ <text>colspan="2"</text> }>
+			<strong>@item.Remarks</strong>
+		</td>
+		<td class="nopad">
+			@item.Name
+			@if (!string.IsNullOrWhiteSpace(item.Description))
+			{
+				<br />
+				<small>@item.Description.Trim()</small>
+			}
+		</td>
+		<td class="center">@item.Weight</td>
+		<td class="center q">
+			@item.Quantity
+			<div class="remaining">(@item.ItemsRemaining)</div>
+		</td>
+		<td class="center">£@item.UnitPrice</td>
+		<td class="center">£@item.TotalPrice</td>
+	</tr>
+}

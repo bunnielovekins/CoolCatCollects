@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace CoolCatCollects.Models
 {
+	/// <summary>
+	/// Model for the database utility page
+	/// </summary>
 	public class DatabaseUpdateModel
 	{
 		public DatabaseUpdateModel()

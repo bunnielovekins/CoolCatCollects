@@ -169,7 +169,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DatabaseUpdateModel.cs" />
-    <Compile Include="Models\HomepageModel.cs" />
     <Compile Include="Models\LogListModel.cs" />
     <Compile Include="Models\PostageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -259,7 +258,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\History\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

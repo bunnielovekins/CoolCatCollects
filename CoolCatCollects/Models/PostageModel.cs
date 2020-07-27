@@ -3,6 +3,9 @@ using static CoolCatCollects.Core.PostageCalculator;
 
 namespace CoolCatCollects.Models
 {
+	/// <summary>
+	/// View model for the postage calculator
+	/// </summary>
 	public class PostageModel
 	{
 		public PostageResult Economy { get; set; }

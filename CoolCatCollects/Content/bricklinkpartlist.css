@@ -40,8 +40,16 @@
 	background: #eee;
 }
 
-.parts tr *:not(:first-child) {
+.parts tr > *:not(:first-child) {
 	padding: 3px;
+}
+
+.parts {
+	border-collapse: collapse;
+}
+
+.parts tr td {
+	border-bottom: 1px solid black;
 }
 
 @media print {
@@ -86,4 +94,13 @@
 
 .parts tbody {
 	cursor: pointer;
+}
+
+.nopad {
+	padding: 0 !important;
+	font-size: 13px;
+}
+
+.border-top {
+	border-top: 2px solid black;
 }

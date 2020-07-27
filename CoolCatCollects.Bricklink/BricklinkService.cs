@@ -1,7 +1,6 @@
 ﻿using CoolCatCollects.Bricklink.Models;
 using CoolCatCollects.Bricklink.Models.Responses;
 using CoolCatCollects.Core;
-using CoolCatCollects.Data.Entities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
