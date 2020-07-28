@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace CoolCatCollects.Ebay
 {
+	/// <summary>
+	/// Class to deal with ebay stuff in the DB
+	/// </summary>
 	public class eBayDataService
 	{
 		private readonly OrderRepository _orderRepo;
@@ -17,6 +20,11 @@ namespace CoolCatCollects.Ebay
 			_orderItemRepo = new BaseRepository<EbayOrderItem>();
 		}
 
+		/// <summary>
+		/// Adds an order
+		/// </summary>
+		/// <param name="obj">Get Order Response model </param>
+		/// <returns>Ebay Order Entity</returns>
 		public EbayOrder AddOrder(GetOrderResponseModel obj)
 		{
 			var o = _orderRepo.FindOne(x => x.OrderId == obj.orderId) as EbayOrder;
@@ -65,16 +73,12 @@ namespace CoolCatCollects.Ebay
 			return _orderRepo.FindOne(x => x.Id == entity.Id) as EbayOrder;
 		}
 
-		public EbayOrderItem UpdateOrderItem(EbayOrderItem item)
-		{
-			return _orderItemRepo.Update(item);
-		}
-
-		public EbayOrderItem GetOrderItem(string legacyItemId, string legacyVariationId)
-		{
-			return _orderItemRepo.FindOne(x => x.LegacyItemId == legacyItemId && x.LegacyVariationId == legacyVariationId);
-		}
-
+		/// <summary>
+		/// Loads more info for order items into the db
+		/// </summary>
+		/// <param name="legacyItemId"></param>
+		/// <param name="legacyVariationId"></param>
+		/// <param name="model"></param>
 		public void UpdateOrderItemsByLegacyId(string legacyItemId, string legacyVariationId, GetItemModel model)
 		{
 			var items = _orderItemRepo.Find(x => x.LegacyItemId == legacyItemId && x.LegacyVariationId == legacyVariationId);

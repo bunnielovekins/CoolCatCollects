@@ -3,11 +3,13 @@ using CoolCatCollects.Data.Entities;
 using CoolCatCollects.Ebay.Models;
 using CoolCatCollects.Ebay.Models.Responses;
 using Newtonsoft.Json;
-using System;
 using System.Linq;
 
 namespace CoolCatCollects.Ebay
 {
+	/// <summary>
+	/// Top-level service for everything ebay related
+	/// </summary>
 	public class eBayService
 	{
 		private readonly eBayApiService _service;
@@ -19,6 +21,11 @@ namespace CoolCatCollects.Ebay
 			_dataService = new eBayDataService();
 		}
 
+		/// <summary>
+		/// Gets an order, also loads it into the DB
+		/// </summary>
+		/// <param name="orderNumber">ebay order number</param>
+		/// <returns></returns>
 		public EbayOrderModel GetOrder(string orderNumber)
 		{
 			var response = _service.GetRequest($"sell/fulfillment/v1/order/{orderNumber}");
@@ -51,6 +58,12 @@ namespace CoolCatCollects.Ebay
 			return new EbayOrderModel(obj, orderEntity);
 		}
 
+		/// <summary>
+		/// Gets a page of orders
+		/// </summary>
+		/// <param name="limit">How many to return per page</param>
+		/// <param name="page">Page number</param>
+		/// <returns></returns>
 		public EbayOrdersListModel GetOrders(int limit, int page)
 		{
 			int offset = (page - 1) * 50;
@@ -113,7 +126,12 @@ namespace CoolCatCollects.Ebay
 			return model;
 		}
 
-		public string GetShippingMethod(string method)
+		/// <summary>
+		/// Gets nicer names for the shipping method
+		/// </summary>
+		/// <param name="method"></param>
+		/// <returns></returns>
+		private string GetShippingMethod(string method)
 		{
 			switch (method)
 			{
@@ -134,6 +152,12 @@ namespace CoolCatCollects.Ebay
 			return method;
 		}
 
+		/// <summary>
+		/// Gets an image and a character name for an item. SKU doesn't actually seem to exist in the API
+		/// </summary>
+		/// <param name="legacyItemId"></param>
+		/// <param name="legacyVariationId"></param>
+		/// <returns></returns>
 		public GetItemModel GetItem(string legacyItemId, string legacyVariationId)
 		{
 			if (string.IsNullOrEmpty(legacyVariationId))

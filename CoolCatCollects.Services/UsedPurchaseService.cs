@@ -131,6 +131,11 @@ namespace CoolCatCollects.Services
 			};
 		}
 
+		/// <summary>
+		/// Gets a used purchase with the associated weights
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		public async Task<UsedPurchaseModel> GetPurchaseWithWeights(int id)
 		{
 			var purchase = await _repo.FindOneAsync(id);
@@ -144,11 +149,12 @@ namespace CoolCatCollects.Services
 			return model;
 		}
 
-		public void Dispose()
-		{
-			_repo.Dispose();
-		}
-
+		/// <summary>
+		/// Updates the list of weights for a purchase
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="weights"></param>
+		/// <returns></returns>
 		public async Task UpdateWeights(int id, IEnumerable<UsedPurchaseWeightModel> weights)
 		{
 			if (weights == null)
@@ -184,6 +190,11 @@ namespace CoolCatCollects.Services
 
 			// Delete
 			await _weightRepo.RemoveManyAsync(toDelete.Select(x => _weightRepo.FindOne(x.Id)));
+		}
+
+		public void Dispose()
+		{
+			_repo.Dispose();
 		}
 	}
 }

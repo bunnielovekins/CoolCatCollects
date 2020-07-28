@@ -129,36 +129,12 @@ namespace CoolCatCollects.Bricklink.Models
 			Weight = item.weight;
 			ItemsRemaining = 0;
 
-			Image = Type == "MINIFIG" ?
-				$"https://img.bricklink.com/M/{item.item.no}.jpg" :
-				$"https://img.bricklink.com/P/{item.color_id}/{item.item.no}.jpg";
-
-			if (!string.IsNullOrEmpty(Remarks))
-			{
-				var regex = new Regex("(\\D*)(\\d*)");
-				var match = regex.Match(Remarks);
-				if (match.Success)
-				{
-					if (match.Groups.Count > 0)
-					{
-						RemarkLetter1 = match.Groups[1].Value[0];
-						RemarkLetter2 = match.Groups[1].Value.Length > 1 ? match.Groups[1].Value[1] : ' ';
-					}
-					if (match.Groups.Count > 1)
-					{
-						if (int.TryParse(match.Groups[2].Value, out int tmpNum))
-						{
-							RemarkNumber = tmpNum;
-						}
-						else
-						{
-							RemarkNumber = 0;
-						}
-					}
-				}
-			}
+			FillRemarks();
 		}
 
+		/// <summary>
+		/// Fills in some fields to be used for ordering - first letter, second letter, number of remarks
+		/// </summary>
 		public void FillRemarks()
 		{
 			if (!string.IsNullOrEmpty(Remarks))

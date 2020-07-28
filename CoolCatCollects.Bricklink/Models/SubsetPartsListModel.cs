@@ -48,10 +48,6 @@ namespace CoolCatCollects.Bricklink.Models
 			MyPrice = "";
 			Type = item.type;
 			Category = item.category_id;
-
-			Image = Type == "MINIFIG" ?
-				$"https://img.bricklink.com/M/{item.no}.jpg" :
-				$"https://img.bricklink.com/P/{entry.color_id}/{item.no}.jpg";
 		}
 
 		public SubsetPartModel()
@@ -69,7 +65,6 @@ namespace CoolCatCollects.Bricklink.Models
 		public ColourModel Colour { get; set; }
 		public int ColourId { get; set; }
 		public string ColourName { get; set; }
-		public string Image { get; set; }
 		public int Quantity { get; set; }
 		public int ExtraQuantity { get; set; }
 		public string AveragePrice { get; set; }

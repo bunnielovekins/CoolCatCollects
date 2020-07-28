@@ -27,7 +27,13 @@ namespace CoolCatCollects.Bricklink.Models
 		}
 
 		public int Id { get; set; }
+		/// <summary>
+		/// Hex colour code, i.e. #ABCDEF
+		/// </summary>
 		public string ColourCode { get; set; }
+		/// <summary>
+		/// Trans, metallic, etc.
+		/// </summary>
 		public string ColourType { get; set; }
 		public string Name { get; set; }
 	}

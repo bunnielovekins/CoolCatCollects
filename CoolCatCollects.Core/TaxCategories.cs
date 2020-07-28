@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace CoolCatCollects.Core
 {
+	/// <summary>
+	/// All the tax categories for expenses
+	/// </summary>
 	public static class TaxCategories
 	{
 		public class TaxCategory

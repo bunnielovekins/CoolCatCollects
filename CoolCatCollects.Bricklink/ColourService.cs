@@ -2,60 +2,39 @@
 using CoolCatCollects.Bricklink.Models.Responses;
 using CoolCatCollects.Data.Entities;
 using CoolCatCollects.Data.Repositories;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoolCatCollects.Bricklink
 {
 	public class ColourService
 	{
-		private BaseRepository<Colour> _repo;
-
-		public ColourService()
-		{
-			_repo = new BaseRepository<Colour>();
-		}
-
+		/// <summary>
+		/// Gets all Bricklink colours. If they aren't in the DB, get them from the API.
+		/// </summary>
+		/// <returns>Every colour in a model</returns>
 		public IEnumerable<ColourModel> GetAll()
 		{
-			var colours = _repo.FindAll();
-
-			if (!colours.Any())
+			using (var repo = new BaseRepository<Colour>())
 			{
-				var apiService = new BricklinkApiService();
-				var result = apiService.GetRequest("/colors");
+				var colours = repo.FindAll();
 
-				var responseModel = JsonConvert.DeserializeObject<GetColoursResponse>(result);
-
-				if (responseModel.data == null)
+				if (!colours.Any())
 				{
-					result = apiService.GetRequest("/colors");
+					var apiService = new BricklinkApiService();
+					var result = apiService.GetRequest<GetColoursResponse>("/colors");
 
-					responseModel = JsonConvert.DeserializeObject<GetColoursResponse>(result);
-
-					if (responseModel.data == null)
+					colours = result.data.Select(x => repo.Add(new Colour
 					{
-						throw new Exception("An error has occurred! Error code: " + responseModel.meta.code +
-							", Error Message: " + responseModel.meta.message +
-							", Error Description: " + responseModel.meta.description);
-					}
+						ColourId = x.color_id,
+						ColourCode = x.color_code,
+						ColourType = x.color_type,
+						Name = x.color_name
+					}));
 				}
 
-				colours = responseModel.data.Select(x => _repo.Add(new Colour
-				{
-					ColourId = x.color_id,
-					ColourCode = x.color_code,
-					ColourType = x.color_type,
-					Name = x.color_name
-				}));
+				return colours.Select(x => new ColourModel(x));
 			}
-
-			return colours.Select(x => new ColourModel(x));
 		}
-
 	}
 }

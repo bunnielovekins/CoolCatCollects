@@ -6,6 +6,9 @@ using System;
 
 namespace CoolCatCollects.Ebay
 {
+	/// <summary>
+	/// Service for contacting ebay API
+	/// </summary>
 	public class eBayApiService
 	{
 		private const string ContentType = "application/x-www-form-urlencoded";
@@ -15,6 +18,9 @@ namespace CoolCatCollects.Ebay
 
 		private static string AccessToken = "";
 
+		/// <summary>
+		/// Authorisation, to be called before doing anything
+		/// </summary>
 		public void Authorise()
 		{
 			var client = new RestClient(ApiUrl)
@@ -41,6 +47,11 @@ namespace CoolCatCollects.Ebay
 			AccessToken = obj.access_token;
 		}
 
+		/// <summary>
+		/// Performs a get request
+		/// </summary>
+		/// <param name="url"></param>
+		/// <returns></returns>
 		public string GetRequest(string url)
 		{
 			if (String.IsNullOrEmpty(AccessToken))

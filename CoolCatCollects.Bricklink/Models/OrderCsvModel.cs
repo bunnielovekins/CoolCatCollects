@@ -3,6 +3,9 @@ using System.ComponentModel;
 
 namespace CoolCatCollects.Bricklink.Models
 {
+	/// <summary>
+	/// Model for making into the Royal mail CSV
+	/// </summary>
 	public class OrderCsvModel
 	{
 		public OrderCsvModel()
@@ -65,6 +68,11 @@ namespace CoolCatCollects.Bricklink.Models
 			}
 		}
 
+		/// <summary>
+		/// Round the weight up to the nearest threshold. Not actually used by RM, only used as a guide for us.
+		/// </summary>
+		/// <param name="weight"></param>
+		/// <returns></returns>
 		private string formatWeight(string weight)
 		{
 			var d = decimal.Parse(weight);

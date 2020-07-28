@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace CoolCatCollects.Core
 {
+	/// <summary>
+	/// Class to work out the postage options for a particular listing, in order to get ebay premium
+	/// </summary>
 	public static class PostageCalculator
 	{
 		public static IEnumerable<PostageResult> GetPostages(string weight, string price, string size)
@@ -57,6 +60,13 @@ namespace CoolCatCollects.Core
 			string PostName { get; }
 			IEnumerable<PostageBand> Bands { get; }
 
+			/// <summary>
+			/// Works out the postage
+			/// </summary>
+			/// <param name="weight">Weight in kg</param>
+			/// <param name="price">Price in pounds</param>
+			/// <param name="size">Size, which is a dropdown</param>
+			/// <returns></returns>
 			PostageResult GetPostage(decimal weight, decimal price, Size size);
 		}
 

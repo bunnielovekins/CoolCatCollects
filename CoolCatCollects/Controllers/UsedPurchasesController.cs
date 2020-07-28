@@ -107,7 +107,7 @@ namespace CoolCatCollects.Controllers
 			return RedirectToAction("Index");
 		}
 
-		// GET: UsedPurchases/Edit/5
+		// GET: UsedPurchases/Weights/5
 		public async Task<ActionResult> Weights(int? id)
 		{
 			if (id == null)

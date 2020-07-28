@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace CoolCatCollects.Bricklink
 {
+	/// <summary>
+	/// Statics to be used in BL related things
+	/// </summary>
 	public static class Statics
 	{
 		public static string ConsumerKey = "0B69EB17FA3A488099B876498C6CBDBF";
@@ -12,6 +15,9 @@ namespace CoolCatCollects.Bricklink
 		public static string TokenSecret = "A2FE014F8C314CCEB2395B296C19EA97";
 		public static string ApiUrl = "https://api.bricklink.com/api/store/v1/";
 
+		/// <summary>
+		/// All the colours in a dictionary sorted by Colour Id
+		/// </summary>
 		public static Dictionary<int, ColourModel> Colours
 		{
 			get
