@@ -53,6 +53,7 @@ namespace CoolCatCollects.Models
 		public string SellingNotes { get; set; }
 		[DataType(DataType.MultilineText)]
 		public string Notes { get; set; }
+		public string Receipt { get; set; }
 
 		public static class Statuses
 		{

@@ -262,9 +262,9 @@ namespace CoolCatCollects.Bricklink
 
 			var parts = _apiService.GetRequest<GetSubsetResponse>($"items/SET/{set}/subsets");
 
-			var minifigs = parts.data.SelectMany(x => x.entries).Where(x => x.item.type == "MINIFIG").Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N"));
+			var minifigs = parts.data.SelectMany(x => x.entries).Where(x => x.item.type == "MINIFIG").Select(x => _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N")).ToList();
 
-			var minifigParts = minifigs.Select(x => _apiService.GetRequest<GetSubsetResponse>($"items/MINIFIG/{set}/subsets")).
+			var minifigParts = minifigs.Select(x => _apiService.GetRequest<GetSubsetResponse>($"items/MINIFIG/{x.Part.Number}/subsets")).
 				SelectMany(x => x.data).
 				SelectMany(x => x.entries).
 				Select(x => new { model = _dataService.GetPartModel(x.item.no, x.color_id, x.item.type, "N"), quantity = x.quantity + x.extra_quantity }).ToList();

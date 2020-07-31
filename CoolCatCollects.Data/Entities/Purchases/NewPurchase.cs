@@ -40,5 +40,6 @@ namespace CoolCatCollects.Data.Entities.Purchases
 		[DisplayName("Selling Notes")]
 		public string SellingNotes { get; set; }
 		public string Notes { get; set; }
+		public string Receipt { get; set; }
 	}
 }

@@ -10,7 +10,7 @@ namespace CoolCatCollects.Controllers
 	public class NewPurchasesController : Controller
 	{
 		private NewPurchaseService _service = new NewPurchaseService();
-		private const string _bindAll = "Id,Date,SetNumber,SetName,Theme,Promotions,Price,UnitPrice,Quantity,Parts,TotalParts,PriceToPartOutRatio,Source,PaymentMethod,AveragePartOutValue,MyPartOutValue,ExpectedGrossProfit,ExpectedNetProfit,Status,SellingNotes,Notes,MinifigureValue";
+		private const string _bindAll = "Id,Date,SetNumber,SetName,Theme,Promotions,Price,UnitPrice,Quantity,Parts,TotalParts,PriceToPartOutRatio,Source,PaymentMethod,AveragePartOutValue,MyPartOutValue,ExpectedGrossProfit,ExpectedNetProfit,Status,SellingNotes,Notes,MinifigureValue,Receipt";
 
 		// GET: NewPurchases
 		public async Task<ActionResult> Index()

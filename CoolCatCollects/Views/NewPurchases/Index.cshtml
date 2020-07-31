@@ -43,7 +43,18 @@
 
 		@foreach (var item in Model)
 		{
-			<tr data-toggle="collapse" data-target="#accordion-@item.Id">
+			<tr data-toggle="collapse" data-target="#accordion-@item.Id" 
+				@if (!string.IsNullOrEmpty(item.Receipt))
+				{
+					if (item.Receipt.ToLower().Contains("missing"))
+					{
+						@:style="background-color: indianred"
+					}
+					else
+					{
+						@:style="background-color: aqua"
+					}
+				}>
 				<td>
 					@Html.DisplayFor(modelItem => item.Date)
 				</td>
@@ -80,6 +91,12 @@
 					@Html.DisplayFor(modelItem => item.Status)<br />
 					<strong>Avg Part Out Value</strong><br />
 					@Html.DisplayFor(modelItem => item.AveragePartOutValue)
+					@if (!string.IsNullOrEmpty(item.Receipt))
+					{
+						<br />
+						<strong>Receipt</strong>
+						@Html.DisplayFor(modelItem => item.Receipt)
+					}
 				</td>
 				<td>
 					<strong>Parts/Total</strong><br />

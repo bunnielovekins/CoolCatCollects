@@ -49,7 +49,8 @@ namespace CoolCatCollects.Services
 				ExpectedNetProfit = model.ExpectedNetProfit,
 				Status = model.Status,
 				SellingNotes = model.SellingNotes,
-				Notes = model.Notes
+				Notes = model.Notes,
+				Receipt = model.Receipt
 			};
 
 			await _repo.AddAsync(newPurchase);
@@ -79,6 +80,7 @@ namespace CoolCatCollects.Services
 			newPurchase.Status = model.Status;
 			newPurchase.SellingNotes = model.SellingNotes;
 			newPurchase.Notes = model.Notes;
+			newPurchase.Receipt = model.Receipt;
 
 			await _repo.UpdateAsync(newPurchase);
 		}
@@ -114,7 +116,8 @@ namespace CoolCatCollects.Services
 				ExpectedNetProfit = newPurchase.ExpectedNetProfit,
 				Status = newPurchase.Status,
 				SellingNotes = newPurchase.SellingNotes,
-				Notes = newPurchase.Notes
+				Notes = newPurchase.Notes,
+				Receipt = newPurchase.Receipt
 			};
 		}
 
