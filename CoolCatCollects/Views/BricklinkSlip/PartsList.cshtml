@@ -74,7 +74,7 @@
 		<tr>
 			<th>Done</th>
 			<th>Image</th>
-			<th>Condition</th>
+			<th>Cond.</th>
 			<th>Colour</th>
 			<th>Remark</th>
 			<th>Item</th>
@@ -125,11 +125,11 @@
 		</td>
 		<td class="center image"><img src="@item.Image" /></td>
 		<td class="center">@item.Condition</td>
-		@if (!string.IsNullOrEmpty(item.Colour))
+		@if (!string.IsNullOrEmpty(item.Colour) && item.Colour != "(Not Applicable)")
 		{
 			<td class="center">@item.Colour</td>
 		}
-		<td class="center" @if (string.IsNullOrEmpty(item.Colour)){ <text>colspan="2"</text> }>
+		<td class="center" @if (string.IsNullOrEmpty(item.Colour) || item.Colour == "(Not Applicable)"){ <text>colspan="2"</text> }>
 			<strong>@item.Remarks</strong>
 		</td>
 		<td class="nopad">
@@ -137,7 +137,7 @@
 			@if (!string.IsNullOrWhiteSpace(item.Description))
 			{
 				<br />
-				<small>@item.Description.Trim()</small>
+				<small>@HttpUtility.HtmlDecode(item.Description.Trim())</small>
 			}
 		</td>
 		<td class="center">@item.Weight</td>

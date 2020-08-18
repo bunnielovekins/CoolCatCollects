@@ -139,7 +139,8 @@ namespace CoolCatCollects.Controllers
 					"Green",
 					"Orange",
 					"Dark Red",
-					"Pink"
+					"Pink",
+					"Classic"
 				}.Select(x => new SelectListItem { Text = x, Value = x })
 			};
 

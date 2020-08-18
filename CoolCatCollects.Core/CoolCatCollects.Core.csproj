@@ -42,10 +42,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MappingExtensions.cs" />
     <Compile Include="PostageCalculator.cs" />
     <Compile Include="StaticFunctions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaxCategories.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CoolCatCollects.Data\CoolCatCollects.Data.csproj">
+      <Project>{17f36315-bc21-4e4b-a589-e7ba374a0f4a}</Project>
+      <Name>CoolCatCollects.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CoolCatCollects.Models\CoolCatCollects.Models.csproj">
+      <Project>{673d7aa3-a5b6-4b12-b9bb-5904b8405fee}</Project>
+      <Name>CoolCatCollects.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

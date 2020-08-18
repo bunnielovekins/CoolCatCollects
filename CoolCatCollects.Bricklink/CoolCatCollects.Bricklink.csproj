@@ -97,6 +97,10 @@
       <Project>{17F36315-BC21-4E4B-A589-E7BA374A0F4A}</Project>
       <Name>CoolCatCollects.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CoolCatCollects.Models\CoolCatCollects.Models.csproj">
+      <Project>{673D7AA3-A5B6-4B12-B9BB-5904B8405FEE}</Project>
+      <Name>CoolCatCollects.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -41,31 +41,35 @@ namespace CoolCatCollects.Bricklink.Models
 			ShippingCost = Core.StaticFunctions.FormatCurrency(data.cost?.shipping ?? "0").ToString();
 			Weight = formatWeight(data.total_weight);
 			ShippingMethod = data.shipping.method;
-			PackageSize = "";
+			PackageSize = GetPackageSize();
 
-			if (!String.IsNullOrWhiteSpace(ShippingMethod))
+			ProductName = "Mixed Lego (No Batteries)";
+			UnitPrice = Core.StaticFunctions.FormatCurrency(data.cost?.subtotal ?? "0").ToString();
+			Quantity = "1";
+			UnitWeight = Weight;
+		}
+
+		private string GetPackageSize()
+		{
+			if (string.IsNullOrWhiteSpace(ShippingMethod))
 			{
-				if (ShippingMethod.ToLower().Contains("large letter"))
-				{
-					PackageSize = "large letter";
-				}
-				else if (ShippingMethod.ToLower().Contains("small parcel"))
-				{
-					PackageSize = "small parcel";
-				}
-				else if (ShippingMethod.ToLower().Contains("medium parcel"))
-				{
-					PackageSize = "medium parcel";
-				}
-				else if (ShippingMethod.ToLower().Contains("parcel"))
-				{
-					PackageSize = "parcel";
-				}
-				else if (ShippingMethod.ToLower().Contains("letter"))
-				{
-					PackageSize = "letter";
-				}
+				return "";
 			}
+
+			if (ShippingMethod.ToLower().Contains("large letter"))
+			{
+				return "large letter";
+			}
+			else if (ShippingMethod.ToLower().Contains("parcel"))
+			{
+				return "small parcel";
+			}
+			else if (ShippingMethod.ToLower().Contains("letter"))
+			{
+				return "letter";
+			}
+
+			return "";
 		}
 
 		/// <summary>
@@ -77,39 +81,39 @@ namespace CoolCatCollects.Bricklink.Models
 		{
 			var d = decimal.Parse(weight);
 			
-			if (d <= 100)
+			if (d <= 80)
 			{
 				return "0.1";
 			}
-			if (d <= 250)
+			if (d <= 230)
 			{
 				return "0.25";
 			}
-			if (d <= 500)
+			if (d <= 480)
 			{
 				return "0.5";
 			}
-			if (d <= 750)
+			if (d <= 730)
 			{
 				return "0.75";
 			}
-			if (d <= 1000)
+			if (d <= 980)
 			{
 				return "1";
 			}
-			if (d <= 1250)
+			if (d <= 1230)
 			{
 				return "1.25";
 			}
-			if (d <= 1500)
+			if (d <= 1480)
 			{
 				return "1.5";
 			}
-			if (d <= 1750)
+			if (d <= 1730)
 			{
 				return "1.75";
 			}
-			if (d <= 2000)
+			if (d <= 1980)
 			{
 				return "2";
 			}
@@ -142,5 +146,12 @@ namespace CoolCatCollects.Bricklink.Models
 		[DisplayName("Shipping Method")]
 		public string ShippingMethod { get; set; }
 		public string PackageSize { get; set; }
+		[DisplayName("Product Name")]
+		public string ProductName { get; set; }
+		[DisplayName("Unit Price")]
+		public string UnitPrice { get; set; }
+		public string Quantity { get; set; }
+		[DisplayName("Unit Weight")]
+		public string UnitWeight { get; set; }
 	}
 }

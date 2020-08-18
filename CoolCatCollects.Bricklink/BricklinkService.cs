@@ -1,6 +1,7 @@
 ﻿using CoolCatCollects.Bricklink.Models;
 using CoolCatCollects.Bricklink.Models.Responses;
 using CoolCatCollects.Core;
+using CoolCatCollects.Data.Entities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -81,8 +82,8 @@ namespace CoolCatCollects.Bricklink
 				Subject = x.subject,
 				Body = x.body,
 				Date = x.dateSent
-			}).Where(x => 
-				x.Body != "You left seller feedback." && 
+			}).Where(x =>
+				x.Body != "You left seller feedback." &&
 				x.Body != "Seller left you feedback." &&
 				!(x.Subject ?? "").Contains("Invoice for BrickLink Order")
 			);
@@ -98,13 +99,13 @@ namespace CoolCatCollects.Bricklink
 			var result = _apiService.GetRequest<GetInventoriesResponseModel>("inventories?color_id=" + colourId);
 			var errors = new List<string>();
 
-			foreach(BricklinkInventoryItemModel inv in result.data)
+			foreach (BricklinkInventoryItemModel inv in result.data)
 			{
 				try
 				{
 					_dataService.GetPartModel(inv.item.no, inv.color_id, inv.item.type, inv.new_or_used, true);
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					errors.Add(ex.Message);
 				}
@@ -147,21 +148,47 @@ namespace CoolCatCollects.Bricklink
 				.Select(item =>
 				{
 					// Find this item in the DB
-					var itemEntity = orderEntity.OrderItems.FirstOrDefault(x => 
-						item.item.no == x.Part.Part.Number && 
-						item.color_id == x.Part.ColourId &&
-						item.item.type == x.Part.Part.ItemType &&
-						item.new_or_used == x.Part.Condition);
+					var itemEntity = orderEntity.OrderItems.FirstOrDefault(x => x.Part.InventoryId == item.inventory_id);
 
 					var unitPrice = decimal.Parse(item.unit_price_final);
 					var totalPrice = unitPrice * item.quantity;
+
+					int quantity;
+					string image;
+
+					var partModel = _dataService.GetPartModel(item.inventory_id);
+
+					if (partModel == null)
+					{
+						partModel = _dataService.GetPartModel(item.item.no, item.color_id, item.item.type, item.new_or_used, description: item.description);
+					}
+
+					PartInventory inv = partModel?.PartInventory;
+
+					if (inv != null)
+					{
+						image = inv.Image;
+						quantity = inv.Quantity;
+					}
+					else if (itemEntity != null)
+					{
+						quantity = itemEntity.Quantity;
+						image = _dataService.GetItemImage(item.item.type,
+							item.item.no, item.color_id);
+					}
+					else
+					{
+						quantity = 0;
+						image = _dataService.GetItemImage(item.item.type,
+							item.item.no, item.color_id);
+					}
 
 					var itemModel = new OrderItemModel
 					{
 						InventoryId = item.inventory_id.ToString(),
 						Name = HttpUtility.HtmlDecode(item.item.name),
 						Condition = item.new_or_used == "N" ? "New" : "Used",
-						Colour = itemEntity.Part.ColourName,
+						Colour = item.color_name,
 						Remarks = item.remarks,
 						Quantity = item.quantity,
 						UnitPrice = unitPrice,
@@ -169,14 +196,18 @@ namespace CoolCatCollects.Bricklink
 						Description = item.description,
 						Type = item.item.type,
 						Weight = item.weight,
-						ItemsRemaining = itemEntity.Part.Quantity,
-						Image = itemEntity.Part.Image
+						ItemsRemaining = quantity,
+						Image = image
 					};
 
-					if (order.data.date_ordered > itemEntity.Part.LastUpdated)
+					if (inv != null && order.data.date_ordered > inv.LastUpdated)
 					{
 						// Update the inventory from the info we have in this order
-						_dataService.UpdatePartInventoryFromOrder(itemEntity.Part, item.remarks, item.unit_price_final, item.description, item.inventory_id);
+						_dataService.UpdatePartInventoryFromOrder(inv, item.remarks, item.unit_price_final, item.description, item.inventory_id);
+					}
+					else if (inv == null)
+					{
+						AddPartInventoryFromOrder(item);
 					}
 
 					// Works out some stuff related to the remarks and the location ordering
@@ -185,6 +216,7 @@ namespace CoolCatCollects.Bricklink
 					return itemModel;
 				})
 				.OrderBy(x => x.Condition)
+				.ThenBy(x => x.RemarkLetter3)
 				.ThenBy(x => x.RemarkLetter2)
 				.ThenBy(x => x.RemarkLetter1)
 				.ThenBy(x => x.RemarkNumber)
@@ -211,6 +243,26 @@ namespace CoolCatCollects.Bricklink
 				Total = StaticFunctions.FormatCurrencyStr(data.cost.grand_total),
 				Items = items
 			};
+		}
+
+		private void AddPartInventoryFromOrder(OrderItemResponseModel item)
+		{
+			var inv = new PartInventory
+			{
+				InventoryId = item.inventory_id,
+				Quantity = 0,
+				MyPrice = decimal.Parse(item.unit_price_final),
+				ColourId = item.color_id,
+				ColourName = item.color_name,
+				Condition = item.new_or_used,
+				Location = item.remarks,
+				Image = _dataService.GetItemImage(item.item.type,
+							item.item.no, item.color_id),
+				Description = item.description,
+				LastUpdated = DateTime.Now
+			};
+
+			_dataService.AddPartInvFromOrder(inv, item.item.no, item.item.type);
 		}
 
 		/// <summary>
@@ -284,6 +336,17 @@ namespace CoolCatCollects.Bricklink
 				MinifigValue = minifigValue,
 				PartsValue = partsValue
 			};
+		}
+
+		public IEnumerable<PartModel> GetHistoriesByLocation(string location)
+		{
+			var histories = _dataService.GetHistoriesByLocation(location);
+
+			var models = histories.
+				Select(x => _dataService.GetPartModel(x.PartInventory, updateInv: true)).
+				OrderByDescending(x => x.PartInventory.LocationHistory?.FirstOrDefault(y => y.Location.ToUpper() == location.ToUpper())?.Date ?? DateTime.MinValue);
+
+			return models;
 		}
 	}
 }

@@ -45,6 +45,7 @@
     <Compile Include="Expenses\ExpenseModel.cs" />
     <Compile Include="LogModel.cs" />
     <Compile Include="NewPurchaseModel.cs" />
+    <Compile Include="Parts\PartInventoryModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UsedPurchaseModel.cs" />
   </ItemGroup>

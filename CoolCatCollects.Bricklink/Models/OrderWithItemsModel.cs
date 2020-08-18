@@ -36,6 +36,7 @@ namespace CoolCatCollects.Bricklink.Models
 				.SelectMany(x => x)
 				.Select(x => new OrderItemModel(x))
 				.OrderBy(x => x.Condition)
+				.ThenBy(x => x.RemarkLetter3)
 				.ThenBy(x => x.RemarkLetter2)
 				.ThenBy(x => x.RemarkLetter1)
 				.ThenBy(x => x.RemarkNumber)
@@ -147,6 +148,7 @@ namespace CoolCatCollects.Bricklink.Models
 					{
 						RemarkLetter1 = match.Groups[1].Value[0];
 						RemarkLetter2 = match.Groups[1].Value.Length > 1 ? match.Groups[1].Value[1] : ' ';
+						RemarkLetter3 = match.Groups[1].Value.Length > 2 ? match.Groups[1].Value[2] : ' ';
 					}
 					if (match.Groups.Count > 1)
 					{
@@ -177,6 +179,8 @@ namespace CoolCatCollects.Bricklink.Models
 		public string Image { get; set; }
 		public char RemarkLetter1 { get; set; }
 		public char RemarkLetter2 { get; set; }
+		public char RemarkLetter3 { get; set; }
+
 		public int RemarkNumber { get; set; }
 		public string Description { get; set; }
 	}

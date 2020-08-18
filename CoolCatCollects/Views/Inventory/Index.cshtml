@@ -1,0 +1,24 @@
+﻿
+@{
+	ViewBag.Title = "Inventory";
+}
+
+<h1>Inventory</h1>
+
+<p>For database queries. If it isn't here, it may be in Bricklink.</p>
+
+@using (Html.BeginForm("GetByHistory", "Inventory"))
+{
+	<div class="form-horizontal">
+		<div class="form-group">
+			<div class="col-md-4">
+				<div class="input-group">
+					<input type="text" name="location" placeholder="Search by current location" class="form-control" />
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="submit">Go</button>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+}

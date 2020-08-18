@@ -1,0 +1,40 @@
+﻿@model CoolCatCollects.Models.LocationHistoryModel
+@{
+	ViewBag.Title = "Location: " + Model.Location.ToUpper();
+}
+
+<h2>Parts that have been in: @Model.Location.ToUpper()</h2>
+
+@if (Model.Any())
+{
+	<table>
+		<tr>
+			<th></th>
+			<th>Part Name</th>
+			<th>Colour</th>
+			<th>Condition</th>
+			<th>Current Location</th>
+		</tr>
+		@foreach (var p in Model)
+		{
+			<tr>
+				<td><img src="@p.PartInventory.Image" /></td>
+				<td>@p.Part.Name</td>
+				<td>@p.PartInventory.ColourName</td>
+				<td>@p.PartInventory.Condition</td>
+				<td><strong>@p.PartInventory.Location</strong></td>
+			</tr>
+			foreach (var hist in p.PartInventory.LocationHistory.OrderByDescending(x => x.Date))
+			{
+				<tr>
+					<td colspan="3">@hist.Location</td>
+					<td colspan="2">@hist.Date</td>
+				</tr>
+			}
+		}
+	</table>
+}
+else
+{
+	<h3>No results found</h3>
+}
