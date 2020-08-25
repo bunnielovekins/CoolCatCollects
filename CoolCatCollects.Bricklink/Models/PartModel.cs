@@ -7,5 +7,7 @@ namespace CoolCatCollects.Bricklink.Models
 		public Part Part { get; set; }
 		public PartInventory PartInventory { get; set; }
 		public PartPriceInfo PartPriceInfo { get; set; }
+
+		public bool InvIsPlaceHolder { get; set; }
 	}
 }

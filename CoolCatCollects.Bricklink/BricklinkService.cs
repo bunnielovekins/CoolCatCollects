@@ -296,7 +296,7 @@ namespace CoolCatCollects.Bricklink
 				})
 				.OrderBy(x => x.Status)
 				.ThenBy(x => x.Colour.Name)
-				.ThenBy(x => x.Number);
+				.ThenBy(x => x.Number).ToList();
 
 			return model;
 		}

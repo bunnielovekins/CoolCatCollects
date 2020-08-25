@@ -146,6 +146,7 @@ namespace CoolCatCollects.Bricklink
 			bool updateInv = false, bool updatePrice = false, bool updatePart = false,
 			DateTime? updateInvDate = null, string description = "")
 		{
+			bool placeholder = false;
 			string cond = condition == "A" ? "N" : condition;
 			var partInv = _partInventoryRepo.FindOne(x =>
 				x.Part.ItemType == type &&
@@ -167,7 +168,8 @@ namespace CoolCatCollects.Bricklink
 
 			if (partInv == null)
 			{
-				return null;
+				partInv = PlaceHolderInventory(colourId, condition == "A" ? "N" : condition, description, type, number);
+				placeholder = true;
 			}
 
 			// Quantity is 0, fall back to used if condition is set to any
@@ -194,7 +196,26 @@ namespace CoolCatCollects.Bricklink
 			{
 				Part = part,
 				PartInventory = partInv,
-				PartPriceInfo = pricing
+				PartPriceInfo = pricing,
+				InvIsPlaceHolder = placeholder
+			};
+		}
+
+		private PartInventory PlaceHolderInventory(int colourId, string condition, string description, string type, string number)
+		{
+			return new PartInventory
+			{
+				ColourId = colourId,
+				InventoryId = 0,
+				Quantity = 0,
+				MyPrice = 0,
+				ColourName = colourId != 0 ? Statics.Colours[colourId].Name : "",
+				Condition = condition,
+				Location = "",
+				Image = GetItemImage(type, number, colourId),
+				Description = description,
+				Notes = "",
+				LastUpdated = DateTime.Now
 			};
 		}
 
@@ -311,15 +332,30 @@ namespace CoolCatCollects.Bricklink
 					Name = x.item.name,
 					Quantity = x.quantity,
 					UnitPrice = decimal.Parse(x.unit_price_final),
-					Part = (
-						GetPartModel(x.inventory_id, updateInvDate: order.data.date_ordered) ??
-						GetPartModel(x.item.no, x.color_id, x.item.type, x.new_or_used, description: x.description) ??
-						AddInventoryFromOrderItem(x)).PartInventory
+					Part = GetPartInv(x, order)
 				}).ToList();
 
 			orderEntity = _orderRepo.AddOrderWithItems(orderEntity, orderItemEntities);
 
 			return _orderRepo.FindOne(x => x.Id == orderEntity.Id) as Data.Entities.BricklinkOrder;
+
+			PartInventory GetPartInv(OrderItemResponseModel item, GetOrderResponseModel ord)
+			{
+				var model = GetPartModel(item.inventory_id, updateInvDate: order.data.date_ordered);
+				if (model != null)
+				{
+					return model.PartInventory;
+				}
+
+				model = GetPartModel(item.item.no, item.color_id, item.item.type, item.new_or_used, description: item.description);
+				if (!model.InvIsPlaceHolder)
+				{
+					return model.PartInventory;
+				}
+
+				model = AddInventoryFromOrderItem(item);
+				return model.PartInventory;
+			}
 		}
 
 		/// <summary>
