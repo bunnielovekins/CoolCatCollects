@@ -12,10 +12,12 @@ namespace CoolCatCollects.Services
 	{
 		public BaseRepository<UsedPurchase> _repo = new BaseRepository<UsedPurchase>();
 		public BaseRepository<UsedPurchaseWeight> _weightRepo;
+		public BaseRepository<UsedPurchaseBLUpload> _blUploadRepo;
 
 		public UsedPurchaseService()
 		{
 			_weightRepo = new BaseRepository<UsedPurchaseWeight>(_repo.Context);
+			_blUploadRepo = new BaseRepository<UsedPurchaseBLUpload>(_repo.Context);
 		}
 
 		public async Task<IEnumerable<UsedPurchaseModel>> GetAll()
@@ -25,11 +27,18 @@ namespace CoolCatCollects.Services
 			return UsedPurchases.Select(ToModel).OrderByDescending(x => x.Date);
 		}
 
-		public async Task<UsedPurchaseModel> FindAsync(int id)
+		public async Task<UsedPurchaseModel> Find(int id)
 		{
 			var usedPurchase = await _repo.FindOneAsync(id);
 
 			return ToModel(usedPurchase);
+		}
+
+		public async Task<UsedPurchaseBLUploadModel> FindBLUpload(int id)
+		{
+			var upload = await _blUploadRepo.FindOneAsync(id);
+
+			return ToModel(upload);
 		}
 
 		public async Task Add(UsedPurchaseModel model)
@@ -86,65 +95,21 @@ namespace CoolCatCollects.Services
 			await _repo.RemoveAsync(usedPurchase);
 		}
 
-		public UsedPurchaseModel ToModel(UsedPurchase usedPurchase)
-		{
-			return new UsedPurchaseModel
-			{
-				Id = usedPurchase.Id,
-				Date = usedPurchase.Date,
-				Source = usedPurchase.Source,
-				SourceUsername = usedPurchase.SourceUsername,
-				OrderNumber = usedPurchase.OrderNumber,
-				Price = usedPurchase.Price,
-				PaymentMethod = usedPurchase.PaymentMethod,
-				Receipt = usedPurchase.Receipt,
-				DistanceTravelled = usedPurchase.DistanceTravelled,
-				Location = usedPurchase.Location,
-				Postage = usedPurchase.Postage,
-				Weight = usedPurchase.Weight,
-				PricePerKilo = usedPurchase.PricePerKilo,
-				CompleteSets = usedPurchase.CompleteSets,
-				Notes = usedPurchase.Notes,
-				TotalBundleWeight = usedPurchase.Weights.Sum(x => x.Weight / 1000)
-			};
-		}
 
-		public UsedPurchaseWeightModel ToModel(UsedPurchaseWeight wt)
-		{
-			return new UsedPurchaseWeightModel
-			{
-				Id = wt.Id,
-				Colour = wt.Colour,
-				Weight = wt.Weight,
-				UsedPurchaseId = wt.UsedPurchase.Id
-			};
-		}
-
-		public UsedPurchaseWeight ToEntity(UsedPurchaseWeightModel wt, UsedPurchase purchase)
-		{
-			return new UsedPurchaseWeight
-			{
-				Id = wt.Id,
-				Colour = wt.Colour,
-				Weight = wt.Weight,
-				UsedPurchase = purchase
-			};
-		}
 
 		/// <summary>
 		/// Gets a used purchase with the associated weights
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public async Task<UsedPurchaseModel> GetPurchaseWithWeights(int id)
+		public async Task<UsedPurchaseModel> GetPurchaseWithContents(int id)
 		{
 			var purchase = await _repo.FindOneAsync(id);
 
 			var model = ToModel(purchase);
 
-			var weights = purchase.Weights.Select(ToModel);
-
-			model.Weights = weights;
+			model.Weights = purchase.Weights.Select(ToModel);
+			model.BLUploads = purchase.BLUploads.Select(ToModel);
 
 			return model;
 		}
@@ -191,6 +156,104 @@ namespace CoolCatCollects.Services
 			// Delete
 			await _weightRepo.RemoveManyAsync(toDelete.Select(x => _weightRepo.FindOne(x.Id)));
 		}
+
+		public async Task AddBLUpload(UsedPurchaseBLUploadModel model)
+		{
+			var entity = ToEntity(model);
+
+			await _blUploadRepo.AddAsync(entity);
+		}
+
+		public async Task EditBLUpload(UsedPurchaseBLUploadModel model)
+		{
+			var entity = ToEntity(model);
+
+			await _blUploadRepo.UpdateAsync(entity);
+		}
+
+		public async Task DeleteBLUpload(int id)
+		{
+			var entity = await _blUploadRepo.FindOneAsync(id);
+
+			await _blUploadRepo.RemoveAsync(entity);
+		}
+
+		#region Mappings
+
+		private UsedPurchaseModel ToModel(UsedPurchase usedPurchase)
+		{
+			return new UsedPurchaseModel
+			{
+				Id = usedPurchase.Id,
+				Date = usedPurchase.Date,
+				Source = usedPurchase.Source,
+				SourceUsername = usedPurchase.SourceUsername,
+				OrderNumber = usedPurchase.OrderNumber,
+				Price = usedPurchase.Price,
+				PaymentMethod = usedPurchase.PaymentMethod,
+				Receipt = usedPurchase.Receipt,
+				DistanceTravelled = usedPurchase.DistanceTravelled,
+				Location = usedPurchase.Location,
+				Postage = usedPurchase.Postage,
+				Weight = usedPurchase.Weight,
+				PricePerKilo = usedPurchase.PricePerKilo,
+				CompleteSets = usedPurchase.CompleteSets,
+				Notes = usedPurchase.Notes,
+				TotalBundleWeight = usedPurchase.Weights.Sum(x => x.Weight / 1000)
+			};
+		}
+
+		private UsedPurchaseWeightModel ToModel(UsedPurchaseWeight wt)
+		{
+			return new UsedPurchaseWeightModel
+			{
+				Id = wt.Id,
+				Colour = wt.Colour,
+				Weight = wt.Weight,
+				UsedPurchaseId = wt.UsedPurchase.Id
+			};
+		}
+
+		private UsedPurchaseWeight ToEntity(UsedPurchaseWeightModel wt, UsedPurchase purchase)
+		{
+			return new UsedPurchaseWeight
+			{
+				Id = wt.Id,
+				Colour = wt.Colour,
+				Weight = wt.Weight,
+				UsedPurchase = purchase
+			};
+		}
+
+		private UsedPurchaseBLUploadModel ToModel(UsedPurchaseBLUpload upload)
+		{
+			return new UsedPurchaseBLUploadModel
+			{
+				Id = upload.Id,
+				Date = upload.Date,
+				Parts = upload.Parts,
+				Lots = upload.Lots,
+				Value = upload.Value,
+				Notes = upload.Notes,
+				UsedPurchaseId = upload.UsedPurchase.Id
+			};
+		}
+
+		private UsedPurchaseBLUpload ToEntity(UsedPurchaseBLUploadModel model)
+		{
+			return new UsedPurchaseBLUpload
+			{
+				Id = model.Id,
+				Date = model.Date,
+				Parts = model.Parts,
+				Lots = model.Lots,
+				Value = model.Value,
+				Notes = model.Notes,
+				UsedPurchase = _repo.FindOne(model.UsedPurchaseId)
+			};
+		}
+
+		#endregion
 
 		public void Dispose()
 		{

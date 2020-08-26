@@ -76,6 +76,7 @@
     <Compile Include="Entities\Part\PartPriceInfo.cs" />
     <Compile Include="Entities\Purchases\NewPurchase.cs" />
     <Compile Include="Entities\Purchases\UsedPurchase.cs" />
+    <Compile Include="Entities\Purchases\UsedPurchaseBLUpload.cs" />
     <Compile Include="Entities\Purchases\UsedPurchaseWeight.cs" />
     <Compile Include="Migrations\202006100959464_Initial.cs" />
     <Compile Include="Migrations\202006100959464_Initial.designer.cs">

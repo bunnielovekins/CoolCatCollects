@@ -20,8 +20,9 @@ namespace CoolCatCollects.Data.Entities.Purchases
 		public bool CompleteSets { get; set; }
 		public string Notes { get; set; }
 		/// <summary>
-		/// Weights of lego taken for bundles
+		/// Contents of the Used Purchase
 		/// </summary>
 		public virtual ICollection<UsedPurchaseWeight> Weights { get; set; }
+		public virtual ICollection<UsedPurchaseBLUpload> BLUploads { get; set; }
 	}
 }

@@ -202,7 +202,7 @@
     <Content Include="Views\UsedPurchases\Delete.cshtml" />
     <Content Include="Views\UsedPurchases\Edit.cshtml" />
     <Content Include="Views\UsedPurchases\Index.cshtml" />
-    <Content Include="Views\UsedPurchases\Weights.cshtml" />
+    <Content Include="Views\UsedPurchases\Contents.cshtml" />
     <Content Include="Views\Expenses\Create.cshtml" />
     <Content Include="Views\Expenses\Delete.cshtml" />
     <Content Include="Views\Expenses\Details.cshtml" />
@@ -210,6 +210,9 @@
     <Content Include="Views\Expenses\Index.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Inventory\GetByHistory.cshtml" />
+    <Content Include="Views\UsedPurchases\AddBLUpload.cshtml" />
+    <Content Include="Views\UsedPurchases\EditBLUpload.cshtml" />
+    <Content Include="Views\UsedPurchases\DeleteBLUpload.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

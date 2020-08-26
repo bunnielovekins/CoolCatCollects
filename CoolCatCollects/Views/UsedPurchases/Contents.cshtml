@@ -1,19 +1,62 @@
 ﻿@model CoolCatCollects.Controllers.UsedPurchasesController.UsedPurchaseWeightsViewModel
 @{
-	ViewBag.Title = "Weights";
-	var empty = new CoolCatCollects.Models.UsedPurchaseWeightModel();
+	ViewBag.Title = "Used Purchase Contents";
+	var emptywt = new CoolCatCollects.Models.UsedPurchaseWeightModel();
+	var emptyblp = new CoolCatCollects.Models.UsedPurchaseBLUploadModel();
 	int i = 0;
 }
 
-<h2>Weights</h2>
+<h2>Contents</h2>
 
 <form method="post">
 	@Html.Hidden("model.Purchase.Id", Model.Purchase.Id)
+
+	<h4>BL Uploads</h4>
+
+	@if (Model.BLUploads.Any())
+	{
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th title="Number of Parts">Parts</th>
+					<th title="Number of Lots">Lots</th>
+					<th title="Total Value">Value</th>
+					<th>Notes</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var blp in Model.BLUploads)
+				{
+					<tr>
+						<td>@Html.DisplayFor(mod => blp.Date)</td>
+						<td>@Html.DisplayFor(mod => blp.Parts)</td>
+						<td>@Html.DisplayFor(mod => blp.Lots)</td>
+						<td>@Html.DisplayFor(mod => blp.Value)</td>
+						<td>@Html.DisplayFor(mod => blp.Notes)</td>
+						<td>
+							@Html.ActionLink("Edit", "EditBLUpload", new { id = blp.Id }, new { @class = "btn btn-default" })
+							@Html.ActionLink("Delete", "DeleteBLUpload", new { id = blp.Id }, new { @class = "btn btn-danger" })
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	else
+	{
+		<p>No uploads found</p> 
+	}
+
+	<a href="@Url.Action("AddBLUpload", new { id = Model.Purchase.Id })" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Add</a>
+
+	<h4>Weights</h4>
 	<table>
 		<thead>
 			<tr>
-				<th>@Html.LabelFor(x => empty.Colour)</th>
-				<th>@Html.LabelFor(x => empty.Weight)</th>
+				<th>@Html.LabelFor(x => emptywt.Colour)</th>
+				<th>@Html.LabelFor(x => emptywt.Weight)</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -27,7 +70,7 @@
 					@Html.Hidden("model.Weights[" + i + "].Delete", false, new { @class = "delete" })
 					<td>@Html.DisplayFor(weight => wt.Colour)</td>
 					<td>@Html.TextBox("model.Weights[" + i + "].Weight", wt.Weight, htmlAttributes: new { @class = "form-control" })</td>
-					<td><button class="js-remove btn btn-danger">Remove</button></td>
+					<td><button class="js-remove-wt btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></td>
 				</tr>
 
 				i++;
@@ -37,12 +80,12 @@
 			<tr>
 				<td></td>
 				<td></td>
-				<td><button class="js-add btn btn-primary">Add</button></td>
+				<td><button class="js-add-wt btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></td>
 			</tr>
 		</tfoot>
 	</table>
 
-	<br/><br/>
+	<br /><br />
 	<input type="submit" class="btn btn-primary" value="Submit" />
 </form>
 
@@ -53,7 +96,7 @@
 @section scripts {
 	<script>
 		$(function () {
-			$('.js-add').click(function () {
+			$('.js-add-wt').click(function () {
 				var count = 0;
 				if ($('tbody tr').length !== 0) {
 					count = parseInt($($('tbody tr')[$('tbody tr').length - 1]).attr('data-id')) + 1;
@@ -73,7 +116,7 @@
 				return false;
 			});
 
-			$('.js-remove').click(removeClick);
+			$('.js-remove-wt').click(removeClick);
 		});
 
 		function removeClick() {

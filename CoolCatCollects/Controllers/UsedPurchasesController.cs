@@ -1,13 +1,10 @@
-﻿using System.Threading.Tasks;
-using System.Net;
-using System.Web.Mvc;
+﻿using CoolCatCollects.Models;
 using CoolCatCollects.Services;
-using CoolCatCollects.Models;
-using CoolCatCollects.Data.Entities.Purchases;
 using System.Collections.Generic;
-using CoolCatCollects.Bricklink.Models;
-using CoolCatCollects.Bricklink;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace CoolCatCollects.Controllers
 {
@@ -55,7 +52,7 @@ namespace CoolCatCollects.Controllers
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
 
-			UsedPurchaseModel usedPurchase = await _service.FindAsync(id.Value);
+			UsedPurchaseModel usedPurchase = await _service.Find(id.Value);
 
 			if (usedPurchase == null)
 			{
@@ -88,7 +85,7 @@ namespace CoolCatCollects.Controllers
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
 
-			UsedPurchaseModel usedPurchase = await _service.FindAsync(id.Value);
+			UsedPurchaseModel usedPurchase = await _service.Find(id.Value);
 
 			if (usedPurchase == null)
 			{
@@ -107,15 +104,15 @@ namespace CoolCatCollects.Controllers
 			return RedirectToAction("Index");
 		}
 
-		// GET: UsedPurchases/Weights/5
-		public async Task<ActionResult> Weights(int? id)
+		// GET: UsedPurchases/Contents/5
+		public async Task<ActionResult> Contents(int? id)
 		{
 			if (id == null)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 			}
 
-			var entity = await _service.GetPurchaseWithWeights(id.Value);
+			var entity = await _service.GetPurchaseWithContents(id.Value);
 
 			if (entity == null)
 			{
@@ -126,6 +123,7 @@ namespace CoolCatCollects.Controllers
 			{
 				Purchase = entity,
 				Weights = entity.Weights,
+				BLUploads = entity.BLUploads,
 				Colours = new List<string> {
 					"Grey",
 					"White",
@@ -148,9 +146,95 @@ namespace CoolCatCollects.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> Weights(UsedPurchaseWeightsViewModel model)
+		public async Task<ActionResult> Contents(UsedPurchaseWeightsViewModel model)
 		{
 			await _service.UpdateWeights(model.Purchase.Id, model.Weights);
+
+			return RedirectToAction("Index");
+		}
+
+		public async Task<ActionResult> AddBLUpload(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			UsedPurchaseModel usedPurchase = await _service.Find(id.Value);
+
+			if (usedPurchase == null)
+			{
+				return HttpNotFound();
+			}
+
+			TempData["id"] = usedPurchase.Id;
+
+			return View();
+		}
+
+		[HttpPost]
+		public async Task<ActionResult> AddBLUpload(UsedPurchaseBLUploadModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				await _service.AddBLUpload(model);
+
+				return RedirectToAction("Contents", new { id = model.UsedPurchaseId });
+			}
+
+			return View(model);
+		}
+
+		public async Task<ActionResult> EditBLUpload(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			UsedPurchaseBLUploadModel model = await _service.FindBLUpload(id.Value);
+
+			if (model == null)
+			{
+				return HttpNotFound();
+			}
+
+			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<ActionResult> EditBLUpload(UsedPurchaseBLUploadModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				await _service.EditBLUpload(model);
+
+				return RedirectToAction("Contents", new { id = model.UsedPurchaseId });
+			}
+			return View(model);
+		}
+
+		public async Task<ActionResult> DeleteBLUpload(int? id)
+		{
+			if (id == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+			}
+
+			UsedPurchaseBLUploadModel model = await _service.FindBLUpload(id.Value);
+
+			if (model == null)
+			{
+				return HttpNotFound();
+			}
+			return View(model);
+		}
+
+		[HttpPost, ActionName("DeleteBLUpload")]
+		[ValidateAntiForgeryToken]
+		public async Task<ActionResult> DeleteConfirmedBLUpload(int id)
+		{
+			await _service.DeleteBLUpload(id);
 
 			return RedirectToAction("Index");
 		}
@@ -159,6 +243,7 @@ namespace CoolCatCollects.Controllers
 		{
 			public UsedPurchaseModel Purchase { get; set; }
 			public IEnumerable<UsedPurchaseWeightModel> Weights { get; set; }
+			public IEnumerable<UsedPurchaseBLUploadModel> BLUploads { get; set; }
 			public IEnumerable<SelectListItem> Colours { get; set; }
 		}
 
