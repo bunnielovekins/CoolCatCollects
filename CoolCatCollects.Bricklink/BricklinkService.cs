@@ -156,11 +156,11 @@ namespace CoolCatCollects.Bricklink
 					int quantity;
 					string image;
 
-					var partModel = _dataService.GetPartModel(item.inventory_id);
+					var partModel = _dataService.GetPartModel(item.inventory_id, updateInvDate: order.data.date_ordered);
 
 					if (partModel == null)
 					{
-						partModel = _dataService.GetPartModel(item.item.no, item.color_id, item.item.type, item.new_or_used, description: item.description);
+						partModel = _dataService.GetPartModel(item.item.no, item.color_id, item.item.type, item.new_or_used, description: item.description, updateInvDate: order.data.date_ordered);
 					}
 
 					PartInventory inv = partModel?.PartInventory;

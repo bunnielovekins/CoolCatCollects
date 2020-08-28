@@ -103,7 +103,7 @@ namespace CoolCatCollects.Bricklink
 				return UpdatedPartModel(partInv, updateInv, updatePrice, updatePart, updateInvDate);
 			}
 
-			var model = UpdateInventoryFromApi(inventoryId);
+			var model = UpdateInventoryModelFromApi(inventoryId);
 
 			if (model == null)
 			{
@@ -498,10 +498,12 @@ namespace CoolCatCollects.Bricklink
 		/// <returns>The same entity, updated</returns>
 		private PartInventory UpdateInventoryFromApi(PartInventory partInv)
 		{
-			return UpdateInventoryFromApi(partInv.Part.ItemType, partInv.Part.CategoryId, partInv.ColourId, partInv.Part.Number, partInv.Condition, partInv);
+			return 
+				UpdateInventoryFromApi(partInv.InventoryId, partInv) ??
+				UpdateInventoryFromApi(partInv.Part.ItemType, partInv.Part.CategoryId, partInv.ColourId, partInv.Part.Number, partInv.Condition, partInv);
 		}
 
-		private PartInventoryModel UpdateInventoryFromApi(int inventoryId)
+		private PartInventoryModel UpdateInventoryModelFromApi(int inventoryId)
 		{
 			var partInv = new PartInventoryModel();
 
@@ -535,6 +537,42 @@ namespace CoolCatCollects.Bricklink
 			partInv.Name = item.item.name;
 			partInv.ItemType = item.item.type;
 			partInv.CategoryId = item.item.category_id;
+
+			return partInv;
+		}
+
+		private PartInventory UpdateInventoryFromApi(int inventoryId, PartInventory partInv = null)
+		{
+			if (partInv == null)
+			{
+				partInv = new PartInventory();
+			}
+
+			var response = _api.GetRequest<GetInventoryResponseModel>($"inventories/{inventoryId}");
+
+			var item = response.data;
+
+			if (item == null)
+			{
+				return null;
+			}
+
+			partInv.InventoryId = item.inventory_id;
+			partInv.Quantity = item.quantity;
+			partInv.MyPrice = decimal.Parse(item.unit_price);
+			partInv.ColourId = item.color_id;
+			partInv.ColourName = Statics.Colours[item.color_id].Name;
+			partInv.Condition = item.new_or_used;
+			partInv.Location = item.remarks;
+			partInv.Description = item.description;
+			partInv.Image = GetItemImage(item.item.type, item.item.no, item.color_id);
+
+			if (string.IsNullOrEmpty(partInv.Location))
+			{
+				partInv.Location = item.description;
+			}
+
+			partInv.LastUpdated = DateTime.Now;
 
 			return partInv;
 		}
