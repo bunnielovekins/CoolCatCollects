@@ -52,7 +52,7 @@
 	<a href="@Url.Action("AddBLUpload", new { id = Model.Purchase.Id })" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Add</a>
 
 	<h4>Weights</h4>
-	<table>
+	<table class="weights">
 		<thead>
 			<tr>
 				<th>@Html.LabelFor(x => emptywt.Colour)</th>
@@ -111,7 +111,7 @@
 				newElem.find('.colour').append(dd.clone().attr('name', 'model.Weights[' + count + '].Colour'));
 				newElem.find('.js-remove').click(removeClick);
 
-				$('table tbody').append(newElem);
+				$('table.weights tbody').append(newElem);
 
 				return false;
 			});
