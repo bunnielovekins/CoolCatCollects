@@ -1,6 +1,7 @@
 ﻿@model CoolCatCollects.Ebay.Models.EbayOrderModel
 @{
 	Layout = null;
+	bool noImages = Model.Items.All(x => string.IsNullOrEmpty(x.Image));
 }
 
 <!DOCTYPE html>
@@ -65,7 +66,10 @@
 	<table class="invoice">
 		<thead>
 			<tr>
-				<th>Image</th>
+				@if (!noImages)
+				{
+					<th>Image</th>
+				}
 				<th>Item Name</th>
 				<th>Price</th>
 				@if (!Model.IsInternationalOrder)
@@ -80,7 +84,10 @@
 			@foreach (var item in Model.Items)
 			{
 			<tr>
-				<td><img src="@item.Image" /></td>
+				@if (!noImages)
+				{
+					<td><img src="@item.Image" /></td>
+				}
 				<td>
 					@item.Name
 					@if (!string.IsNullOrEmpty(item.Variant))

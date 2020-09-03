@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
+using System.Net;
 
 namespace CoolCatCollects.Ebay
 {
@@ -81,7 +82,22 @@ namespace CoolCatCollects.Ebay
 				response = client.Execute(request);
 			}
 
+			if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+			{
+				throw new ApiException(response.StatusCode, response.ErrorMessage);
+			}
+
 			return response.Content;
+		}
+	}
+
+	public class ApiException : Exception
+	{
+		public HttpStatusCode StatusCode { get; set; }
+
+		public ApiException(HttpStatusCode statusCode, string message = null)
+		{
+
 		}
 	}
 }

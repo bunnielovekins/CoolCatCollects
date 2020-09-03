@@ -165,7 +165,19 @@ namespace CoolCatCollects.Ebay
 				legacyVariationId = "0";
 			}
 
-			var response = _service.GetRequest($"https://api.ebay.com/buy/browse/v1/item/v1|{legacyItemId}|{legacyVariationId}");
+			string response;
+			try
+			{
+				response = _service.GetRequest($"https://api.ebay.com/buy/browse/v1/item/v1|{legacyItemId}|{legacyVariationId}");
+			}
+			catch (ApiException)
+			{
+				return new GetItemModel
+				{
+					Character = "",
+					Image = ""
+				};
+			}
 
 			var obj = JsonConvert.DeserializeObject<GetItemResponse>(response);
 
@@ -193,6 +205,8 @@ namespace CoolCatCollects.Ebay
 			_dataService.UpdateOrderItemsByLegacyId(legacyItemId, legacyVariationId, model);
 
 			return model;
+
+
 		}
 	}
 }
