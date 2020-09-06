@@ -186,7 +186,7 @@ namespace CoolCatCollects.Ebay
 				entity = _dataService.AddOrder(data);
 
 				return mod;
-			}).OrderBy(x => x.BuyerName);
+			}).OrderByDescending(x => x.OrderDate).ToList();
 
 
 			var model = new EbayOrdersListModel(items, 0, 1000);

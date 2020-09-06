@@ -47,7 +47,10 @@
 			{
 				<tr>
 					<td colspan="2">Order: <strong>@order.OrderId</strong></td>
-					<td colspan="2">Subtotal: <strong>@order.PriceSubtotal</strong></td>
+					<td colspan="2">
+						Subtotal: <strong>@order.PriceSubtotal</strong><br/>
+						Date: <strong>@order.OrderDate.ToString("dd/MM/yyyy")</strong>
+					</td>
 					<td colspan="2">Postage: @order.ShippingMethod</td>
 				</tr>
 				foreach (var item in order.Items)
