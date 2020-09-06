@@ -16,7 +16,7 @@
 	@Scripts.Render("~/bundles/jquery")
 	<script>
 		$(function () {
-			$('table.parts tbody tr').click(function () {
+			$('table.parts tbody tr.checkable').click(function () {
 				var checkbox = $(this).find('input');
 				if (checkbox.prop('checked')) {
 					checkbox.prop('checked', false);
@@ -116,7 +116,7 @@
 
 @helper row(CoolCatCollects.Bricklink.Models.OrderItemModel item)
 {
-	<tr data-invid="@item.InventoryId">
+	<tr data-invid="@item.InventoryId" class="checkable">
 		<td class="center">
 			<label class="check">
 				<input type="checkbox" />

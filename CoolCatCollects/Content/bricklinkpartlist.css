@@ -66,6 +66,10 @@
 	width: 80px;
 }
 
+.large {
+	font-size: 36px;
+}
+
 .check {
 	width: 60px;
 	height: 60px;

@@ -1,0 +1,74 @@
+﻿@model CoolCatCollects.Ebay.Models.EbayOrdersListModel
+@{
+	ViewBag.Title = "UnfulfilledOrders";
+	Layout = "~/Views/Shared/_MinimalLayout.cshtml";
+}
+
+@section styles {
+	<link href="~/Content/bricklinkpartlist.css" rel="stylesheet" />
+}
+
+@section scripts {
+	@Scripts.Render("~/bundles/jquery")
+	<script>
+		$(function () {
+			$('table.parts tbody tr.checkable').click(function () {
+				var checkbox = $(this).find('input');
+				if (checkbox.prop('checked')) {
+					checkbox.prop('checked', false);
+				} else {
+					checkbox.prop('checked', true);
+				}
+			});
+		});
+	</script>
+}
+
+<h2>Unfulfilled eBay Orders: @DateTime.Now.ToString("dd/MM/yyyy")</h2>
+
+<table class="parts">
+	<thead>
+		<tr>
+			<th>Done</th>
+			<th>Image</th>
+			<th>Item</th>
+			<th>Q.</th>
+			<th>Price</th>
+			<th>Location</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var buyer in Model.Orders.GroupBy(x => x.BuyerName))
+		{
+			<tr>
+				<td colspan="6" class="center border-top"><strong>@buyer.Key</strong></td>
+			</tr>
+			foreach (var order in buyer)
+			{
+				<tr>
+					<td colspan="2">Order: <strong>@order.OrderId</strong></td>
+					<td colspan="2">Subtotal: <strong>@order.PriceSubtotal</strong></td>
+					<td colspan="2">Postage: @order.ShippingMethod</td>
+				</tr>
+				foreach (var item in order.Items)
+				{
+					<tr class="checkable">
+						<td>
+							<label class="check">
+								<input type="checkbox" />
+								<span></span>
+							</label>
+						</td>
+						<td>
+							<img src="@item.Image" class="image" />
+						</td>
+						<td>@item.Name</td>
+						<td class="large">@item.Quantity</td>
+						<td class="center">@item.Cost</td>
+						<td></td>
+					</tr>
+				}
+			}
+		}
+	</tbody>
+</table>

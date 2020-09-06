@@ -1,5 +1,4 @@
 ﻿using CoolCatCollects.Ebay;
-using System.Linq;
 using System.Web.Mvc;
 
 namespace CoolCatCollects.Controllers
@@ -25,6 +24,13 @@ namespace CoolCatCollects.Controllers
 			var order = _service.GetOrder(orderId);
 
 			return View(order);
+		}
+
+		public ActionResult UnfulfilledOrders()
+		{
+			var orders = _service.GetUnfulfilledOrders();
+
+			return View(orders);
 		}
 
 		public object GetItemDetails(string legacyItemId, string legacyVariationId)

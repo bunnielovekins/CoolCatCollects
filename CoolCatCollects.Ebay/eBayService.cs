@@ -66,9 +66,9 @@ namespace CoolCatCollects.Ebay
 		/// <returns></returns>
 		public EbayOrdersListModel GetOrders(int limit, int page)
 		{
+			//$"?filter=orderfulfillmentstatus:{{{status}}}" + {FULFILLED|IN_PROGRESS} {NOT_STARTED|IN_PROGRESS}
 			int offset = (page - 1) * 50;
 			var response = _service.GetRequest("/sell/fulfillment/v1/order" +
-				//$"?filter=orderfulfillmentstatus:{{{status}}}" + {FULFILLED|IN_PROGRESS} {NOT_STARTED|IN_PROGRESS}
 				$"?limit={limit}" +
 				$"&offset={offset}");
 
@@ -126,6 +126,74 @@ namespace CoolCatCollects.Ebay
 			return model;
 		}
 
+		public EbayOrdersListModel GetUnfulfilledOrders()
+		{
+			var response = _service.GetRequest("/sell/fulfillment/v1/order" +
+				"?limit=1000&filter=orderfulfillmentstatus:{NOT_STARTED | IN_PROGRESS}");
+
+			var obj = JsonConvert.DeserializeObject<GetOrdersResponseModel>(response);
+
+			var items = obj.orders.Select(data =>
+			{
+				var mod = new EbayOrdersListItemModel
+				{
+					OrderId = data.orderId,
+					LegacyOrderId = data.legacyOrderId,
+					OrderDate = data.creationDate,
+					Status = data.orderFulfillmentStatus,
+					BuyerUsername = data.buyer.username,
+					PriceSubtotal = data.pricingSummary.priceSubtotal.ToString(),
+					PriceDiscount = data.pricingSummary.priceDiscount?.ToString(),
+					PriceDelivery = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0")),
+					PriceTotal = data.pricingSummary.total.ToString(),
+					ItemCount = data.lineItems.Sum(x => x.quantity),
+					Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x))
+				};
+
+				if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep != null)
+				{
+					mod.BuyerName = data.fulfillmentStartInstructions[0].shippingStep.shipTo.fullName;
+					mod.ShippingMethod = GetShippingMethod(data.fulfillmentStartInstructions[0].shippingStep.shippingServiceCode);
+				}
+
+				var entity = _dataService.AddOrder(data);
+
+				mod.Items = mod.Items.Select(x =>
+				{
+					var ent = entity.OrderItems.Cast<EbayOrderItem>().FirstOrDefault(y => y.LegacyItemId == x.LegacyItemId && y.LineItemId == x.LineItemId && y.LegacyVariationId == x.LegacyVariationId);
+
+					if (ent == null)
+					{
+						return x;
+					}
+
+					x.OrderItemId = ent.Id;
+
+					if (!string.IsNullOrEmpty(ent.Image))
+					{
+						x.Image = ent.Image;
+						x.Character = ent.CharacterName;
+						return x;
+					}
+
+					var itemFromApi = GetItem(x.LegacyItemId, x.LegacyVariationId);
+					x.Image = itemFromApi.Image;
+					x.Character = itemFromApi.Character;
+
+					return x;
+				});
+
+				entity = _dataService.AddOrder(data);
+
+				return mod;
+			}).OrderBy(x => x.BuyerName);
+
+
+			var model = new EbayOrdersListModel(items, 0, 1000);
+
+			return model;
+		}
+
 		/// <summary>
 		/// Gets nicer names for the shipping method
 		/// </summary>
@@ -136,17 +204,19 @@ namespace CoolCatCollects.Ebay
 			switch (method)
 			{
 				case "UK_RoyalMailSecondClassStandard":
-					return "RM Second Class";
+					return "RM 2nd";
 				case "UK_RoyalMailFirstClassStandard":
-					return "RM First Class";
+					return "RM 1st";
 				case "UK_RoyalMailAirmailInternational":
-					return "RM International Standard";
+					return "RM Intl Std";
 				case "UK_eBayDeliveryPacklinkIntl":
-					return "eBay Packlink International";
+					return "Packlink International";
 				case "UK_RoyalMailSecondClassRecorded":
-					return "RM Second Class Recorded";
+					return "RM 2nd Recorded";
 				case "UK_RoyalMailFirstClassRecorded":
-					return "RM First Class Recorded";
+					return "RM 1st Recorded";
+				case "UK_myHermesDoorToDoorService":
+					return "MyHermes";
 			}
 
 			return method;
