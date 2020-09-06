@@ -3,6 +3,7 @@ using CoolCatCollects.Data.Entities;
 using CoolCatCollects.Ebay.Models;
 using CoolCatCollects.Ebay.Models.Responses;
 using Newtonsoft.Json;
+using System;
 using System.Linq;
 
 namespace CoolCatCollects.Ebay
@@ -186,7 +187,7 @@ namespace CoolCatCollects.Ebay
 				entity = _dataService.AddOrder(data);
 
 				return mod;
-			}).OrderByDescending(x => x.OrderDate).ToList();
+			}).Where(x => x.OrderDate > DateTime.Now.AddDays(-30)).OrderByDescending(x => x.OrderDate).ToList();
 
 
 			var model = new EbayOrdersListModel(items, 0, 1000);

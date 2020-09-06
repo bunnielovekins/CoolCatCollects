@@ -5,7 +5,7 @@
 }
 
 @section styles {
-	<link href="~/Content/bricklinkpartlist.css" rel="stylesheet" />
+	<link href="~/Content/bricklinkpartlist.css?v=2" rel="stylesheet" />
 }
 
 @section scripts {
@@ -40,8 +40,11 @@
 	<tbody>
 		@foreach (var buyer in Model.Orders.GroupBy(x => x.BuyerName))
 		{
-			<tr>
-				<td colspan="6" class="center border-top"><strong>@buyer.Key</strong></td>
+			<tr class="titlerow ">
+				<td colspan="6" class="center border-top relative">
+					<strong class="pad">@buyer.Key</strong>
+					<a href="@Url.Action("CombinedSlip", new { orders = buyer.Select(x => x.OrderId).Aggregate((current, next) => current + "," + next) })" target="_blank" class="btn btn-primary right-out no-print">Slip ></a>
+				</td>
 			</tr>
 			foreach (var order in buyer)
 			{
@@ -51,7 +54,7 @@
 						Subtotal: <strong>@order.PriceSubtotal</strong><br/>
 						Date: <strong>@order.OrderDate.ToString("dd/MM/yyyy")</strong>
 					</td>
-					<td colspan="2">Postage: @order.ShippingMethod</td>
+					<td colspan="2"><strong>@order.ShippingMethod</strong></td>
 				</tr>
 				foreach (var item in order.Items)
 				{
@@ -66,7 +69,7 @@
 							<img src="@item.Image" class="image" />
 						</td>
 						<td>@item.Name</td>
-						<td class="large">@item.Quantity</td>
+						<td class="font-xlarge">@item.Quantity</td>
 						<td class="center">@item.Cost</td>
 						<td></td>
 					</tr>

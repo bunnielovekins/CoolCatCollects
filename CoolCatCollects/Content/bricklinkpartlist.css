@@ -6,6 +6,7 @@
 .container {
 	width: 670px;
 	margin: auto;
+	position: relative;
 }
 
 	.container .top-table {
@@ -66,8 +67,13 @@
 	width: 80px;
 }
 
-.large {
+.font-xlarge {
 	font-size: 36px;
+}
+
+tr.titlerow td {
+	padding:10px;
+	font-size: 20px;
 }
 
 .check {
@@ -107,4 +113,47 @@
 
 .border-top {
 	border-top: 2px solid black;
+}
+
+.btn {
+	display: inline-block;
+	margin-bottom: 0;
+	font-weight: normal;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	-ms-touch-action: manipulation;
+	touch-action: manipulation;
+	cursor: pointer;
+	background-image: none;
+	border: 1px solid transparent;
+	border-top-color: transparent;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+	padding: 11px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	border-radius: 4px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	text-decoration: none;
+}
+
+.btn-primary {
+	color: #fff;
+	background-color: #337ab7;
+	border-color: #2e6da4;
+}
+
+.right-out {
+	position: absolute;
+	right: -62px;
+	top:0;
+}
+
+.relative {
+	position: relative;
 }

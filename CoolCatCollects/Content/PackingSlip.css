@@ -35,8 +35,11 @@ img.right-float {
 table.invoice {
 	width: 100%;
 	border-collapse: collapse;
-	margin-bottom: 30px;
 }
+
+	table.invoice.single {
+		margin-bottom: 30px;
+	}
 
 table.invoice > thead > tr {
 }
@@ -55,14 +58,23 @@ table.invoice > tbody > tr:first-child > td {
 	padding-top: 6px;
 }
 
-.totals {
-	height: 150px;
+.totals-grand {
+	font-size: 22px;
+	float: right;
+	margin-bottom: 5px;
+	width: 40%;
 }
 
-.totals > table {
-	float: right;
-	width: 30%;
-}
+	.totals-grand > table{
+		width: 100%;
+		font-weight: bold;
+	}
+
+	.totals > table {
+		float: right;
+		width: 30%;
+		margin-bottom: 5px;
+	}
 
 .center { 
 	text-align: center;
@@ -87,4 +99,14 @@ h5 {
 .invoice img {
 	max-width: 80px;
 	max-height: 60px;
+}
+
+h2.smaller {
+	font-size: 20px;
+}
+
+@media print {
+	.no-print, .no-print * {
+		display: none !important;
+	}
 }

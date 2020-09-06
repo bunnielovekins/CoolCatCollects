@@ -41,6 +41,7 @@ namespace CoolCatCollects.Ebay.Models
 			{
 				Discount = "£0.00";
 			}
+			TotalDecimal = StaticFunctions.FormatCurrency(data.pricingSummary.total.convertedFromValue);
 			Total = StaticFunctions.FormatCurrencyStr(data.pricingSummary.total.convertedFromValue);
 			if (data.pricingSummary.tax != null)
 			{
@@ -72,6 +73,7 @@ namespace CoolCatCollects.Ebay.Models
 			{
 				Discount = "£0.00";
 			}
+			TotalDecimal = StaticFunctions.FormatCurrency(data.pricingSummary.total.convertedFromValue);
 			Total = StaticFunctions.FormatCurrencyStr(data.pricingSummary.total.convertedFromValue);
 			if (data.pricingSummary.tax != null)
 			{
@@ -94,6 +96,7 @@ namespace CoolCatCollects.Ebay.Models
 		public string PostagePackaging { get; set; }
 		public string Discount { get; set; }
 		public string Tax { get; set; }
+		public decimal TotalDecimal { get; private set; }
 		public string Total { get; set; }
 		public EbayOrderModelBuyer Buyer { get; set; }
 		public IEnumerable<EbayOrderModelItem> Items { get; set; }

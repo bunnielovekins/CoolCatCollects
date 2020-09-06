@@ -1,0 +1,161 @@
+﻿@model CoolCatCollects.Controllers.eBaySlipController.CombinedSlipModel
+@{
+	Layout = null;
+
+	if (!string.IsNullOrEmpty(Model.Error))
+	{
+		<h1>Error: @Model.Error</h1>
+		return;
+	}
+
+	bool noImages = Model.Orders.SelectMany(x => x.Items).All(x => string.IsNullOrEmpty(x.Image));
+	var orderOne = Model.Orders.First();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<link rel="stylesheet" href="~/Content/PackingSlip.css?v=3" />
+	<title>Peter's Pickled Packing slip Producer</title>
+</head>
+<body>
+	<header>
+		<img src="~/Content/logo.png" />
+		<p>
+			<strong>Cool Cat Collects</strong><br />
+			19 Moorgate<br />
+			Lancaster<br />
+			LA1 3QF<br />
+			United Kingdom
+		</p>
+	</header>
+	@if (orderOne.Buyer != null)
+	{
+		<div class="buyer">
+			<p>
+				<strong>@orderOne.Buyer.Name</strong><br />
+				@orderOne.Buyer.Address1<br />
+				@orderOne.Buyer.Address2<br />
+				@orderOne.Buyer.PostCode<br />
+				@orderOne.Buyer.Country
+			</p>
+		</div>
+	}
+	<hr />
+	<div class="center">
+		<p>
+			<strong>Thank you for your order!</strong><br />
+			We hope that you are delighted with your purchase.
+		</p>
+		<p>If you have any questions or comments, please feel free to contact us via the eBay messaging service.</p>
+		<p>Cool Cat Collects, www.ebay.co.uk/usr/coolcat-collectables</p>
+	</div>
+	@foreach (var order in Model.Orders)
+	{
+		<hr class="clear" />
+		<br />
+		<table class="half">
+			<tr>
+				<td><strong>Order Number:</strong></td>
+				<td>@order.OrderNumber</td>
+			</tr>
+			<tr>
+				<td>Order Date:</td>
+				<td>@order.OrderDate</td>
+			</tr>
+			<tr>
+				<td>Paid On:</td>
+				<td>@order.OrderPaid</td>
+			</tr>
+		</table>
+		if (order.OrderNumber == orderOne.OrderNumber)
+		{
+			<img class="right-float" alt="eBay" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/EBay_logo.svg" style="height: 68px;">
+		}
+
+		<hr class="clear" />
+		<h2 class="smaller">Items in Order</h2>
+		<table class="invoice">
+			<thead>
+				<tr>
+					@if (!noImages)
+					{
+						<th>Image</th>
+					}
+					<th>Item Name</th>
+					<th>Price</th>
+					@if (!order.IsInternationalOrder)
+					{
+						<th>Discount</th>
+					}
+					<th>Quantity</th>
+					<th>Subtotal</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in order.Items)
+				{
+					<tr>
+						@if (!noImages)
+						{
+							<td><img src="@item.Image" /></td>
+						}
+						<td>
+							@item.Name
+							@if (!string.IsNullOrEmpty(item.Variant))
+							{
+								<br /><small>@item.Variant</small>
+							}
+						</td>
+						<td>@item.UnitPrice</td>
+						@if (!order.IsInternationalOrder)
+						{
+							<td>@item.Discount</td>
+						}
+						<td>@item.Quantity</td>
+						<td>@item.SubTotal</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="totals">
+			<table>
+				<tr>
+					<td>Subtotal:</td>
+					<td class="right">@order.SubTotal</td>
+				</tr>
+				<tr>
+					<td>Discount:</td>
+					<td class="right">@order.Discount</td>
+				</tr>
+				@if (!string.IsNullOrEmpty(order.Tax))
+				{
+					<tr>
+						<td>Tax:</td>
+						<td class="right">@order.Tax</td>
+					</tr>
+				}
+				<tr>
+					<td>Postage & Packing:</td>
+					<td class="right">@order.PostagePackaging</td>
+				</tr>
+				<tr>
+					<td><strong>Order Total:</strong></td>
+					<td class="right">@order.Total</td>
+				</tr>
+			</table>
+		</div>
+	}
+	<hr class="clear" />
+	<div class="totals-grand">
+		<table>
+			<tr>
+				<td>Grand Total:</td>
+				<td class="right">@CoolCatCollects.Core.StaticFunctions.FormatCurrencyStr(Model.Orders.Sum(x => x.TotalDecimal))</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

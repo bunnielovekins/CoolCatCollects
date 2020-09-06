@@ -214,6 +214,7 @@
     <Content Include="Views\UsedPurchases\EditBLUpload.cshtml" />
     <Content Include="Views\UsedPurchases\DeleteBLUpload.cshtml" />
     <Content Include="Views\eBaySlip\UnfulfilledOrders.cshtml" />
+    <Content Include="Views\eBaySlip\CombinedSlip.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
