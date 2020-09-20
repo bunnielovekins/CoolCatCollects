@@ -1,5 +1,6 @@
 ﻿using CoolCatCollects.Bricklink;
 using CoolCatCollects.Bricklink.Models;
+using CoolCatCollects.Services;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -22,7 +23,7 @@ namespace CoolCatCollects.Controllers
 			return View();
 		}
 
-		public ActionResult PartListFromSet(string set)
+		public ActionResult PartListFromSet(string set, bool debug = false)
 		{
 			if (string.IsNullOrEmpty(set))
 			{
@@ -34,7 +35,7 @@ namespace CoolCatCollects.Controllers
 				set += "-1";
 			}
 
-			var parts = _service.GetPartsFromSet(set, forceUpdate: true);
+			var parts = _service.GetPartsFromSet(set, debug: debug);
 
 			return View(model: parts);
 		}
@@ -54,6 +55,23 @@ namespace CoolCatCollects.Controllers
 			var parts = _service.GetPartsFromSet(set, true);
 
 			return View(model: parts);
+		}
+
+		public ActionResult ExportRemarks(string remarks, string set)
+		{
+			var allRemarks = remarks.Split(',');
+
+			var service = new WordExportService();
+			var filename = service.ExportRemarks(allRemarks, set, Server.MapPath("~/App_Data/"));
+
+			byte[] content = System.IO.File.ReadAllBytes(filename);
+			Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+			Response.AddHeader("content-disposition", "attachment; filename=output-" + set + ".docx");
+			Response.BufferOutput = true;
+			Response.OutputStream.Write(content, 0, content.Length);
+			Response.End();
+
+			return Content("");
 		}
 
 		[HttpPost]

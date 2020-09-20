@@ -271,7 +271,7 @@ namespace CoolCatCollects.Bricklink
 		/// </summary>
 		/// <param name="set">Set number. Should already be checked to include -1</param>
 		/// <returns>A list of parts</returns>
-		public SubsetPartsListModel GetPartsFromSet(string set, bool byRemark = false, bool forceUpdate = false)
+		public SubsetPartsListModel GetPartsFromSet(string set, bool byRemark = false, bool debug = false)
 		{
 			var responseModel = _apiService.GetRequest<GetSubsetResponse>($"items/SET/{set}/subsets");
 
@@ -280,7 +280,7 @@ namespace CoolCatCollects.Bricklink
 			model.Parts = model.Parts
 				.Select(x =>
 				{
-					var part = _dataService.GetPartModel(x.Number, x.ColourId, x.Type, "N", forceUpdate);
+					var part = _dataService.GetPartModel(x.Number, x.ColourId, x.Type, "N", !debug);
 
 					x.MyPrice = part.PartInventory.MyPrice.ToString("N3");
 
@@ -314,6 +314,7 @@ namespace CoolCatCollects.Bricklink
 			else
 			{
 				model.Parts = model.Parts
+					.Where(x => !string.IsNullOrEmpty(x.Remark))
 					.OrderBy(x => x.RemarkLetter3)
 					.ThenBy(x => x.RemarkLetter2)
 					.ThenBy(x => x.RemarkLetter1)

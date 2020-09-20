@@ -32,6 +32,16 @@
 </label>
 <button type="button" class="btn btn-default" id="setQtyApply">Apply</button>
 
+<br/>
+
+<button type="button" class="btn btn-default" id="exportRemarksPrepare">
+	Prepare to Print Remarks
+</button>
+<a href="#" target="_blank" id="exportRemarks" class="disabled btn btn-primary" disabled download
+   data-href="@Url.Action("ExportRemarks", new { set = Request.QueryString["set"] })">
+	Print Remarks
+</a>
+
 @using (Html.BeginForm("ExportXml", "BricklinkCatalog", new { }))
 {
 	<table class="partstable table table-striped table-bordered table-hover">
@@ -90,7 +100,7 @@
 					}
 
 					<td><input class="form-control qty" type="text" name="items[@i].QTY" value="@part.Quantity" data-val="@part.Quantity" /></td>
-					<td><input class="form-control" type="text" name="items[@i].REMARKS" value="@part.Remark" data-val="@part.Remark" /></td>
+					<td><input class="form-control remark" type="text" name="items[@i].REMARKS" value="@part.Remark" data-val="@part.Remark" /></td>
 					<td><input class="form-control price" type="text" name="items[@i].pricestr" value="@part.MyPrice" data-val="@part.MyPrice" /></td>
 					<td>@part.AveragePrice</td>
 				</tr>
@@ -106,11 +116,15 @@
 		<a href="https://www.bricklink.com/invXML.asp" target="_blank" id="bl" class="f-right btn btn-warning" style="display: none;">Bricklink</a>
 		<button id="copy" class="f-right btn btn-default" style="display: none;"><span class="glyphicon glyphicon-copy"></span>&nbsp;Copy</button>
 
-		<br/>
+		<br />
 		<textarea id="output" class="form-control" style="width: 100%; display: none;"></textarea>
 	</div>
 }
-<br/><br/>
+
+
+
+<br />
+<br />
 <div>IMPORT INTO BRICKLINK FIRST!</div>
 <a href="@Url.Action("PartsByRemark", new { set = Request.QueryString["set"] })" target="_blank" class="btn btn-primary">Parts by remark</a>
 

@@ -131,3 +131,15 @@ tr.titlerow td {
 .relative {
 	position: relative;
 }
+
+.clear {
+	clear: both;
+}
+
+.f-right {
+	float: right;
+}
+
+.f-left {
+	float: left;
+}

@@ -41,4 +41,29 @@
 			input.val(qty * orig);
 		});
 	});
+
+	$('.remark').change(function () {
+		$('#exportRemarks').attr('disabled', 'disabled');
+	});
+
+	$('#exportRemarksPrepare').click(function () {
+		var str = "";
+
+		$('.remark').each(function () {
+			var val = $(this).val();
+			if (val.length > 0) {
+				str += $(this).val() + ",";
+			}
+		});
+
+		str = str.substr(0, str.length - 1);
+
+		var btn = $('#exportRemarks');
+
+		btn.removeAttr('disabled');
+		btn.removeClass('disabled');
+		btn.attr('href', btn.attr('data-href') + '&remarks=' + str)
+
+		return false;
+	});
 });

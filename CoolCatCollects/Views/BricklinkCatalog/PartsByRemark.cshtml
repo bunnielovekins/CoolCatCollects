@@ -12,7 +12,20 @@
 	@Scripts.Render("~/bundles/jquery")
 }
 
-<h1>Parts List</h1>
+<div class="clear">
+	<h1 class="f-left">Parts List</h1>
+	<a href="@Url.Action("ExportRemarks", new { 
+				remarks = Model.Parts
+					.OrderBy(x => x.Status)
+					.ThenBy(x => x.Colour.Name)
+					.ThenBy(x => x.Number)
+					.Select(x => x.Remark)
+					.Aggregate((current, next) => current + "," + next)
+				, set = Request.QueryString["set"] })"
+	   target="_blank" class="btn btn-primary no-print f-right">
+		Print Remarks
+	</a>
+</div>
 
 <table class="parts">
 	<thead>
