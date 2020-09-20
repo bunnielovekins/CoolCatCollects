@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Web;
 
 namespace CoolCatCollects.Bricklink
@@ -270,7 +271,7 @@ namespace CoolCatCollects.Bricklink
 		/// </summary>
 		/// <param name="set">Set number. Should already be checked to include -1</param>
 		/// <returns>A list of parts</returns>
-		public SubsetPartsListModel GetPartsFromSet(string set)
+		public SubsetPartsListModel GetPartsFromSet(string set, bool byRemark = false, bool forceUpdate = false)
 		{
 			var responseModel = _apiService.GetRequest<GetSubsetResponse>($"items/SET/{set}/subsets");
 
@@ -279,9 +280,15 @@ namespace CoolCatCollects.Bricklink
 			model.Parts = model.Parts
 				.Select(x =>
 				{
-					var part = _dataService.GetPartModel(x.Number, x.ColourId, x.Type, "N", true);
+					var part = _dataService.GetPartModel(x.Number, x.ColourId, x.Type, "N", forceUpdate);
 
-					x.MyPrice = part.PartInventory.MyPrice.ToString();
+					x.MyPrice = part.PartInventory.MyPrice.ToString("N3");
+
+					if (part.PartInventory.MyPrice == 0m)
+					{
+						x.MyPrice = GeneratePrice(part.PartPriceInfo.AveragePrice);
+					}
+
 					x.Remark = part.PartInventory.Location;
 					x.AveragePrice = part.PartPriceInfo.AveragePrice +
 						(string.IsNullOrEmpty(part.PartPriceInfo.AveragePriceLocation) ? "" : " " + part.PartPriceInfo.AveragePriceLocation);
@@ -292,13 +299,36 @@ namespace CoolCatCollects.Bricklink
 						x.ColourName = x.Colour.Name;
 					}
 
+					x.FillRemarks();
+
 					return x;
-				})
-				.OrderBy(x => x.Status)
-				.ThenBy(x => x.Colour.Name)
-				.ThenBy(x => x.Number).ToList();
+				});
+
+			if (!byRemark)
+			{
+				model.Parts = model.Parts
+					.OrderBy(x => x.Status)
+					.ThenBy(x => x.Colour.Name)
+					.ThenBy(x => x.Number).ToList();
+			}
+			else
+			{
+				model.Parts = model.Parts
+					.OrderBy(x => x.RemarkLetter3)
+					.ThenBy(x => x.RemarkLetter2)
+					.ThenBy(x => x.RemarkLetter1)
+					.ThenBy(x => x.RemarkNumber)
+					.ThenBy(x => x.Name).ToList();
+			}
 
 			return model;
+		}
+
+		private string GeneratePrice(decimal averagePrice)
+		{
+			var pence = averagePrice * 100;
+			var rounded = Math.Round(pence);
+			return (rounded / 100).ToString("N3");
 		}
 
 		/// <summary>

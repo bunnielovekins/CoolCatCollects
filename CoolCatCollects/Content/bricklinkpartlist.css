@@ -76,32 +76,6 @@ tr.titlerow td {
 	font-size: 20px;
 }
 
-.check {
-	width: 60px;
-	height: 60px;
-	border: 1px #999 solid;
-	border-radius: 3px;
-	margin: auto;
-	background: white;
-	position: relative;
-	display: block;
-	cursor: pointer;
-}
-
-	.check input {
-		opacity: 0;
-	}
-
-		.check input:checked + span:after {
-			content: '✔';
-			position: absolute;
-			font-size: 50px;
-			left: 10px;
-			top: -5px;
-			cursor: pointer;
-		}
-
-
 .parts tbody {
 	cursor: pointer;
 }

@@ -1,6 +1,7 @@
 ﻿using CoolCatCollects.Bricklink.Models.Responses;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CoolCatCollects.Bricklink.Models
 {
@@ -51,6 +52,37 @@ namespace CoolCatCollects.Bricklink.Models
 			Image = Type == "MINIFIG" ?
 				$"https://img.bricklink.com/M/{item.no}.jpg" :
 				$"https://img.bricklink.com/P/{entry.color_id}/{item.no}.jpg";
+
+			FillRemarks();
+		}
+
+		public void FillRemarks()
+		{
+			if (!string.IsNullOrEmpty(Remark))
+			{
+				var regex = new Regex("(\\D*)(\\d*)");
+				var match = regex.Match(Remark);
+				if (match.Success)
+				{
+					if (match.Groups.Count > 0 && !string.IsNullOrEmpty(match.Groups[1].Value))
+					{
+						RemarkLetter1 = match.Groups[1].Value[0];
+						RemarkLetter2 = match.Groups[1].Value.Length > 1 ? match.Groups[1].Value[1] : ' ';
+						RemarkLetter3 = match.Groups[1].Value.Length > 2 ? match.Groups[1].Value[2] : ' ';
+					}
+					if (match.Groups.Count > 1)
+					{
+						if (int.TryParse(match.Groups[2].Value, out int tmpNum))
+						{
+							RemarkNumber = tmpNum;
+						}
+						else
+						{
+							RemarkNumber = 0;
+						}
+					}
+				}
+			}
 		}
 
 		public SubsetPartModel()
@@ -76,5 +108,11 @@ namespace CoolCatCollects.Bricklink.Models
 		public int Category { get; set; }
 		public string MyPrice { get; set; }
 		public string Image { get; set; }
+
+		public char RemarkLetter1 { get; set; }
+		public char RemarkLetter2 { get; set; }
+		public char RemarkLetter3 { get; set; }
+
+		public int RemarkNumber { get; set; }
 	}
 }

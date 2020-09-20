@@ -1,0 +1,56 @@
+﻿@model CoolCatCollects.Bricklink.Models.SubsetPartsListModel
+
+@{
+	Layout = "~/Views/Shared/_MinimalLayout.cshtml";
+}
+
+@section styles {
+	<link href="~/Content/bricklinkpartlist.css?v=2" rel="stylesheet" />
+}
+
+@section scripts {
+	@Scripts.Render("~/bundles/jquery")
+}
+
+<h1>Parts List</h1>
+
+<table class="parts">
+	<thead>
+		<tr>
+			<th>Image</th>
+			<th>Name</th>
+			<th>Number</th>
+			<th title="Quantity">Q.</th>
+			<th>Type</th>
+			<th>Colour</th>
+			<th>Remark</th>
+			<th>My Price</th>
+			<th>Avg Price</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var part in Model.Parts)
+		{
+			<tr class="part">
+				<td><img src="@part.Image" /></td>
+				<td class="nopad">@HttpUtility.HtmlDecode(part.Name)</td>
+				<td>@part.Number</td>
+				<td>@part.Quantity</td>
+				<td>@part.Type</td>
+				@if (part.Colour != null)
+				{
+					<td style="white-space: nowrap;">
+						@part.ColourName
+					</td>
+				}
+				else
+				{
+					<td></td>
+				}
+				<td>@part.Remark</td>
+				<td>@part.MyPrice</td>
+				<td>@part.AveragePrice</td>
+			</tr>
+		}
+	</tbody>
+</table>
