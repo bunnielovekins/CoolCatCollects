@@ -1,0 +1,53 @@
+﻿@model IEnumerable<CoolCatCollects.Models.UsedFigureImportModel>
+@{
+    ViewBag.Title = "Upload Used Figures";
+}
+
+<h2>Upload Used Figures</h2>
+
+<table class="table">
+    <tr>
+        <th>Title</th>
+        <th>Number</th>
+        <th>Condition</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            @using (Html.BeginForm("FormResult", "ListingGenerator", FormMethod.Get, new { target = "_blank" }))
+            {
+                <input type="hidden" name="model.Type" value="UsedFigSingle" />
+                <td>
+                    <input class="form-control" type="text" value="@item.Title" name="model.Title" />
+                </td>
+                <td class="thin">
+                    <input class="form-control" type="text" value="@item.Number" name="model.Number" />
+                </td>
+                <td class="medium">
+                    <input class="form-control" type="text" value="@item.Condition" name="model.Condition" />
+                </td>
+                <td class="thinner">
+                    <input class="btn btn-primary" type="submit" value="Create" />
+                </td>
+            }
+        </tr>
+    }
+</table>
+
+@section styles
+{
+    <style>
+        .thin {
+            width: 150px;
+        }
+
+        .thinner {
+            width: 70px;
+        }
+
+        .medium {
+            width: 300px;
+        }
+    </style>
+}

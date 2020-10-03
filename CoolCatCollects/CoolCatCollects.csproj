@@ -58,6 +58,12 @@
     <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.SqlServerCompact.6.4.4\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -65,12 +71,16 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="RazorEngine, Version=3.10.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RazorEngine.3.10.0\lib\net45\RazorEngine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -160,6 +170,7 @@
     <Compile Include="Controllers\ExpensesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
+    <Compile Include="Controllers\ListingGeneratorController.cs" />
     <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\NewPurchasesController.cs" />
     <Compile Include="Controllers\PostageController.cs" />
@@ -169,9 +180,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DatabaseUpdateModel.cs" />
+    <Compile Include="Models\ListingGeneratorFormModel.cs" />
     <Compile Include="Models\LocationHistoryModel.cs" />
     <Compile Include="Models\LogListModel.cs" />
     <Compile Include="Models\PostageModel.cs" />
+    <Compile Include="Models\UsedFigureImportModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +232,16 @@
     <Content Include="Views\eBaySlip\UnfulfilledOrders.cshtml" />
     <Content Include="Views\eBaySlip\CombinedSlip.cshtml" />
     <Content Include="Views\BricklinkCatalog\PartsByRemark.cshtml" />
+    <Content Include="Views\ListingGenerator\Index.cshtml" />
+    <Content Include="Views\ListingGenerator\Form.cshtml" />
+    <Content Include="Views\ListingGenerator\Templates\NewFigSingle.cshtml" />
+    <Content Include="Views\ListingGenerator\FormResult.cshtml" />
+    <Content Include="Views\ListingGenerator\Templates\NewFigMulti.cshtml" />
+    <Content Include="Views\ListingGenerator\Templates\UsedFigSingle.cshtml" />
+    <Content Include="Views\ListingGenerator\Templates\UsedFigMulti.cshtml" />
+    <Content Include="Views\ListingGenerator\Templates\Bundle1kg.cshtml" />
+    <Content Include="Views\ListingGenerator\Templates\Bundle500g.cshtml" />
+    <Content Include="Views\ListingGenerator\UploadUsedFigures.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

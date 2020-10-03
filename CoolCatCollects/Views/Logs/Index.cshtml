@@ -1,132 +1,134 @@
 ﻿@model CoolCatCollects.Models.LogListModel
+@{
+    var dropdown = new List<SelectListItem>
+{
+        new SelectListItem { Text = "Select", Disabled = true, Selected = true, Value = "" },
+        new SelectListItem { Value = "eBay", Text = "eBay", Selected = Model.Category == "eBay" },
+        new SelectListItem { Value = "Bricklink", Text = "Bricklink", Selected = Model.Category == "Bricklink" },
+        new SelectListItem { Value = "Process", Text = "Process", Selected = Model.Category == "Process" },
+        new SelectListItem { Value = "Stock", Text = "Stock", Selected = Model.Category == "Stock" },
+        new SelectListItem { Value = "Bricklink Orders", Text = "Bricklink Orders", Selected = Model.Category == "Bricklink Orders" },
+        new SelectListItem { Value = "eBay Orders", Text = "eBay Orders", Selected = Model.Category == "Bricklink Orders" },
+        new SelectListItem { Value = "Other", Text = "Other", Selected = Model.Category == "Other" }
+    };
+
+    ViewBag.Title = "Logs";
+}
 
 <h1>Logs</h1>
 <p>
-	@Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-primary" })
 </p>
-@{
-	var dropdown = new List<SelectListItem>
-	{
-		new SelectListItem { Text = "Select", Disabled = true, Selected = true, Value = "" },
-		new SelectListItem { Value = "eBay", Text = "eBay", Selected = Model.Category == "eBay" },
-		new SelectListItem { Value = "Bricklink", Text = "Bricklink", Selected = Model.Category == "Bricklink" },
-		new SelectListItem { Value = "Process", Text = "Process", Selected = Model.Category == "Process" },
-		new SelectListItem { Value = "Stock", Text = "Stock", Selected = Model.Category == "Stock" },
-		new SelectListItem { Value = "Bricklink Orders", Text = "Bricklink Orders", Selected = Model.Category == "Bricklink Orders" },
-		new SelectListItem { Value = "eBay Orders", Text = "eBay Orders", Selected = Model.Category == "Bricklink Orders" },
-		new SelectListItem { Value = "Other", Text = "Other", Selected = Model.Category == "Other" }
-	}; 
-}
 
 <div class="clear">
-	<form class="f-left">
-		<input type="hidden" name="sort" value="@Model.Sort" />
-		<input type="hidden" name="search" value="@Model.Search" />
-		<table>
-			<tr>
-				<th>Category</th>
-				<th></th>
-			</tr>
-			<tr>
-				<td>
-					@Html.DropDownList("category", dropdown, new { @class = "form-control" })
-				</td>
-				<td>
-					<button type="submit" class="btn btn-default">Filter</button>
-					@if (!string.IsNullOrWhiteSpace(Model.Category))
-					{
-						<a class="btn btn-default" href="?@SetParam("category", "")">Clear Filters</a>
-					}
-				</td>
-			</tr>
-		</table>
-	</form>
-	<form class="f-right">
-		<input type="hidden" name="sort" value="@Model.Sort" />
-		<input type="hidden" name="category" value="@Model.Category" />
+    <form class="f-left">
+        <input type="hidden" name="sort" value="@Model.Sort" />
+        <input type="hidden" name="search" value="@Model.Search" />
+        <table>
+            <tr>
+                <th>Category</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DropDownList("category", dropdown, new { @class = "form-control" })
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-default">Filter</button>
+                    @if (!string.IsNullOrWhiteSpace(Model.Category))
+                    {
+                        <a class="btn btn-default" href="?@SetParam("category", "")">Clear Filters</a>
+                    }
+                </td>
+            </tr>
+        </table>
+    </form>
+    <form class="f-right">
+        <input type="hidden" name="sort" value="@Model.Sort" />
+        <input type="hidden" name="category" value="@Model.Category" />
 
-		<table>
-			<tr>
-				<td>
-					<input type="text" placeholder="Search..." name="search" class="form-control" value="@Model.Search" />
-				</td>
-				<td>
-					<button type="submit" class="btn btn-default">Search</button>
-					@if (!string.IsNullOrWhiteSpace(Model.Search))
-					{
-						<a class="btn btn-default" href="?@SetParam("search", "")">Clear Search</a>
-					}
-				</td>
-			</tr>
-		</table>
-	</form>
+        <table>
+            <tr>
+                <td>
+                    <input type="text" placeholder="Search..." name="search" class="form-control" value="@Model.Search" />
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-default">Search</button>
+                    @if (!string.IsNullOrWhiteSpace(Model.Search))
+                    {
+                        <a class="btn btn-default" href="?@SetParam("search", "")">Clear Search</a>
+                    }
+                </td>
+            </tr>
+        </table>
+    </form>
 </div>
 
 
 @if (Model.Items.Any())
 {
-	var itm = Model.Items.First();
-	<table class="table">
-		<tr>
-			<th>
-				<a href="?@SetParam("sort", Model.SortToggle)" class="textlink">
-					@Html.DisplayNameFor(model => itm.Date)
-					<span class="glyphicon @(Model.SortAsc ? "glyphicon-triangle-top" : "glyphicon-triangle-bottom")"></span>
-				</a>
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => itm.Title)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => itm.Category)
-			</th>
-			<th></th>
-		</tr>
+    var itm = Model.Items.First();
+    <table class="table">
+        <tr>
+            <th>
+                <a href="?@SetParam("sort", Model.SortToggle)" class="textlink">
+                    @Html.DisplayNameFor(model => itm.Date)
+                    <span class="glyphicon @(Model.SortAsc ? "glyphicon-triangle-top" : "glyphicon-triangle-bottom")"></span>
+                </a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => itm.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => itm.Category)
+            </th>
+            <th></th>
+        </tr>
 
-		@foreach (var item in Model.Items)
-		{
-			<tr data-toggle="collapse" data-target="#accordion-@item.Id">
-				<td>
-					@Html.DisplayFor(modelItem => item.Date)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Title)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Category)
-				</td>
-				<td style="width: 140px;">
-					@Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
-					@Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
-				</td>
-			</tr>
-			<tr id="accordion-@item.Id" class="collapse">
-				<td style="white-space: pre-wrap" colspan="2"><strong>Note</strong><br />@Html.DisplayFor(modelItem => item.Note)</td>
-				<td style="white-space: pre-wrap" colspan="2"><strong>Further Note</strong><br />@Html.DisplayFor(modelItem => item.FurtherNote)</td>
-			</tr>
-		}
-	</table>
+        @foreach (var item in Model.Items)
+        {
+            <tr data-toggle="collapse" data-target="#accordion-@item.Id">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td style="width: 140px;">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+            <tr id="accordion-@item.Id" class="collapse">
+                <td style="white-space: pre-wrap" colspan="2"><strong>Note</strong><br />@Html.DisplayFor(modelItem => item.Note)</td>
+                <td style="white-space: pre-wrap" colspan="2"><strong>Further Note</strong><br />@Html.DisplayFor(modelItem => item.FurtherNote)</td>
+            </tr>
+        }
+    </table>
 }
 else
 {
-	<br />
-	<br />
-	<br />
-	<br />
-	<p>
-		No logs found
-	</p>
+    <br />
+    <br />
+    <br />
+    <br />
+    <p>
+        No logs found
+    </p>
 }
 
 @functions
 {
-	string SetParam(string param, string value)
-	{
-		var uri = Request.Url.Query;
-		var parts = HttpUtility.ParseQueryString(uri);
-		parts[param] = value;
-		var url = parts.ToString();
+    string SetParam(string param, string value)
+    {
+        var uri = Request.Url.Query;
+        var parts = HttpUtility.ParseQueryString(uri);
+        parts[param] = value;
+        var url = parts.ToString();
 
-		return url;
-	}
+        return url;
+    }
 }

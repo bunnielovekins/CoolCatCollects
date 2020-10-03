@@ -89,3 +89,7 @@ a.textlink {
 #ui-datepicker-div {
 	z-index: 10 !important;
 }
+
+.fullwidth {
+	width: 100%
+}

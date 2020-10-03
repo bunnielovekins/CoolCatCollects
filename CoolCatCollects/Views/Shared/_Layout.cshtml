@@ -21,16 +21,34 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li>@Html.ActionLink("Bricklink Postage", "List", "BricklinkPostage", new { area = "" }, null)</li>
-					<li>@Html.ActionLink("Bricklink Slips", "List", "BricklinkSlip", new { area = "" }, null)</li>
-					<li>@Html.ActionLink("eBay Slips", "List", "eBaySlip", new { area = "" }, null)</li>
-					<li>@Html.ActionLink("Postage", "Index", "Postage", new { area = "" }, null)</li>
-					<li>@Html.ActionLink("Bricklink Catalog", "Index", "BricklinkCatalog", new { area = "" }, null)</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+							Bricklink
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li>@Html.ActionLink("Postage Export", "List", "BricklinkPostage", new { area = "" }, null)</li>
+							<li>@Html.ActionLink("Bricklink Slips", "List", "BricklinkSlip", new { area = "" }, null)</li>
+							<li>@Html.ActionLink("Bricklink Catalog", "Index", "BricklinkCatalog", new { area = "" }, null)</li>
+							<li>@Html.ActionLink("Query Inventory", "Index", "Inventory", new { area = "" }, null)</li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+							eBay
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li>@Html.ActionLink("eBay Slips", "List", "eBaySlip", new { area = "" }, null)</li>
+							<li>@Html.ActionLink("Postage Bands", "Index", "Postage", new { area = "" }, null)</li>
+							<li>@Html.ActionLink("Listing Generator", "Index", "ListingGenerator", new { area = "" }, null)</li>
+						</ul>
+					</li>
+
 					<li>@Html.ActionLink("Logs", "Index", "Logs", new { area = "" }, null)</li>
 					<li>@Html.ActionLink("New Purchases", "Index", "NewPurchases", new { area = "" }, null)</li>
 					<li>@Html.ActionLink("Used Purchases", "Index", "UsedPurchases", new { area = "" }, null)</li>
 					<li>@Html.ActionLink("Expenses", "Index", "Expenses", new { area = "" }, null)</li>
-					<li>@Html.ActionLink("Inventory", "Index", "Inventory", new { area = "" }, null)</li>
 				</ul>
 			</div>
 		</div>

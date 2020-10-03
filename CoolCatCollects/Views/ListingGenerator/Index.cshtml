@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Listing Generators";
+}
+
+<h2>Listing Generators</h2>
+
+<a href="@Url.Action("Form")" class="btn btn-default">
+    Form
+</a>
+
+<br/>
+<br/>
+
+@using (Html.BeginForm("UploadUsedFigures", "ListingGenerator", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <h3>Upload used figures</h3>
+    <input type="file" accept=".xlsx, .xls" name="file" required class="form-control-file" />
+    <input type="submit" value="Submit" class="btn btn-primary" />
+}

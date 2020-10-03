@@ -1,0 +1,61 @@
+﻿@model CoolCatCollects.Models.ListingGeneratorFormModel
+@{
+    ViewBag.Title = "FormResult";
+}
+
+<h2>Listing</h2>
+
+<button class="btn btn-primary" data-copy="output"><span class="glyphicon glyphicon-copy"></span>&nbsp;Copy</button>
+<a href="@Url.Action("ViewTemplate", "ListingGenerator", Model.NoHtml())" target="_blank" class="btn btn-default">
+    <span class="glyphicon glyphicon-new-window"></span>
+    View
+</a>
+<textarea class="form-control" id="output">
+@Model.Html
+</textarea>
+
+<br />
+
+@ShowField("Title", Model.Title)
+@ShowField("Number", Model.Number)
+@ShowField("Condition", Model.Condition)
+@ShowField("Colour", Model.Colour)
+@ShowField("Colour Description", Model.ColourDescription)
+
+@helper ShowField(string title, string value)
+{
+    if (value.IsEmpty())
+    {
+        return;
+    }
+    <label for="@title.ToLower()" class="fullwidth">
+        @title
+        <div class="input-group">
+            <input type="text" class="form-control" id="@title.ToLower()" name="@title.ToLower()" value="@value" />
+            <div class="input-group-btn">
+                <button class="btn btn-default" type="button" data-copy="@title.ToLower()">
+                    <span class="glyphicon glyphicon-copy"></span>&nbsp;Copy
+                </button>
+            </div>
+        </div>
+    </label>
+    <br/>
+}
+
+@section scripts{
+    <script>
+        $(function () {
+            $('[data-copy]').click(function () {
+                var id = $(this).attr('data-copy');
+
+                var output = $('#' + id);
+
+                var op = output[0];
+
+                op.select();
+                op.setSelectionRange(0, 99999);
+                document.execCommand("copy");
+            });
+        });
+    </script>
+}

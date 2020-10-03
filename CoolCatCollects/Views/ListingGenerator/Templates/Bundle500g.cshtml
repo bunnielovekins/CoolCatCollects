@@ -1,0 +1,576 @@
+﻿@model CoolCatCollects.Models.ListingGeneratorFormModel
+@{
+    Layout = null;
+}
+
+<div id="listing-container">
+    <picture id="banner">
+        <source media="(min-width: 981px)" srcset="https://i.ibb.co/JjZFzjs/Listing-Banner-1393x150-v1-1.jpg">
+        <source media="(min-width: 601px)" srcset="https://i.ibb.co/LNCTfgY/Listing-Banner-980x150-v1-1.jpg">
+        <source media="(min-width: 481px)" srcset="https://i.ibb.co/5TpPffK/Listing-Banner-600x124-v1-1.jpg">
+        <img src="https://i.ibb.co/f8XjxNz/Listing-Banner-480x100-v1-1.jpg" alt="Thanks for visiting cool cat collects!">
+    </picture>
+    <nav id="menu">
+        <ul>
+            <li><a target="_blank" href="https://www.ebay.co.uk/str/Cool-Cat-Collects">Home</a></li>
+            <li><a target="_blank" href="https://www.ebay.co.uk/sme/coolcat-collectables/offers.html">Deals</a></li>
+            <li><a target="_blank" href="https://www.ebay.co.uk/fdbk/feedback_profile/coolcat-collectables?filter=feedback_page:All">Feedback</a></li>
+            <li><a target="_blank" href="https://contact.ebay.co.uk/ws/eBayISAPI.dll?ReturnUserEmail&requested=coolcat-collectables">Contact Us</a></li>
+            <li class="categories">
+                <div>
+                    <input type="checkbox" id="cat-check" />
+                    <label for="cat-check"><span>Shop Categories</span></label>
+                    <nav id="categories">
+                        <ul>
+                            <li><a target="_blank" href="https://www.ebay.co.uk/str/coolcatcollects/Lego-Minifigures/_i.html?_storecat=31858046014">Lego Minifigures</a></li>
+                            <li><a target="_blank" href="https://www.ebay.co.uk/str/coolcatcollects/Used-Lego-Bundles/_i.html?_storecat=31858047014">Used Lego Bundles</a></li>
+                            <li><a target="_blank" href="https://www.ebay.co.uk/str/coolcatcollects/Other-Lego/_i.html?_storecat=31858048014">Other Lego</a></li>
+                            <li><a target="_blank" href="https://www.ebay.co.uk/str/coolcatcollects/Other/_i.html?_storecat=1">Other Items</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <aside>
+            <h2>Shop Categories</h2>
+            <ul>
+                <li><a target="_blank" href="https://www.ebay.co.uk/str/coolcatcollects/Lego-Minifigures/_i.html?_storecat=31858046014">Lego Minifigures</a></li>
+                <li><a target="_blank" href="https://www.ebay.co.uk/str/coolcatcollects/Used-Lego-Bundles/_i.html?_storecat=31858047014">Used Lego Bundles</a></li>
+                <li><a target="_blank" href="https://www.ebay.co.uk/str/coolcatcollects/Other-Lego/_i.html?_storecat=31858048014">Other Lego</a></li>
+                <li><a target="_blank" href="https://www.ebay.co.uk/str/coolcatcollects/Other/_i.html?_storecat=1">Other Items</a></li>
+            </ul>
+        </aside>
+
+        <main>
+            <div>
+                <h2>Product Description</h2>
+                <div class="main-container">
+                    <div class="description-text">
+                        <h1>Genuine Lego 500g Bundle of @Model.Colour</h1>
+                        <p>
+                            For sale we have various 500g mixed bundles of genuine high-quality used Lego parts + 1 Free randomly picked minifigure with every bundle.<br />
+                            @Model.ColourDescription<br />
+                            You are guaranteed to receive a great mix of bricks of all different sizes and functions.
+                        </p>
+                        <p><em>Please refer to photographs provided for an example of a 500g bundle.</em></p>
+
+                        <h3>Condition:</h3>
+                        <p>
+                            Our aim is to provide you with great quality pre-used bricks that range in condition from being lightly played to nearly new. Before being listed, all pieces have been carefully sorted through and cleaned with any damaged / non-Lego pieces removed. <br />
+                            Rest assured, we are huge fans of Lego and have 10+ years’ experience in the hobby and really care about the quality of bricks we provide.
+                        </p>
+
+                        <h4>Please Note:</h4>
+                        <p>Despite every best effort, on occasion some non-lego pieces may slip though into our lots. To offset this, we have added an additional 10% (50g) to each bundle.</p>
+                        <p>We have many used Lego bundles for sale in a variety of different colours and weights. Why don’t you buy 2 or more lots, and we will deduct 10% off at checkout.</p>
+                    </div>
+
+                    <a target="_blank" href="https://www.ebay.co.uk/sme/coolcat-collectables/Buy-2-Get-10-off/so.html?_soffType=OrderSubTotalOffer&_soffid=6083825504">
+                        <picture id="promotion-banner">
+                            <source media="(min-width: 981px)" srcset="https://i.ibb.co/DL9TCCY/Lego-Bundle-Promo-1072x200-v2-3.jpg">
+                            <source media="(min-width: 601px)" srcset="https://i.ibb.co/drwvGZQ/Lego-Bundle-Promo-932x180-v1-2.jpg">
+                            <source media="(min-width: 481px)" srcset="https://i.ibb.co/L9v6HmR/Lego-Bundle-Promo-552x124-v1-2.jpg">
+                            <img src="https://i.ibb.co/WWHGTdh/Lego-Bundle-Promo-432x100-v1-2.jpg" alt="Thanks for visiting cool cat collects!">
+                        </picture>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <section id="tabs">
+        <input id="tab0" type="radio" name="tabs" checked />
+        <!--
+        -->
+        <label for="tab0">About Us</label>
+        <!--
+        -->
+        <input id="tab1" type="radio" name="tabs" />
+        <!--
+        -->
+        <label for="tab1">Payment</label>
+        <!--
+        -->
+        <input id="tab2" type="radio" name="tabs" />
+        <!--
+        -->
+        <label for="tab2">Shipping</label>
+        <!--
+        -->
+        <input id="tab3" type="radio" name="tabs" />
+        <!--
+        -->
+        <label for="tab3">Returns</label>
+        <!--
+        -->
+        <input id="tab4" type="radio" name="tabs" />
+        <!--
+        -->
+        <label for="tab4">Contact</label>
+        <!--
+        -->
+        <section id="about">
+            <p>Hello and thank you for visiting our shop!</p>
+            <p>
+                We are a couple of friendly collectible toy enthusiasts based in Lancaster,
+                specialising in selling Lego and Minifigures.
+            </p>
+            <p>Being collectors ourselves, we care very much about the quality of our products and aim to deliver to the highest standard.</p>
+            <p>
+                We are only small at the moment, but are working on expanding our store in the coming months, so please do add us to
+                your favourites.
+            </p>
+            <p>Any feedback or comments are welcomed and much appreciated.</p>
+        </section>
+        <section id="payment">
+            <p>We accept payment via Debit, Credit Card &amp; PayPal via the secure PayPal checkout onsite.</p>
+            <picture class="paypal">
+                <source media="(min-width: 370px)" srcset="https://www.paypalobjects.com/webstatic/mktg/Logo/AM_mc_vs_ms_ae_UK.png">
+                <img src="https://www.paypalobjects.com/webstatic/mktg/logo/bdg_payments_by_pp_2line.png" alt="Thanks for visiting cool cat collects!">
+            </picture>
+        </section>
+        <section id="shipping">
+            <p>We will ship your order within 24 hours of received payment, Monday-Friday. The cut off time on Friday for same day dispatch is 2pm.</p>
+            <p>Shipping is free for all UK orders, regardless of how much you buy.</p>
+            <p>International orders start at £2.80 and will be sent via Royal Mail International standard post.</p>
+            <p>International tracking is available on request for an additional cost of £4. Please select postage option at checkout.</p>
+            <p>
+                Please note: International orders may be subject to import duties and taxes which are levied once a shipment reaches your country.
+                <br />Additional charges for custom clearance must be borne by the buyer. Please check your local customs rates for further information.
+            </p>
+        </section>
+        <section id="returns">
+            <p>If you are not 100% satisfied with your purchase, you can return your item and get a full refund within 30 days from the date of purchase.</p>
+            <p>All we ask is that you return the item to us in the same condition that you received it.</p>
+        </section>
+        <section id="contact">
+            <p>If you have any questions, feedback or problems with your order, please contact us directly via the eBay messaging service.</p>
+            <p>
+                While we make every best effort to fulfill all our orders to the highest standard, sometimes mistakes do happen.
+                <br />We will resolve any problems as quickly as possible.
+            </p>
+            <p>We aim to respond within 24 hours, however please allow a little longer over the weekend and public holidays.</p>
+        </section>
+    </section>
+    <picture id="footer-banner">
+        <source media="(min-width: 981px)" srcset="https://i.ibb.co/5hq6NdW/Listing-Footer-1393x150-v1-1.jpg">
+        <source media="(min-width: 601px)" srcset="https://i.ibb.co/0F8HcrK/Listing-Footer-980x150-v1-1.jpg">
+        <source media="(min-width: 481px)" srcset="https://i.ibb.co/ck5zPcK/Listing-Footer-600x124-v1-1.jpg">
+        <img src="https://i.ibb.co/9VHhJQd/Listing-Footer-480x100-v1-1.jpg" alt="Thanks for visiting cool cat collects!">
+    </picture>
+</div>
+
+<style>
+    #listing-container {
+        width: 1399px;
+        font-family: Arial;
+        color: #333;
+        margin: auto;
+        font-size: 16px
+    }
+
+        #listing-container ul {
+            list-style: none
+        }
+
+        #listing-container header {
+            height: 150px
+        }
+
+        #listing-container #banner {
+            margin-bottom: 5px
+        }
+
+        #listing-container h2 {
+            margin: 0;
+            padding: 10px;
+            background: #449dc9;
+            color: #fff;
+            border-bottom: 1px solid #ddd
+        }
+
+        #listing-container picture > img {
+            vertical-align: middle
+        }
+
+        #listing-container picture#banner, #listing-container picture#footer-banner {
+            object-fit: fill
+        }
+
+            #listing-container picture#banner > img, #listing-container picture#footer-banner > img {
+                padding: 0 2px
+            }
+
+        #listing-container nav#menu {
+            color: #fff;
+            box-sizing: border-box
+        }
+
+            #listing-container nav#menu > ul {
+                background: #449dc9;
+                padding: 5px;
+                margin: 5px 0 5px 0;
+                text-align: center;
+                border: 1px solid #ddd
+            }
+
+                #listing-container nav#menu > ul > li {
+                    display: inline-block;
+                    text-align: center;
+                    padding: 15px 0
+                }
+
+                    #listing-container nav#menu > ul > li.categories {
+                        display: none
+                    }
+
+                    #listing-container nav#menu > ul > li > a {
+                        color: #fff;
+                        text-decoration: none;
+                        padding: 15px 25px 15px 25px;
+                        transition: .3s;
+                        font-weight: 700;
+                        display: inline;
+                        cursor: pointer
+                    }
+
+                    #listing-container nav#menu > ul > li > div {
+                        padding: 15px 25px 15px 25px;
+                        transition: .3s;
+                        display: inline;
+                        cursor: pointer;
+                        position: relative
+                    }
+
+                        #listing-container nav#menu > ul > li > div > label {
+                            color: #fff;
+                            text-decoration: none;
+                            font-weight: 700
+                        }
+
+                            #listing-container nav#menu > ul > li > div > label > span {
+                                margin-right: 5px
+                            }
+
+                        #listing-container nav#menu > ul > li > div > * {
+                            cursor: pointer
+                        }
+
+                        #listing-container nav#menu > ul > li > a:hover, #listing-container nav#menu > ul > li > div:hover {
+                            background: #6096b1
+                        }
+
+        #listing-container nav#categories {
+            display: none;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: 52px;
+            border: 1px solid #bbb;
+            box-sizing: border-box
+        }
+
+            #listing-container nav#categories > ul {
+                padding: 10px
+            }
+
+                #listing-container nav#categories > ul > li {
+                    padding-top: 3px;
+                    padding-bottom: 3px
+                }
+
+                    #listing-container nav#categories > ul > li:hover {
+                        background: #449dc9
+                    }
+
+                    #listing-container nav#categories > ul > li:nth-child(1) {
+                        padding-top: 0
+                    }
+
+                    #listing-container nav#categories > ul > li:last-child {
+                        padding-bottom: 0
+                    }
+
+                    #listing-container nav#categories > ul > li > a {
+                        text-decoration: none;
+                        color: #fff
+                    }
+
+        #listing-container nav#menu > ul > li.categories > div > input {
+            position: absolute;
+            opacity: 0;
+            z-index: -1
+        }
+
+            #listing-container nav#menu > ul > li.categories > div > input:checked ~ nav#categories {
+                display: block;
+                background: #6096b1;
+                z-index: 10
+            }
+
+        #listing-container nav#menu > ul > li.categories > div > label::after {
+            content: "\276F";
+            width: 1em;
+            text-align: center;
+            -webkit-transition: all .35s;
+            transition: all .35s;
+            display: inline-flex;
+            vertical-align: middle;
+            height: 16px;
+            margin-top: -8px;
+            overflow: visible
+        }
+
+        #listing-container nav#menu > ul > li.categories > div > input:checked + label::after {
+            -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+            margin-top: 0;
+            padding-left: 4px
+        }
+
+        #listing-container aside {
+            width: 20%;
+            box-sizing: border-box;
+            border: 1px solid #ddd
+        }
+
+            #listing-container aside > ul {
+                padding: 20px;
+                margin: 0
+            }
+
+                #listing-container aside > ul > li {
+                    padding: 10px 0
+                }
+
+                    #listing-container aside > ul > li:nth-child(1) {
+                        padding-top: 0
+                    }
+
+                    #listing-container aside > ul > li:last-child {
+                        padding-bottom: 0
+                    }
+
+        #listing-container .container {
+            display: table;
+            width: 100%
+        }
+
+        #listing-container aside, #listing-container main {
+            display: table-cell
+        }
+
+        #listing-container main {
+            width: 80%;
+            border-left: 5px solid transparent
+        }
+
+            #listing-container main > div {
+                border: 1px solid #ddd;
+                box-sizing: border-box
+            }
+
+            #listing-container main .main-container {
+                padding: 20px;
+                position: relative
+            }
+
+            #listing-container main > div > .main-container > .description-text > :nth-child(1) {
+                margin-top: 0
+            }
+
+            #listing-container main > div > .main-container > .description-text > :last-child {
+                margin-bottom: 0
+            }
+
+            #listing-container main > div > .main-container > .description-text > h1 {
+                text-align: center
+            }
+
+            #listing-container main > div > .main-container > .description-text > h1, #listing-container main > div > .main-container > .description-text > h2, #listing-container main > div > .main-container > .description-text > h3, #listing-container main > div > .main-container > .description-text > h4 {
+                color: #6096b1
+            }
+
+            #listing-container main > div > .main-container > .description-text > p {
+                line-height: 125%
+            }
+
+        #listing-container picture#promotion-banner {
+            margin-top: 10px;
+            object-fit: fill
+        }
+
+            #listing-container picture#promotion-banner > img {
+                margin-top: 10px
+            }
+
+        #listing-container section#tabs {
+            clear: both;
+            padding-top: 5px;
+            margin-bottom: 5px;
+            border-top: none
+        }
+
+            #listing-container section#tabs > section {
+                display: none;
+                height: 210px;
+                border: 1px solid #ddd;
+                border-top: 4px solid #449dc9;
+                box-sizing: border-box;
+                padding: 15px
+            }
+
+                #listing-container section#tabs > section > p:nth-child(1) {
+                    margin-top: 0
+                }
+
+                #listing-container section#tabs > section > p:last-child {
+                    margin-bottom: 0
+                }
+
+            #listing-container section#tabs > input {
+                display: none
+            }
+
+            #listing-container section#tabs label {
+                display: inline-block;
+                margin: 0 0;
+                padding: 15px 0;
+                font-weight: 600;
+                text-align: center;
+                color: #aaa;
+                box-sizing: border-box;
+                width: 20%;
+                background: #ddd;
+                border: 1px solid #bbb;
+                border-bottom: 0;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px
+            }
+
+                #listing-container section#tabs label:hover {
+                    cursor: pointer
+                }
+
+            #listing-container section#tabs input:checked + label {
+                background: #449dc9;
+                color: #fff
+            }
+
+        #listing-container #tab0:checked ~ #about, #listing-container #tab1:checked ~ #payment, #listing-container #tab2:checked ~ #shipping, #listing-container #tab3:checked ~ #returns, #listing-container #tab4:checked ~ #contact {
+            display: block
+        }
+
+        #listing-container section#related {
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box
+        }
+
+            #listing-container section#related > ul {
+                margin: 15px;
+                padding: 0
+            }
+
+                #listing-container section#related > ul > li {
+                    display: inline-block;
+                    margin: 0 6.5px;
+                    border: 1px solid #ddd;
+                    box-sizing: border-box;
+                    padding: 5px;
+                    height: 255px;
+                    vertical-align: top
+                }
+
+                    #listing-container section#related > ul > li:nth-child(1) {
+                        margin-left: 0
+                    }
+
+                    #listing-container section#related > ul > li:last-child {
+                        margin-right: 0
+                    }
+
+                    #listing-container section#related > ul > li > a {
+                        text-decoration: none;
+                        height: 100%
+                    }
+
+                        #listing-container section#related > ul > li > a > img {
+                            display: block
+                        }
+
+                        #listing-container section#related > ul > li > a > div {
+                            display: block;
+                            text-decoration: underline;
+                            width: 200px;
+                            font-size: 12px
+                        }
+
+    @@media screen and (max-width:1400px) {
+        #listing-container {
+            width: 100%
+        }
+    }
+
+    @@media screen and (max-width:1393px) {
+        #listing-container picture#banner, #listing-container picture#banner > img, #listing-container picture#footer-banner, #listing-container picture#footer-banner > img {
+            width: 100%;
+            padding: 0
+        }
+
+        #listing-container picture#promotion-banner > img {
+            width: 100%
+        }
+
+        #listing-container section#tabs > section {
+            height: 300px
+        }
+    }
+
+    @@media screen and (max-width:980px) {
+        #listing-container aside {
+            display: none
+        }
+
+        #listing-container nav#menu > ul > li.categories {
+            display: inline-block
+        }
+
+        #listing-container main .main-container {
+            padding: 15px
+        }
+    }
+
+    @@media screen and (max-width:700px) {
+        #listing-container section#tabs > section {
+            height: 350px
+        }
+    }
+
+    @@media screen and (max-width:600px) {
+        #listing-container section#tabs label {
+            padding: 15px 0
+        }
+
+        #listing-container section#tabs > section {
+            height: 400px
+        }
+    }
+
+    @@media screen and (max-width:400px) {
+        #listing-container section#tabs label:nth-child(2), #listing-container section#tabs label:nth-child(4) {
+            width: 50%
+        }
+
+        #listing-container section#tabs label {
+            width: 33.33%
+        }
+
+        #listing-container section#tabs > section {
+            height: 600px
+        }
+    }
+</style>
