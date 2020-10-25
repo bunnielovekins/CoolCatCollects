@@ -1,85 +1,123 @@
 ﻿@model CoolCatCollects.Models.ListingGeneratorFormModel
 
 @{
-    ViewBag.Title = "Form";
+	ViewBag.Title = "Form";
 
-    var dropdownType = new List<SelectListItem>
-    {
-        new SelectListItem { Text = "New Figures Single", Value = "NewFigSingle" },
-        new SelectListItem { Text = "New Figures Multi", Value = "NewFigMulti" },
-        new SelectListItem { Text = "Used Figures Single", Value = "UsedFigSingle" },
-        new SelectListItem { Text = "Used Figures Multi", Value = "UsedFigMulti" },
-        new SelectListItem { Text = "Bundle 1kg", Value = "Bundle1kg" },
-        new SelectListItem { Text = "Bundle 500g", Value = "Bundle500g" }
-    };
+	var dropdownType = new List<SelectListItem>
+{
+		new SelectListItem { Text = "New Figures Single", Value = "NewFigSingle" },
+		new SelectListItem { Text = "New Figures Multi", Value = "NewFigMulti" },
+		new SelectListItem { Text = "Used Figures Single", Value = "UsedFigSingle" },
+		new SelectListItem { Text = "Used Figures Multi", Value = "UsedFigMulti" },
+		new SelectListItem { Text = "Bundle 1kg", Value = "Bundle1kg" },
+		new SelectListItem { Text = "Bundle 500g", Value = "Bundle500g" }
+	};
+}
+
+@section scripts{
+	<script>
+		$(function () {
+			$('.js-dropdown').change(ShowHideOptions);
+
+			ShowHideOptions();
+		});
+
+		function ShowHideOptions() {
+			var val = $('.js-dropdown').val();
+
+			$('[data-section]').hide();
+			var show = [];
+
+			switch (val) {
+				case 'NewFigSingle':
+				case 'NewFigMulti':
+					show = ['Title', 'Number'];
+					break;
+				case 'UsedFigSingle':
+					show = ['Title', 'Number', 'Condition'];
+					break;
+				case 'UsedFigMulti':
+					show = ['Title', 'Condition'];
+					break;
+				case 'Bundle1kg':
+				case 'Bundle500g':
+					show = ['Colour', 'ColourDescription'];
+					break;
+			}
+
+			show.forEach((section) => {
+				$('[data-section=' + section + ']').show();
+			});
+		}
+	</script>
 }
 
 <h2>Form</h2>
 
-@using (Html.BeginForm("FormResult", "ListingGenerator")) 
+@using (Html.BeginForm("FormResult", "ListingGenerator"))
 {
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Listing Generator - Form</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.DropDownListFor(model => model.Type, dropdownType, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
-            </div>
-        </div>
+	@Html.AntiForgeryToken()
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
-            </div>
-        </div>
+	<div class="form-horizontal">
+		<h4>Listing Generator - Form</h4>
+		<hr />
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		<div class="form-group">
+			@Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.DropDownListFor(model => model.Type, dropdownType, new { @class = "form-control js-dropdown" })
+				@Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+			</div>
+		</div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Number, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Number, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
-            </div>
-        </div>
+		<div class="form-group" data-section="Title">
+			@Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+			</div>
+		</div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ColourDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.ColourDescription, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ColourDescription, "", new { @class = "text-danger" })
-            </div>
-        </div>
+		<div class="form-group" data-section="Number">
+			@Html.LabelFor(model => model.Number, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Number, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
+			</div>
+		</div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Colour, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Colour, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Colour, "", new { @class = "text-danger" })
-            </div>
-        </div>
+		<div class="form-group" data-section="ColourDescription">
+			@Html.LabelFor(model => model.ColourDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.ColourDescription, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.ColourDescription, "", new { @class = "text-danger" })
+			</div>
+		</div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Condition, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Condition, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Condition, "", new { @class = "text-danger" })
-            </div>
-        </div>
+		<div class="form-group" data-section="Colour">
+			@Html.LabelFor(model => model.Colour, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Colour, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Colour, "", new { @class = "text-danger" })
+			</div>
+		</div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-4">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
+		<div class="form-group" data-section="Condition">
+			@Html.LabelFor(model => model.Condition, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Condition, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Condition, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-4">
+				<input type="submit" value="Create" class="btn btn-default" />
+			</div>
+		</div>
+	</div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+	@Html.ActionLink("Back to List", "Index")
 </div>
