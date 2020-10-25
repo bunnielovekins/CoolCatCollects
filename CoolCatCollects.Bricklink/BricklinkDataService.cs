@@ -268,6 +268,11 @@ namespace CoolCatCollects.Bricklink
 
 			var response = _api.GetRequest<GetItemResponse>($"items/{type}/{number}");
 
+			if (response.data == null)
+			{
+				return null;
+			}
+
 			part.Number = response.data.no;
 			part.Name = response.data.name;
 			part.CategoryId = response.data.category_id;
@@ -474,6 +479,7 @@ namespace CoolCatCollects.Bricklink
 			if (inv.Quantity == 0)
 			{
 				inv.Location = "";
+				_partInventoryRepo.AddLocationHistory(inv, remarks);
 			}
 			else
 			{

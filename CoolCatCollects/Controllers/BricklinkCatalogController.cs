@@ -75,6 +75,37 @@ namespace CoolCatCollects.Controllers
 		}
 
 		[HttpPost]
+		public ActionResult UpdateDatabase(BLXMLItem[] items)
+		{
+			_service.UpdateInventoryForParts(items.Select(x => new BricklinkService.MiniPartModel
+			{
+				Number = x.ITEMID,
+				ColourId = x.COLOR,
+				Condition = "N",
+				ItemType = GetItemTypeFromChar(x.ITEMTYPE)
+			}));
+
+			return Content("");
+
+			string GetItemTypeFromChar(string str)
+			{
+				switch (str)
+				{
+					case "S":
+						return "SET";
+					case "P":
+						return "PART";
+					case "M":
+						return "MINIFIG";
+					case "I":
+						return "INSTRUCTIONS";
+				}
+
+				return str;
+			}
+		}
+
+		[HttpPost]
 		public ActionResult ExportXml(BLXMLItem[] items)
 		{
 			var obj = new BLXmlRoot

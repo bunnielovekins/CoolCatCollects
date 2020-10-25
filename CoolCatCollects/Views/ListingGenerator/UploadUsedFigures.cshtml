@@ -28,12 +28,23 @@
                     <input class="form-control" type="text" value="@item.Condition" name="model.Condition" />
                 </td>
                 <td class="thinner">
-                    <input class="btn btn-primary" type="submit" value="Create" />
+                    <input class="btn btn-default js-create" type="submit" value="Create" />
                 </td>
             }
         </tr>
     }
 </table>
+
+@section scripts 
+{
+    <script>
+        $('.js-create').click(function () {
+            var btn = $(this);
+
+            btn.removeClass('btn-default').addClass('btn-success').val('Done');
+        });
+    </script>
+}
 
 @section styles
 {

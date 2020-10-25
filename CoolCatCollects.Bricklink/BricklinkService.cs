@@ -68,6 +68,22 @@ namespace CoolCatCollects.Bricklink
 			return model;
 		}
 
+		public void UpdateInventoryForParts(IEnumerable<MiniPartModel> parts)
+		{
+			foreach(var part in parts)
+			{
+				_dataService.GetPartModel(part.Number, part.ColourId, part.ItemType, part.Condition, updateInv: true);
+			}
+		}
+
+		public struct MiniPartModel
+		{
+			public string Number { get; set; }
+			public int ColourId { get; set; }
+			public string Condition { get; set; }
+			public string ItemType { get; set; }
+		}
+
 		/// <summary>
 		/// Gets messages for an order. Ignores feedback messages.
 		/// </summary>
@@ -222,7 +238,8 @@ namespace CoolCatCollects.Bricklink
 				.ThenBy(x => x.RemarkLetter1)
 				.ThenBy(x => x.RemarkNumber)
 				.ThenBy(x => x.Colour)
-				.ThenBy(x => x.Name);
+				.ThenBy(x => x.Name)
+				.ToList();
 
 			var data = order.data;
 
@@ -289,7 +306,10 @@ namespace CoolCatCollects.Bricklink
 						x.MyPrice = GeneratePrice(part.PartPriceInfo.AveragePrice);
 					}
 
-					x.Remark = part.PartInventory.Location;
+					if (x.Quantity != 0)
+					{
+						x.Remark = part.PartInventory.Location;
+					}
 					x.AveragePrice = part.PartPriceInfo.AveragePrice +
 						(string.IsNullOrEmpty(part.PartPriceInfo.AveragePriceLocation) ? "" : " " + part.PartPriceInfo.AveragePriceLocation);
 

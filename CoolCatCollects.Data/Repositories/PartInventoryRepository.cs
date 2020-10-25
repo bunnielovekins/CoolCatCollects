@@ -66,6 +66,23 @@ namespace CoolCatCollects.Data.Repositories
 			return entity;
 		}
 
+		public void AddLocationHistory(PartInventory entity, string location)
+		{
+			if (entity.LocationHistory.Any(x => x.Location == location))
+			{
+				return;
+			}
+
+			_ctx.PartInventoryLocationHistorys.Add(new PartInventoryLocationHistory
+			{
+				Date = DateTime.Now,
+				Location = location,
+				PartInventory = entity
+			});
+
+			_ctx.SaveChanges();
+		}
+
 		public void CascadeDelete(PartInventory entity)
 		{
 			foreach(var hist in entity.LocationHistory)

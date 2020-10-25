@@ -1,124 +1,126 @@
 ﻿@model CoolCatCollects.Bricklink.Models.SubsetPartsListModel
 
 @section styles {
-	<link href="~/Content/checkbox.css" rel="stylesheet" />
-	<style>
-		.qty, #setQty {
-			width: 50px;
-		}
+    <link href="~/Content/checkbox.css" rel="stylesheet" />
+    <style>
+        .qty, #setQty {
+            width: 50px;
+        }
 
-		.price {
-			width: 80px;
-		}
-	</style>
-}
-
-@section scripts {
-	@Scripts.Render("~/bundles/jquery")
-	<script src="~/Scripts/checkbox.js"></script>
-	<script src="~/Scripts/NewSetExport.js"></script>
+        .price {
+            width: 80px;
+        }
+    </style>
 }
 
 @{
-	int i = 0;
-	ViewBag.Title = "New Set";
+    int i = 0;
+    ViewBag.Title = "New Set";
 }
 
 <h1>Parts List</h1>
 
 <strong>Number of sets:</strong>
 <label for="setQty">
-	<input type="text" class="form-control" id="setQty" value="1" />
+    <input type="text" class="form-control" id="setQty" value="1" />
 </label>
 <button type="button" class="btn btn-default" id="setQtyApply">Apply</button>
 
-<br/>
+<br />
 
 <button type="button" class="btn btn-default" id="exportRemarksPrepare">
-	Prepare to Print Remarks
+    Prepare to Print Remarks
 </button>
 <a href="#" target="_blank" id="exportRemarks" class="disabled btn btn-primary" disabled download
    data-href="@Url.Action("ExportRemarks", new { set = Request.QueryString["set"] })">
-	Print Remarks
+    Print Remarks
 </a>
+
+<br />
+<br />
+
+<button type="button" class="btn btn-success" id="updateDb">I have finished my upload, now update the database!</button>
+
+<br />
+<br />
 
 @using (Html.BeginForm("ExportXml", "BricklinkCatalog", new { }))
 {
-	<table class="partstable table table-striped table-bordered table-hover">
-		<thead>
-			<tr>
-				<th>Include</th>
-				<th>Image</th>
-				<th>Name</th>
-				<th>Number</th>
-				<th>Type</th>
-				<th></th>
-				<th>Colour</th>
-				<th>Qty</th>
-				<th>Remark</th>
-				<th>My Price</th>
-				<th>Avg Price</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var part in Model.Parts)
-			{
-				<input type="hidden" name="items[@i].CONDITION" value="N" />
-				<input type="hidden" name="items[@i].ITEMTYPE" value="@ItemTypeToCharacter(part.Type)" />
-				<input type="hidden" name="items[@i].CATEGORY" value="@part.Category" />
-				<input type="hidden" name="items[@i].COLOR" value="@part.ColourId" />
-				<input type="hidden" name="items[@i].ITEMID" value="@part.Number" />
-				<tr class="part">
-					<td class="checkable">
-						<label class="check">
-							<input type="checkbox" name="items[@i].INCLUDE" checked="checked" />
-							<span></span>
-						</label>
-					</td>
-					<td class="checkable"><img src="@part.Image" /></td>
-					<td class="checkable">
-						@HttpUtility.HtmlDecode(part.Name)
-						@if (!string.IsNullOrEmpty(part.Status))
-						{
-							<br /><small title="CP = Complementary. Alt = Alternative">(@part.Status)</small>
-						}
-					</td>
-					<td class="no checkable">@part.Number</td>
+    <table class="partstable table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Include</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Number</th>
+                <th>Type</th>
+                <th></th>
+                <th>Colour</th>
+                <th>Qty</th>
+                <th>Remark</th>
+                <th>My Price</th>
+                <th>Avg Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var part in Model.Parts)
+            {
+                <input type="hidden" name="items[@i].CONDITION" value="N" />
+                <input type="hidden" name="items[@i].ITEMTYPE" value="@ItemTypeToCharacter(part.Type)" />
+                <input type="hidden" name="items[@i].CATEGORY" value="@part.Category" />
+                <input type="hidden" name="items[@i].COLOR" value="@part.ColourId" />
+                <input type="hidden" name="items[@i].ITEMID" value="@part.Number" />
+                <tr class="part">
+                    <td class="checkable">
+                        <label class="check">
+                            <input type="checkbox" name="items[@i].INCLUDE" checked="checked" />
+                            <span></span>
+                        </label>
+                    </td>
+                    <td class="checkable"><img src="@part.Image" /></td>
+                    <td class="checkable">
+                        @HttpUtility.HtmlDecode(part.Name)
+                        @if (!string.IsNullOrEmpty(part.Status))
+                        {
+                            <br /><small title="CP = Complementary. Alt = Alternative">(@part.Status)</small>
+                        }
+                    </td>
+                    <td class="no checkable">@part.Number</td>
 
-					<td class="checkable">@part.Type</td>
-					@if (part.Colour != null)
-					{
-						<td class="colour checkable" title="@part.ColourName"><span class="colbox" style="background-color: #@part.Colour.ColourCode; color: #@part.Colour.ColourCode;">&nbsp;</span></td>
-						<td class="checkable" style="white-space: nowrap;">
-							@part.ColourName
-						</td>
-					}
-					else
-					{
-						<td class="checkable"></td>
-						<td class="checkable"></td>
-					}
+                    <td class="checkable">@part.Type</td>
+                    @if (part.Colour != null)
+                    {
+                        <td class="colour checkable" title="@part.ColourName"><span class="colbox" style="background-color: #@part.Colour.ColourCode; color: #@part.Colour.ColourCode;">&nbsp;</span></td>
+                        <td class="checkable" style="white-space: nowrap;">
+                            @part.ColourName
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="checkable"></td>
+                        <td class="checkable"></td>
+                    }
 
-					<td><input class="form-control qty" type="text" name="items[@i].QTY" value="@part.Quantity" data-val="@part.Quantity" /></td>
-					<td><input class="form-control remark" type="text" name="items[@i].REMARKS" value="@part.Remark" data-val="@part.Remark" /></td>
-					<td><input class="form-control price" type="text" name="items[@i].pricestr" value="@part.MyPrice" data-val="@part.MyPrice" /></td>
-					<td>@part.AveragePrice</td>
-				</tr>
+                    <td><input class="form-control qty" type="text" name="items[@i].QTY" value="@part.Quantity" data-val="@part.Quantity" /></td>
+                    <td><input class="form-control remark" type="text" name="items[@i].REMARKS" value="@part.Remark" data-val="@part.Remark" /></td>
+                    <td><input class="form-control price" type="text" name="items[@i].pricestr" value="@part.MyPrice" data-val="@part.MyPrice" /></td>
+                    <td>@part.AveragePrice</td>
+                </tr>
 
-				i++;
-			}
-		</tbody>
-	</table>
+                i++;
+            }
+        </tbody>
+    </table>
 
-	<div class="clear">
-		<input type="submit" class="btn btn-primary" value="Export" />
+    <div class="clear">
+        <input type="submit" class="btn btn-primary" value="Export" />
 
-		<a href="https://www.bricklink.com/invXML.asp" target="_blank" id="bl" class="f-right btn btn-warning" style="display: none;">Bricklink</a>
-		<button id="copy" class="f-right btn btn-default" style="display: none;"><span class="glyphicon glyphicon-copy"></span>&nbsp;Copy</button>
+        <a href="https://www.bricklink.com/invXML.asp" target="_blank" id="bl" class="f-right btn btn-warning" style="display: none;">Bricklink</a>
+        <button id="copy" class="f-right btn btn-default" style="display: none;"><span class="glyphicon glyphicon-copy"></span>&nbsp;Copy</button>
 
-		<br />
-		<textarea id="output" class="form-control" style="width: 100%; display: none;"></textarea>
-	</div>
+        <br />
+        <textarea id="output" class="form-control" style="width: 100%; display: none;"></textarea>
+    </div>
 }
 
 
@@ -131,23 +133,48 @@
 
 @functions{
 
-	string ItemTypeToCharacter(string str)
-	{
-		switch (str)
-		{
-			case "SET":
-				return "S";
-			case "PART":
-				return "P";
-			case "MINIFIG":
-				return "M";
-			case "INSTRUCTIONS":
-				return "I";
-		}
+    string ItemTypeToCharacter(string str)
+    {
+        switch (str)
+        {
+            case "SET":
+                return "S";
+            case "PART":
+                return "P";
+            case "MINIFIG":
+                return "M";
+            case "INSTRUCTIONS":
+                return "I";
+        }
 
 
-		return str.ToUpper().Substring(0, 1);
-	}
+        return str.ToUpper().Substring(0, 1);
+    }
 
 }
 
+@section scripts
+{
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/checkbox.js"></script>
+    <script src="~/Scripts/NewSetExport.js"></script>
+    <script>
+        $(function () {
+            $('#updateDb').click(function () {
+                var btn = $(this);
+
+                if (btn.attr('disabled') === 'disabled') {
+                    return;
+                }
+
+                btn.text("Loading...");
+                btn.attr('disabled', 'disabled');
+
+                $.post('@Url.Action("UpdateDatabase", "BricklinkCatalog")', $('form').serialize(), function (result) {
+                    btn.text('Uploaded!');
+                    btn.removeAttr('disabled')
+                });
+            });
+        });
+    </script>
+}
