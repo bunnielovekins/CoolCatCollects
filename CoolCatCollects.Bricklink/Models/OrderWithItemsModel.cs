@@ -140,7 +140,7 @@ namespace CoolCatCollects.Bricklink.Models
 		{
 			if (!string.IsNullOrEmpty(Remarks))
 			{
-				var regex = new Regex("(\\D*)(\\d*)");
+				var regex = new Regex("(?:USED_)?(\\D*)(\\d*)");
 				var match = regex.Match(Remarks);
 				if (match.Success)
 				{

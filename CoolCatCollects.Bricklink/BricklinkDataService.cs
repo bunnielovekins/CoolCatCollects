@@ -46,15 +46,13 @@ namespace CoolCatCollects.Bricklink
 		private PartModel UpdatedPartModel(PartInventory partInv, bool updateInv = false, bool updatePrice = false, bool updatePart = false,
 			DateTime? updateInvDate = null)
 		{
-			var number = partInv.Part.Number;
-			var type = partInv.Part.ItemType;
 			var colourId = partInv.ColourId;
 			var condition = partInv.Condition;
 
 			// Get the entities, make sure they're up to date, return them
 			if (partInv.LastUpdated < DateTime.Now.AddDays(-1) || updateInv || updateInvDate.HasValue && updateInvDate > partInv.LastUpdated)
 			{
-				var updatedInv = UpdateInventoryFromApi(partInv);
+				var updatedInv = _api.UpdateInventoryFromApi(partInv);
 				if (updatedInv != null)
 				{
 					partInv = updatedInv;
@@ -67,16 +65,22 @@ namespace CoolCatCollects.Bricklink
 			}
 
 			var part = partInv.Part;
-			if (part.LastUpdated < DateTime.Now.AddDays(-14) || updatePart)
+
+			if (part.Number == null)
 			{
-				part = UpdatePartFromApi(number, type, part);
+				part = _api.RecoverPartFromPartInv(partInv, part);
+				_partrepo.Update(part);
+			}
+			else if (part.LastUpdated < DateTime.Now.AddDays(-14) || updatePart)
+			{
+				part = _api.UpdatePartFromApi(part.Number, part.ItemType, part);
 				_partrepo.Update(part);
 			}
 
 			var pricing = partInv.Pricing;
 			if (pricing.LastUpdated < DateTime.Now.AddDays(-14) || updatePrice)
 			{
-				pricing = UpdatePartPricingFromApi(number, type, colourId, condition, pricing);
+				pricing = _api.UpdatePartPricingFromApi(part.Number, part.ItemType, colourId, condition, pricing);
 				_partPricingRepo.Update(pricing);
 			}
 
@@ -103,7 +107,7 @@ namespace CoolCatCollects.Bricklink
 				return UpdatedPartModel(partInv, updateInv, updatePrice, updatePart, updateInvDate);
 			}
 
-			var model = UpdateInventoryModelFromApi(inventoryId);
+			var model = _api.UpdateInventoryModelFromApi(inventoryId);
 
 			if (model == null)
 			{
@@ -118,7 +122,7 @@ namespace CoolCatCollects.Bricklink
 
 			var part = GetPart(number, type);
 
-			var pricing = UpdatePartPricingFromApi(number, type, colourId, partInv.Condition);
+			var pricing = _api.UpdatePartPricingFromApi(number, type, colourId, partInv.Condition);
 
 			_partInventoryRepo.AddPartInv(ref partInv, ref pricing, ref part);
 
@@ -164,7 +168,7 @@ namespace CoolCatCollects.Bricklink
 			var part = GetPart(number, type);
 
 			// Attempt to get the part from the API
-			partInv = UpdateInventoryFromApi(type, part.CategoryId, colourId, number, condition == "A" ? "N" : condition, description: description);
+			partInv = _api.UpdateInventoryFromApi(type, part.CategoryId, colourId, number, condition == "A" ? "N" : condition, description: description);
 
 			if (partInv == null)
 			{
@@ -175,7 +179,7 @@ namespace CoolCatCollects.Bricklink
 			// Quantity is 0, fall back to used if condition is set to any
 			if (partInv.Quantity == 0 && condition == "A")
 			{
-				var usedPart = UpdateInventoryFromApi(type, part.CategoryId, colourId, number, "U", description: description);
+				var usedPart = _api.UpdateInventoryFromApi(type, part.CategoryId, colourId, number, "U", description: description);
 				if (usedPart.Quantity > 0)
 				{
 					partInv = usedPart;
@@ -188,7 +192,7 @@ namespace CoolCatCollects.Bricklink
 				partInv.ColourName = Statics.Colours[partInv.ColourId].Name;
 			}
 
-			var pricing = UpdatePartPricingFromApi(number, type, colourId, partInv.Condition);
+			var pricing = _api.UpdatePartPricingFromApi(number, type, colourId, partInv.Condition);
 
 			_partInventoryRepo.AddPartInv(ref partInv, ref pricing, ref part);
 
@@ -212,25 +216,11 @@ namespace CoolCatCollects.Bricklink
 				ColourName = colourId != 0 ? Statics.Colours[colourId].Name : "",
 				Condition = condition,
 				Location = "",
-				Image = GetItemImage(type, number, colourId),
+				Image = _api.GetItemImage(type, number, colourId),
 				Description = description,
 				Notes = "",
 				LastUpdated = DateTime.Now
 			};
-		}
-
-		/// <summary>
-		/// Gets the image url for a part
-		/// </summary>
-		/// <param name="type">Type - PART, MINIFIG, etc.</param>
-		/// <param name="number">Part Number</param>
-		/// <param name="colourId">Colour Id</param>
-		/// <returns>Image url</returns>
-		public string GetItemImage(string type, string number, int colourId)
-		{
-			var response = _api.GetRequest<GetItemImageResponse>($"/items/{type}/{number}/images/{colourId}");
-
-			return response.data.thumbnail_url;
 		}
 
 		/// <summary>
@@ -248,41 +238,7 @@ namespace CoolCatCollects.Bricklink
 				return part;
 			}
 
-			part = UpdatePartFromApi(number, type, part);
-			return part;
-		}
-
-		/// <summary>
-		/// Gets a part from the API, returns it as a Part. No relation to the DB.
-		/// </summary>
-		/// <param name="part">A Part entity</param>
-		/// <param name="number">Part Number</param>
-		/// <param name="type">Type - PART, MINIFIG, etc.</param>
-		/// <returns>A Part entity</returns>
-		private Part UpdatePartFromApi(string number, string type, Part part = null)
-		{
-			if (part == null)
-			{
-				part = new Part();
-			}
-
-			var response = _api.GetRequest<GetItemResponse>($"items/{type}/{number}");
-
-			if (response.data == null)
-			{
-				return null;
-			}
-
-			part.Number = response.data.no;
-			part.Name = response.data.name;
-			part.CategoryId = response.data.category_id;
-			part.ImageUrl = response.data.image_url;
-			part.ThumbnailUrl = response.data.thumbnail_url;
-			part.Weight = response.data.weight;
-			part.Description = response.data.description;
-			part.LastUpdated = DateTime.Now;
-			part.ItemType = response.data.type;
-
+			part = _api.UpdatePartFromApi(number, type, part);
 			return part;
 		}
 
@@ -290,7 +246,7 @@ namespace CoolCatCollects.Bricklink
 		{
 			var part = GetPart(no, type);
 
-			var price = UpdatePartPricingFromApi(no, type, inv.ColourId, inv.Condition);
+			var price = _api.UpdatePartPricingFromApi(no, type, inv.ColourId, inv.Condition);
 
 			_partInventoryRepo.AddPartInv(ref inv, ref price, ref part);
 		}
@@ -385,7 +341,7 @@ namespace CoolCatCollects.Bricklink
 				Notes = "",
 				LastUpdated = DateTime.Now,
 				Part = part,
-				Image = GetItemImage(model.item.type, model.item.no, model.color_id)
+				Image = _api.GetItemImage(model.item.type, model.item.no, model.color_id)
 			};
 
 			if (string.IsNullOrEmpty(inv.Location))
@@ -393,7 +349,7 @@ namespace CoolCatCollects.Bricklink
 				inv.Description = model.description;
 			}
 
-			var pricing = UpdatePartPricingFromApi(model.item.no, model.item.type, model.color_id, model.new_or_used);
+			var pricing = _api.UpdatePartPricingFromApi(model.item.no, model.item.type, model.color_id, model.new_or_used);
 
 			_partInventoryRepo.AddPartInv(ref inv, ref pricing, ref part);
 
@@ -403,56 +359,6 @@ namespace CoolCatCollects.Bricklink
 				PartInventory = inv,
 				PartPriceInfo = pricing
 			};
-		}
-
-		#region api
-
-		/// <summary>
-		/// Gets pricing from the api
-		/// </summary>
-		/// <param name="price">Entity</param>
-		/// <param name="number"></param>
-		/// <param name="type"></param>
-		/// <param name="colourId"></param>
-		/// <param name="condition"></param>
-		/// <returns></returns>
-		private PartPriceInfo UpdatePartPricingFromApi(string number, string type, int colourId, string condition = "N", PartPriceInfo price = null)
-		{
-			if (price == null)
-			{
-				price = new PartPriceInfo();
-			}
-
-			var response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&country_code=UK&new_or_used={condition}&color_id={colourId}");
-
-			var loc = "";
-
-			// Fall back to EU
-			if (response.data.avg_price == "0.0000")
-			{
-				response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&region=europe&new_or_used={condition}&color_id={colourId}");
-				loc = "(EU)";
-			}
-
-			// Fall back to world
-			if (response.data.avg_price == "0.0000")
-			{
-				response = _api.GetRequest<GetPriceGuideResponse>($"items/{type}/{number}/price?guide_type=sold&currency_code=GBP&vat=Y&new_or_used={condition}&color_id={colourId}");
-				loc = "(World)";
-			}
-
-			if (decimal.TryParse(response.data.avg_price, out decimal tmp))
-			{
-				price.AveragePrice = tmp;
-			}
-			else
-			{
-				price.AveragePrice = 0;
-			}
-			price.AveragePriceLocation = loc;
-			price.LastUpdated = DateTime.Now;
-
-			return price;
 		}
 
 		public IEnumerable<PartInventoryLocationHistory> GetHistoriesByLocation(string location)
@@ -496,139 +402,5 @@ namespace CoolCatCollects.Bricklink
 
 			_partInventoryRepo.Update(inv);
 		}
-
-		/// <summary>
-		/// Given an existing inventory entity, updates it from the api
-		/// </summary>
-		/// <param name="partInv">An inventory entity</param>
-		/// <returns>The same entity, updated</returns>
-		private PartInventory UpdateInventoryFromApi(PartInventory partInv)
-		{
-			return 
-				UpdateInventoryFromApi(partInv.InventoryId, partInv) ??
-				UpdateInventoryFromApi(partInv.Part.ItemType, partInv.Part.CategoryId, partInv.ColourId, partInv.Part.Number, partInv.Condition, partInv);
-		}
-
-		private PartInventoryModel UpdateInventoryModelFromApi(int inventoryId)
-		{
-			var partInv = new PartInventoryModel();
-
-			var response = _api.GetRequest<GetInventoryResponseModel>($"inventories/{inventoryId}");
-
-			var item = response.data;
-
-			if (item == null)
-			{
-				return null;
-			}
-
-			partInv.InventoryId = item.inventory_id;
-			partInv.Quantity = item.quantity;
-			partInv.MyPrice = decimal.Parse(item.unit_price);
-			partInv.ColourId = item.color_id;
-			partInv.ColourName = Statics.Colours[item.color_id].Name;
-			partInv.Condition = item.new_or_used;
-			partInv.Location = item.remarks;
-			partInv.Description = item.description;
-			partInv.Image = GetItemImage(item.item.type, item.item.no, item.color_id);
-
-			if (string.IsNullOrEmpty(partInv.Location))
-			{
-				partInv.Location = item.description;
-			}
-
-			partInv.LastUpdated = DateTime.Now;
-
-			partInv.Number = item.item.no;
-			partInv.Name = item.item.name;
-			partInv.ItemType = item.item.type;
-			partInv.CategoryId = item.item.category_id;
-
-			return partInv;
-		}
-
-		private PartInventory UpdateInventoryFromApi(int inventoryId, PartInventory partInv = null)
-		{
-			if (partInv == null)
-			{
-				partInv = new PartInventory();
-			}
-
-			var response = _api.GetRequest<GetInventoryResponseModel>($"inventories/{inventoryId}");
-
-			var item = response.data;
-
-			if (item == null)
-			{
-				return null;
-			}
-
-			partInv.InventoryId = item.inventory_id;
-			partInv.Quantity = item.quantity;
-			partInv.MyPrice = decimal.Parse(item.unit_price);
-			partInv.ColourId = item.color_id;
-			partInv.ColourName = Statics.Colours[item.color_id].Name;
-			partInv.Condition = item.new_or_used;
-			partInv.Location = item.remarks;
-			partInv.Description = item.description;
-			partInv.Image = GetItemImage(item.item.type, item.item.no, item.color_id);
-
-			if (string.IsNullOrEmpty(partInv.Location))
-			{
-				partInv.Location = item.description;
-			}
-
-			partInv.LastUpdated = DateTime.Now;
-
-			return partInv;
-		}
-
-		/// <summary>
-		/// Gets an inventory item from the api, puts it into an entity
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="categoryId"></param>
-		/// <param name="colourId"></param>
-		/// <param name="number"></param>
-		/// <param name="condition"></param>
-		/// <param name="partInv"></param>
-		/// <returns></returns>
-		private PartInventory UpdateInventoryFromApi(string type, int categoryId, int colourId, string number, string condition = "N", PartInventory partInv = null, string description = "")
-		{
-			if (partInv == null)
-			{
-				partInv = new PartInventory();
-			}
-
-			var response = _api.GetRequest<GetInventoriesResponseModel>($"inventories?item_type={type}&category_id={categoryId}&color_id={colourId}");
-
-			var item = response.data.FirstOrDefault(x => x.item.no == number && x.new_or_used == condition && x.description == description);
-
-			if (item == null)
-			{
-				return null;
-			}
-
-			partInv.InventoryId = item.inventory_id;
-			partInv.Quantity = item.quantity;
-			partInv.MyPrice = decimal.Parse(item.unit_price);
-			partInv.ColourId = colourId;
-			partInv.ColourName = Statics.Colours[colourId].Name;
-			partInv.Condition = condition;
-			partInv.Location = item.remarks;
-			partInv.Description = item.description;
-			partInv.Image = GetItemImage(type, number, colourId);
-
-			if (string.IsNullOrEmpty(partInv.Location))
-			{
-				partInv.Location = item.description;
-			}
-
-			partInv.LastUpdated = DateTime.Now;
-
-			return partInv;
-		}
-
-		#endregion
 	}
 }

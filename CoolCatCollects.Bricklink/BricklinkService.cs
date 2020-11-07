@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Web;
 
 namespace CoolCatCollects.Bricklink
@@ -190,13 +189,13 @@ namespace CoolCatCollects.Bricklink
 					else if (itemEntity != null)
 					{
 						quantity = itemEntity.Quantity;
-						image = _dataService.GetItemImage(item.item.type,
+						image = _apiService.GetItemImage(item.item.type,
 							item.item.no, item.color_id);
 					}
 					else
 					{
 						quantity = 0;
-						image = _dataService.GetItemImage(item.item.type,
+						image = _apiService.GetItemImage(item.item.type,
 							item.item.no, item.color_id);
 					}
 
@@ -274,7 +273,7 @@ namespace CoolCatCollects.Bricklink
 				ColourName = item.color_name,
 				Condition = item.new_or_used,
 				Location = item.remarks,
-				Image = _dataService.GetItemImage(item.item.type,
+				Image = _apiService.GetItemImage(item.item.type,
 							item.item.no, item.color_id),
 				Description = item.description,
 				LastUpdated = DateTime.Now
