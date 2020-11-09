@@ -39,34 +39,41 @@
 
 @if (Model.Orders.Any())
 {
+	var groups = Model.Orders.GroupBy(x => x.DayToGoOut);
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
 			<tr>
 				<th>Order Id</th>
 				<th>Total Pieces</th>
 				<th>Unique Pieces</th>
-				<th>Buyer Name</th>
+				<th>Username</th>
+				<th>Real Name</th>
 				<th>Total</th>
 				<th></th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var order in Model.Orders)
+			@foreach (var group in groups)
 			{
-				<tr>
-					<td>@order.OrderId</td>
-					<td>@order.TotalPieces</td>
-					<td>@order.UniquePieces</td>
-					<td>@order.BuyerName</td>
-					<td>@order.Total</td>
-					<td>
-						@Html.ActionLink("Parts List", "PartsList", new { orderId = order.OrderId }, new { target = "_blank" })
-					</td>
-					<td>
-						@Html.ActionLink("Packing Slip", "PackingSlip", new { orderId = order.OrderId }, new { target = "_blank" })
-					</td>
-				</tr>
+				<tr><td colspan="8"><h4>@group.Key.ToString()</h4></td></tr>
+				foreach (var order in group)
+				{
+					<tr>
+						<td>@order.OrderId</td>
+						<td>@order.TotalPieces</td>
+						<td>@order.UniquePieces -- @order.DateStatusChanged.ToString("dd hh")</td>
+						<td>@order.Username</td>
+						<td @if (order.RealName == null){<text>class="js-name" data-orderid="@order.OrderId"</text>}>@(order.RealName ?? "Loading...")</td>
+						<td>@order.Total</td>
+						<td>
+							@Html.ActionLink("Parts List", "PartsList", new { orderId = order.OrderId }, new { target = "_blank" })
+						</td>
+						<td>
+							@Html.ActionLink("Packing Slip", "PackingSlip", new { orderId = order.OrderId }, new { target = "_blank" })
+						</td>
+					</tr>
+				}
 			}
 		</tbody>
 	</table>
@@ -74,4 +81,21 @@
 else
 {
 	<h3>No Orders Found!</h3>
+}
+
+@section scripts{
+
+	<script>
+		$(function () {
+			$('.js-name').each(function () {
+				var td = $(this);
+				var orderId = td.attr('data-orderid');
+
+				$.get('@Url.Action("GetOrderInfo", "BricklinkSlip")?orderId=' + orderId, (response) => {
+					td.text(response.Name);
+				});
+			});
+		});
+	</script>
+
 }

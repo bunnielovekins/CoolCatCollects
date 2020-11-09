@@ -32,24 +32,24 @@
 	Prepare to Print Remarks
 </button>
 <a href="#" target="_blank" id="exportRemarks" class="disabled btn btn-primary" disabled download
-   data-href="@Url.Action("ExportRemarks", new { set = Request.QueryString["set"] })">
+	data-href="@Url.Action("ExportRemarks", new { set = Request.QueryString["set"] })">
 	Print Remarks
 </a>
 
 <br />
 <br />
 
-<button type="button" class="btn btn-success" id="updateDb">I have finished my upload, now update the database!</button>
-
-<br />
-<br />
-
 <button type="button" class="btn btn-default" id="showResume">Resume</button>
 <textarea id="resumeTextBox" class="form-control" placeholder="Paste your XML here" style="display:none;"></textarea>
-<button type="button" class="btn btn-primary" id="doResume" style="display:none;">Resume</button>
+<div class="clear" style="display:none" id="resumeBox">
+	<button type="button" class="btn btn-primary" id="doResume">Resume</button>
+	<span class="f-right">Remember to break down any minifigures or packs to be the same!</span>
+</div>
 
 <br />
 <br />
+
+<button class="btn btn-primary js-reorder">Reorder table</button>
 
 @using (Html.BeginForm("ExportXml", "BricklinkCatalog", new { }))
 {
@@ -72,46 +72,53 @@
 		<tbody>
 			@foreach (var part in Model.Parts)
 			{
-				<tr class="part" data-i="@i">
+				<tr class="part" data-i="@i" data-colour="@part.ColourId" data-number="@part.Number" data-type="@part.Type" 
+					data-status="@part.Status" data-colourname="@part.ColourName">
 					<input type="hidden" name="items[@i].CONDITION" value="N" />
-					<input type="hidden" name="items[@i].ITEMTYPE" value="@ItemTypeToCharacter(part.Type)" />
+					<input type="hidden" name="items[@i].ITEMTYPE" value="@ItemTypeToCharacter(part.Type)" data-field="itemType" />
 					<input type="hidden" name="items[@i].CATEGORY" value="@part.Category" data-field="category" />
 					<input type="hidden" name="items[@i].COLOR" value="@part.ColourId" data-field="colour" />
 					<input type="hidden" name="items[@i].ITEMID" value="@part.Number" data-field="itemId" />
 					<td class="checkable">
 						<label class="check">
-							<input type="checkbox" name="items[@i].INCLUDE" checked="checked" data-field="check" />
+							<input type="checkbox" name="items[@i].INCLUDE" @if (Check(part)){ <text>checked= "checked"</text> } data-field="check" />
 							<span></span>
 						</label>
 					</td>
 					<td class="checkable"><img src="@part.Image" /></td>
-					<td class="checkable">
+					<td class="name @if(!CanBeBrokenDown(part)){ <text>checkable</text> }">
 						@HttpUtility.HtmlDecode(part.Name)
 						@if (!string.IsNullOrEmpty(part.Status))
 						{
 							<br /><small title="CP = Complementary. Alt = Alternative">(@part.Status)</small>
 						}
+						@if (CanBeBrokenDown(part))
+						{
+							<br/>
+							<button class="btn btn-warning f-right js-break" data-number="@part.Number" data-colour="@part.ColourId"
+									data-type="@part.Type" data-qty="@part.Quantity">Break it down</button>
+						}
 					</td>
 					<td class="no checkable">@part.Number</td>
 
-					<td class="checkable">@part.Type</td>
+					<td class="type checkable">@part.Type</td>
 					@if (part.Colour != null)
 					{
 						<td class="colour checkable" title="@part.ColourName"><span class="colbox" style="background-color: #@part.Colour.ColourCode; color: #@part.Colour.ColourCode;">&nbsp;</span></td>
-						<td class="checkable" style="white-space: nowrap;">
+						<td class="colourname checkable" style="white-space: nowrap;">
 							@part.ColourName
 						</td>
 					}
 					else
 					{
-						<td class="checkable"></td>
-						<td class="checkable"></td>
+						<td class="colour checkable"></td>
+						<td class="colourname checkable"></td>
 					}
 
 					<td><input class="form-control qty" type="text" name="items[@i].QTY" value="@part.Quantity" data-val="@part.Quantity" data-field="qty" /></td>
 					<td><input class="form-control remark" type="text" name="items[@i].REMARKS" value="@part.Remark" data-val="@part.Remark" data-field="remark" /></td>
 					<td><input class="form-control price" type="text" name="items[@i].pricestr" value="@part.MyPrice" data-val="@part.MyPrice" data-field="price" /></td>
-					<td>@part.AveragePrice</td>
+					<td class="avgprice">@part.AveragePrice</td>
 				</tr>
 
 				i++;
@@ -137,6 +144,10 @@
 <div>IMPORT INTO BRICKLINK FIRST!</div>
 <a href="@Url.Action("PartsByRemark", new { set = Request.QueryString["set"] })" target="_blank" class="btn btn-primary">Parts by remark</a>
 
+<br/><br/>
+
+<button type="button" class="btn btn-success" id="updateDb">I have finished my upload, now update the database!</button>
+
 
 @functions{
 
@@ -158,10 +169,40 @@
 		return str.ToUpper().Substring(0, 1);
 	}
 
+	bool Check(CoolCatCollects.Bricklink.Models.SubsetPartModel part)
+	{
+		if (part.Type != "PART")
+		{
+			return false;
+		}
+		if (!string.IsNullOrEmpty(part.Status))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	bool CanBeBrokenDown(CoolCatCollects.Bricklink.Models.SubsetPartModel part)
+	{
+		if (part.Type == "MINIFIG" || part.Type == "SET")
+		{
+			return true;
+		}
+		if (part.Name.ToLower().Contains("multipack"))
+		{
+			return true;
+		}
+		return false;
+	}
+
 }
 
 @section scripts
 {
+	<script>
+		var updateDbUrl = '@Url.Action("UpdateDatabase", "BricklinkCatalog")';
+		var subsetUrl = '@Url.Action("GetSubset", "BricklinkCatalog")';
+	</script>
 	@Scripts.Render("~/bundles/jquery")
 	<script src="~/Scripts/checkbox.js"></script>
 	<script src="~/Scripts/NewSetExport.js"></script>

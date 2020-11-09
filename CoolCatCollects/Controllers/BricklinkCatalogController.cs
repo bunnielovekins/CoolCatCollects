@@ -17,7 +17,6 @@ namespace CoolCatCollects.Controllers
 			_service = new BricklinkService();
 		}
 
-		// GET: BricklinkCatalog
 		public ActionResult Index()
 		{
 			return View();
@@ -120,6 +119,14 @@ namespace CoolCatCollects.Controllers
 
 				return Content(stringwriter.ToString(), "application/xml");
 			}
+		}
+
+		[HttpPost]
+		public ActionResult GetSubset(string number, int colour, string type)
+		{
+			var model = _service.GetPartsFromSet(number, type: type, colourId: colour);
+
+			return Json(model);
 		}
 
 		[Serializable]

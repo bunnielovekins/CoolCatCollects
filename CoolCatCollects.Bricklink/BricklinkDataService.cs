@@ -34,6 +34,11 @@ namespace CoolCatCollects.Bricklink
 			_api = new BricklinkApiService();
 		}
 
+		public Order GetOrder(int orderId)
+		{
+			return _orderRepo.FindOne(x => x.OrderId == orderId.ToString());
+		}
+
 		/// <summary>
 		/// Gets a list of all order ids in the database
 		/// </summary>
@@ -282,7 +287,8 @@ namespace CoolCatCollects.Bricklink
 				ExtraCosts = decimal.Parse(order.data.cost.salesTax) + decimal.Parse(order.data.cost.vat_amount) +
 					decimal.Parse(order.data.cost.etc1) + decimal.Parse(order.data.cost.etc2) + decimal.Parse(order.data.cost.insurance),
 				GrandTotal = decimal.Parse(order.data.cost.grand_total),
-				Status = order.data.status == "CANCELLED" ? OrderStatus.Cancelled : OrderStatus.Complete
+				Status = order.data.status == "CANCELLED" ? OrderStatus.Cancelled : OrderStatus.Complete,
+				BuyerRealName = order.data.shipping.address.name.full
 			};
 
 			var orderItemEntities = orderItems.data

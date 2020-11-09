@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace CoolCatCollects.Data.Entities
+﻿namespace CoolCatCollects.Data.Entities
 {
 	public class BricklinkOrder : Order
 	{
@@ -9,5 +7,6 @@ namespace CoolCatCollects.Data.Entities
 		public string Weight { get; set; }
 		public bool DriveThruSent { get; set; }
 		public string ShippingMethod { get; set; }
+		public string BuyerRealName { get; set; }
 	}
 }

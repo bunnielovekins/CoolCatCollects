@@ -3,7 +3,6 @@
 	var copy = form.find("#copy");
 	var output = form.find('#output');
 
-
 	form.submit(function (e) {
 		e.preventDefault();
 
@@ -33,12 +32,15 @@
 	$('#setQtyApply').click(function () {
 		var qty = parseInt($('#setQty').val());
 
-		$('input.qty').each(function () {
-			var input = $(this);
+		$('tr.part').each(function () {
+			var tr = $(this);
+			var input = tr.find('input.qty');
+			var btn = tr.find('.js-break');
+			var orig = +input.attr('data-val');
+			var newVal = qty * orig;
 
-			var orig = parseInt(input.attr('data-val'));
-
-			input.val(qty * orig);
+			input.val(newVal);
+			btn.attr('data-qty', newVal);
 		});
 	});
 
@@ -77,15 +79,15 @@
 		btn.text("Loading...");
 		btn.attr('disabled', 'disabled');
 
-		$.post('@Url.Action("UpdateDatabase", "BricklinkCatalog")', $('form').serialize(), function (result) {
+		$.post(updateDbUrl, $('form').serialize(), function (result) {
 			btn.text('Uploaded!');
 			btn.removeAttr('disabled')
 		});
 	});
 
 	$('#showResume').click(() => {
-		$('#doResume').show();
 		$('#showResume').hide();
+		$('#resumeBox').show();
 		$('#resumeTextBox').show().focus();
 	});
 
@@ -118,11 +120,163 @@
 			}
 		});
 
-		$('#doResume').hide();
 		$('#showResume').show();
 		$('#resumeTextBox').hide();
+		$('#resumeBox').hide();
+	});
+
+	$('.js-break').click(function() {
+		var btn = $(this);
+
+		var number = btn.attr('data-number');
+		var colour = btn.attr('data-colour');
+		var type = btn.attr('data-type');
+		var qty = +btn.attr('data-qty');
+
+		var table = btn.parents('table');
+
+		btn.attr('disabled', 'disabled');
+		btn.text('Loading...');
+
+		$.post(subsetUrl, { number, colour, type }, (response) => {
+			var parts = response.Parts;
+
+			parts.forEach(part => {
+				var tr = $('tr.part[data-number=' + part.Number + '][data-colour=' + part.ColourId + '][data-type=' + part.Type + ']');
+				if (tr.length) {
+					ConsolidateNewPart(tr, part, qty);
+				}
+				else {
+					AddNewRow(table, part, qty);
+				}
+			});
+
+			btn.parents('tr').remove();
+
+			RecalculateIndexes();
+		});
+	});
+
+	$('.js-reorder').click(() => {
+		var arr = $('tr.part').map((i, x) => {
+			return {
+				i: $(x).attr('data-i'),
+				status: $(x).attr('data-status'),
+				colour: $(x).attr('data-colourname'),
+				number: $(x).attr('data-number'),
+				elem: $(x)
+			};
+		}).toArray();
+
+		var stringCompare = (first, second) => {
+			return first.toLowerCase().localeCompare(second.toLowerCase());
+		}
+
+		arr = arr.sort((first, second) => {
+			if (first.status !== second.status) {
+				return stringCompare(first.status, second.status);
+			}
+
+			if (first.colour !== second.colour) {
+				return stringCompare(first.colour, second.colour);
+			}
+
+			return stringCompare(first.number, second.number);
+		});
+
+		arr.map(x => x.elem).reverse().forEach(function (elem) {
+			$(elem).prependTo($('table.partstable'));
+		});
+
+		RecalculateIndexes();
 	});
 });
+
+function RecalculateIndexes() {
+	$('tr.part').each((index, elem) => {
+		var tr = $(elem);
+		var indexBefore = tr.attr('data-i');
+
+		tr.attr('data-i', index);
+		tr.find('input').each((inpIndex, inpElem) => {
+			var input = $(inpElem);
+
+			input.attr('name', input.attr('name').replace('[' + indexBefore + ']', '[' + index + ']'));
+		});
+	});
+}
+
+function ConsolidateNewPart(tr, part, qty) {
+	if (part.Number === '11211') {
+		console.log(part);
+		console.log(tr);
+		console.log(qty);
+	}
+
+	var qtyInput = tr.find('.qty');
+	qtyInput.attr('data-val', +qtyInput.attr('data-val') + part.Quantity);
+	qtyInput.val(+qtyInput.val() + (part.Quantity * qty));
+}
+
+function AddNewRow(table, part, qty) {
+	var lastRow = table.find('tr:last');
+
+	var i = (+lastRow.attr('data-i'));
+	var newIndex = i + 1;
+
+	var newRow = lastRow.clone(true, true);
+
+	newRow.find('input')
+		.each(function() {
+			var elem = $(this);
+			var name = elem.attr('name').replace('[' + i + ']', '[' + newIndex + ']');
+			elem.attr('name', name);
+		});
+
+	table.append(newRow);
+
+	newRow = table.find('tr:last');
+
+	newRow
+		.attr('data-i', newIndex)
+		.attr('data-colour', part.ColourId)
+		.attr('data-number', part.Number)
+		.attr('data-type', part.Type)
+		.attr('data-status', part.Status ?? '')
+		.attr('data-colourname', part.ColourName);
+
+	newRow.find('[data-field=itemType]').val(part.Type[0]);
+	newRow.find('[data-field=category]').val(part.Category);
+	newRow.find('[data-field=colour]').val(part.ColourId);
+	newRow.find('[data-field=itemId]').val(part.Number);
+	newRow.find('[data-field=check]').attr('checked', 'checked');
+	newRow.find('img').attr('src', part.Image);
+	newRow.find('.name').empty().text(part.Name);
+	newRow.find('.no').empty().text(part.Number);
+	newRow.find('.type').empty().text(part.Type);
+	if (part.Colour) {
+		newRow.find('.colour').empty().attr('title', part.ColourName).append(
+			$('<span class="colbox" style="background-color: #' + part.Colour.ColourCode + '; color: #' + part.Colour.ColourCode + ';">&nbsp;</span>')
+		);
+		newRow.find('.colourname').empty().text(part.ColourName);
+	}
+	else {
+		newRow.find('.colour').empty();
+		newRow.find('.colourname').empty();
+	}
+
+	newRow.find('.qty')
+		.attr('data-val', part.Quantity)
+		.val(qty * part.Quantity);
+	newRow.find('.remark')
+		.attr('data-val', part.Remark)
+		.val(part.Remark);
+	newRow.find('.price')
+		.attr('data-val', part.MyPrice)
+		.val(part.MyPrice);
+	newRow.find('.avgprice')
+		.empty().text(part.AveragePrice);
+}
 
 function getNode(items, category, colour, itemId) {
 	var filtered = items.filter((item) => {

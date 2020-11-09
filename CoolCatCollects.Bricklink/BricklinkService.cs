@@ -37,6 +37,16 @@ namespace CoolCatCollects.Bricklink
 
 			var model = new OrdersModel(responseModel, status);
 
+			foreach (var order in model.Orders)
+			{
+				var orderEntity = _dataService.GetOrder(order.OrderId) as Data.Entities.BricklinkOrder;
+
+				if (orderEntity != null)
+				{
+					order.RealName = orderEntity.BuyerRealName;
+				}
+			}
+
 			return model;
 		}
 
@@ -69,7 +79,7 @@ namespace CoolCatCollects.Bricklink
 
 		public void UpdateInventoryForParts(IEnumerable<MiniPartModel> parts)
 		{
-			foreach(var part in parts)
+			foreach (var part in parts)
 			{
 				_dataService.GetPartModel(part.Number, part.ColourId, part.ItemType, part.Condition, updateInv: true);
 			}
@@ -285,17 +295,22 @@ namespace CoolCatCollects.Bricklink
 		/// <summary>
 		/// Gets all the parts in a set
 		/// </summary>
-		/// <param name="set">Set number. Should already be checked to include -1</param>
+		/// <param name="number">Set number. Should already be checked to include -1</param>
 		/// <returns>A list of parts</returns>
-		public SubsetPartsListModel GetPartsFromSet(string set, bool byRemark = false, bool debug = false)
+		public SubsetPartsListModel GetPartsFromSet(string number, bool byRemark = false, bool debug = false, string type = "SET", int colourId = 0)
 		{
-			var responseModel = _apiService.GetRequest<GetSubsetResponse>($"items/SET/{set}/subsets");
+			var responseModel = _apiService.GetRequest<GetSubsetResponse>($"items/{type}/{number}/subsets");
 
 			var model = new SubsetPartsListModel(responseModel);
 
 			model.Parts = model.Parts
 				.Select(x =>
 				{
+					if (x.ColourId == 0)
+					{
+						x.ColourId = colourId;
+					}
+
 					var part = _dataService.GetPartModel(x.Number, x.ColourId, x.Type, "N", !debug);
 
 					x.MyPrice = part.PartInventory.MyPrice.ToString("N3");

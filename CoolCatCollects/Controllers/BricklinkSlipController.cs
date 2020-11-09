@@ -46,5 +46,12 @@ namespace CoolCatCollects.Controllers
 
 			return View(order);
 		}
+
+		public ActionResult GetOrderInfo(string orderId)
+		{
+			var order = _service.GetOrderForCsv(orderId);
+
+			return Json(order, JsonRequestBehavior.AllowGet);
+		}
 	}
 }
