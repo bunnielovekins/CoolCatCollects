@@ -1,9 +1,7 @@
 ﻿using CoolCatCollects.Bricklink.Models;
-using CoolCatCollects.Bricklink.Models.Responses;
 using CoolCatCollects.Core;
 using CoolCatCollects.Data.Entities;
 using CoolCatCollects.Data.Repositories;
-using CoolCatCollects.Models.Parts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

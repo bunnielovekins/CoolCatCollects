@@ -46,6 +46,7 @@
 				<th>Order Id</th>
 				<th>Total Pieces</th>
 				<th>Unique Pieces</th>
+				<th>Update Date</th>
 				<th>Username</th>
 				<th>Real Name</th>
 				<th>Total</th>
@@ -56,15 +57,19 @@
 		<tbody>
 			@foreach (var group in groups)
 			{
-				<tr><td colspan="8"><h4>@group.Key.ToString()</h4></td></tr>
+				if (Model.Status.ToUpper() == "Paid".ToUpper())
+				{
+					<tr><td colspan="9"><h4>@group.Key.ToString()</h4></td></tr>
+				}
 				foreach (var order in group)
 				{
 					<tr>
 						<td>@order.OrderId</td>
 						<td>@order.TotalPieces</td>
-						<td>@order.UniquePieces -- @order.DateStatusChanged.ToString("dd hh")</td>
+						<td>@order.UniquePieces</td>
+						<td>@order.DateStatusChanged.ToString("MM/dd HH:mm")</td>
 						<td>@order.Username</td>
-						<td @if (order.RealName == null){<text>class="js-name" data-orderid="@order.OrderId"</text>}>@(order.RealName ?? "Loading...")</td>
+						<td @if (order.RealName == null) { <text> class="js-name" data-orderid="@order.OrderId" </text> }>@(order.RealName ?? "Loading...")</td>
 						<td>@order.Total</td>
 						<td>
 							@Html.ActionLink("Parts List", "PartsList", new { orderId = order.OrderId }, new { target = "_blank" })

@@ -92,6 +92,9 @@ namespace CoolCatCollects.Services
 		{
 			var usedPurchase = await _repo.FindOneAsync(id);
 
+			await _blUploadRepo.RemoveManyAsync(usedPurchase.BLUploads);
+			await _weightRepo.RemoveManyAsync(usedPurchase.Weights);
+
 			await _repo.RemoveAsync(usedPurchase);
 		}
 

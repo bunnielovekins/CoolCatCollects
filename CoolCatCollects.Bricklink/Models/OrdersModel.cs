@@ -46,14 +46,14 @@ namespace CoolCatCollects.Bricklink.Models
 					return Day.Tomorrow;
 				}
 
-				var adjustedDate = DateStatusChanged.AddHours(5);
+				var adjustedDate = DateStatusChanged;//.AddHours(5);
 
 				if (DateTime.Now.Day > adjustedDate.Day || DateTime.Now.Month > adjustedDate.Month)
 				{
 					return Day.Today;
 				}
 
-				if (adjustedDate.Hour > 12)
+				if (adjustedDate.Hour >= 12)
 				{
 					if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
 					{
