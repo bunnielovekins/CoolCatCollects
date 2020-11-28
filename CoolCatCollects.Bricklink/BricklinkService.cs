@@ -333,6 +333,11 @@ namespace CoolCatCollects.Bricklink
 						x.ColourName = x.Colour.Name;
 					}
 
+					if (!string.IsNullOrEmpty(part.PartInventory.Image))
+                    {
+						x.Image = part.PartInventory.Image;
+					}
+
 					x.FillRemarks();
 
 					return x;

@@ -89,7 +89,8 @@ namespace CoolCatCollects.Ebay
 					PriceDelivery = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0")),
 					PriceTotal = data.pricingSummary.total.ToString(),
 					ItemCount = data.lineItems.Sum(x => x.quantity),
-					Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x))
+					Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x)),
+					Cancelled = data.cancelStatus.cancelState != "NONE_REQUESTED"
 				};
 
 				if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep != null)
@@ -148,7 +149,8 @@ namespace CoolCatCollects.Ebay
 					PriceDelivery = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0")),
 					PriceTotal = data.pricingSummary.total.ToString(),
 					ItemCount = data.lineItems.Sum(x => x.quantity),
-					Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x))
+					Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x)),
+					Cancelled = data.cancelStatus.cancelState != "NONE_REQUESTED"
 				};
 
 				if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep != null)

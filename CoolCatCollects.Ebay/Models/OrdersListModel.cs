@@ -96,6 +96,7 @@ namespace CoolCatCollects.Ebay.Models
 			ItemCount = data.lineItems.Sum(x => x.quantity);
 
 			Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x));
+			Cancelled = data.cancelStatus.cancelState != "NONE_REQUESTED";
 		}
 
 		public string GetShippingMethod(string method)
@@ -132,6 +133,7 @@ namespace CoolCatCollects.Ebay.Models
 		public string ShippingMethod { get; set; }
 		public int ItemCount { get; set; }
 		public IEnumerable<EbayOrdersListItemItemModel> Items { get; set; }
+		public bool Cancelled { get; internal set; }
 	}
 
 	public class EbayOrdersListItemItemModel

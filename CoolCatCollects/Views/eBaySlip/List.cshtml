@@ -38,7 +38,14 @@
 			<tr>
 				<td>@order.OrderId</td>
 				<td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
-				<td>@order.Status</td>
+				<td>
+					@order.Status
+					@if (order.Cancelled)
+					{
+						<br />
+						<h4>This order may have<br/> been cancelled!</h4>
+					}
+				</td>
 				<td>@order.BuyerUsername - @order.BuyerName</td>
 				<td>@order.PriceTotal</td>
 				<td style="width: 100px;">
