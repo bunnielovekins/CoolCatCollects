@@ -1,20 +1,35 @@
 ﻿
 @{
-    ViewBag.Title = "Listing Generators";
+	ViewBag.Title = "Listing Generators";
 }
 
 <h2>Listing Generators</h2>
 
 <a href="@Url.Action("Form")" class="btn btn-default">
-    Form
+	Form
 </a>
 
-<br/>
-<br/>
+<br />
+<br />
 
 @using (Html.BeginForm("UploadUsedFigures", "ListingGenerator", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <h3>Upload used figures</h3>
-    <input type="file" accept=".xlsx, .xls" name="file" required class="form-control-file" />
-    <input type="submit" value="Submit" class="btn btn-primary" />
+	<h3>Upload used figures</h3>
+	@Html.ActionLink("Download Template", "UsedTemplate", "ListingGenerator", new { }, new { target = "_blank", @class = "btn btn-default" })
+	<br />
+	<br />
+	@:Upload
+	<input type="file" accept=".xlsx, .xls" name="file" required class="form-control-file" />
+	<input type="submit" value="Submit" class="btn btn-primary" />
+}
+
+@using (Html.BeginForm("UploadNewFigures", "ListingGenerator", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+	<h3>Upload new figures</h3>
+	@Html.ActionLink("Download Template", "NewTemplate", "ListingGenerator", new { }, new { target = "_blank", @class = "btn btn-default" })
+	<br />
+	<br />
+	@:Upload
+	<input type="file" accept=".xlsx, .xls" name="file" required class="form-control-file" />
+	<input type="submit" value="Submit" class="btn btn-primary" />
 }
