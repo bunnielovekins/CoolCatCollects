@@ -3,10 +3,8 @@
 	var copy = form.find("#copy");
 	var output = form.find('#output');
 
-	form.submit(function (e) {
-		e.preventDefault();
-
-		var url = form.attr('action');
+	$('.js-export-copy').click(function () {
+		var url = $(this).attr('data-href');
 		var data = form.serialize();
 
 		$.post(url, data, function (response) {
@@ -44,10 +42,6 @@
 		});
 	});
 
-	$('.remark').change(function () {
-		$('#exportRemarks').attr('disabled', 'disabled');
-	});
-
 	$('#updateDb').click(function () {
 		var btn = $(this);
 
@@ -62,46 +56,6 @@
 			btn.text('Uploaded!');
 			btn.removeAttr('disabled')
 		});
-	});
-
-	$('#showResume').click(() => {
-		$('#showResume').hide();
-		$('#resumeBox').show();
-		$('#resumeTextBox').show().focus();
-	});
-
-	$('#doResume').click(() => {
-		var xmlString = $('#resumeTextBox').val();
-
-		if (!xmlString.length) {
-			return;
-		}
-
-		var xmlObj = parseXml(xmlString, ['parseXml']);
-		var items = xmlObj.INVENTORY.ITEM;
-
-		$('tr.part').each((index, elem) => {
-			var tr = $(elem);
-
-			var node = getNode(items,
-				tr.find('[data-field=category]').val(),
-				tr.find('[data-field=colour]').val(),
-				tr.find('[data-field=itemId]').val())
-
-			if (node) {
-				tr.find('[data-field="check"]').attr('checked', 'checked');
-				tr.find('[data-field="qty"]').val(node.qty);
-				tr.find('[data-field="price"]').val(node.price);
-				tr.find('[data-field="remark"]').val(node.remark);
-			}
-			else {
-				tr.find('[data-field="check"]').removeAttr('checked');
-			}
-		});
-
-		$('#showResume').show();
-		$('#resumeTextBox').hide();
-		$('#resumeBox').hide();
 	});
 
 	$('.js-break').click(function () {
@@ -169,6 +123,40 @@
 
 		RecalculateIndexes();
 	});
+
+	$('.js-resume-upload').click(function () {
+		readXmlFromFile().then(function (xmlString) {
+			var xmlObj = parseXml(xmlString, ['parseXml']);
+			var items = xmlObj.INVENTORY.ITEM;
+
+			$('tr.part').each((index, elem) => {
+				var tr = $(elem);
+
+				var node = getNode(items,
+					tr.find('[data-field=category]').val(),
+					tr.find('[data-field=colour]').val(),
+					tr.find('[data-field=itemId]').val())
+
+				if (node) {
+					tr.find('[data-field="check"]').attr('checked', 'checked');
+					tr.find('[data-field="qty"]').val(node.qty);
+					tr.find('[data-field="price"]').val(node.price);
+					tr.find('[data-field="remark"]').val(node.remark);
+				}
+				else {
+					tr.find('[data-field="check"]').removeAttr('checked');
+				}
+			});
+
+			$('#resume-dialog').modal('hide');
+		}, function () {
+			// failed
+		})
+	});
+
+	$('#resumeInput').change(function () {
+		$('.js-resume-upload').removeClass('disabled').removeAttr('disabled');
+	});
 });
 
 function RecalculateIndexes() {
@@ -186,12 +174,6 @@ function RecalculateIndexes() {
 }
 
 function ConsolidateNewPart(tr, part, qty) {
-	if (part.Number === '11211') {
-		console.log(part);
-		console.log(tr);
-		console.log(qty);
-	}
-
 	var qtyInput = tr.find('.qty');
 	qtyInput.attr('data-val', +qtyInput.attr('data-val') + part.Quantity);
 	qtyInput.val(+qtyInput.val() + (part.Quantity * qty));
@@ -277,6 +259,25 @@ function getNode(items, category, colour, itemId) {
 		};
 	}
 	return null;
+}
+
+function readXmlFromFile() {
+	return new Promise(function (resolve, reject) {
+		var file = $('#resumeInput').prop('files')[0];
+
+		if (!file) {
+			reject();
+		}
+
+		var reader = new FileReader();
+		reader.onload = function (e) {
+			var xml = e.target.result;
+
+			resolve(xml);
+		};
+
+		reader.readAsText(file);
+	});
 }
 
 function parseXml(xml, arrayTags) {

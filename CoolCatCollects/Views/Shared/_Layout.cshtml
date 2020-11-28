@@ -28,8 +28,8 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>@Html.ActionLink("Postage Export", "List", "BricklinkPostage", new { area = "" }, null)</li>
-							<li>@Html.ActionLink("Bricklink Slips", "List", "BricklinkSlip", new { area = "" }, null)</li>
-							<li>@Html.ActionLink("Bricklink Catalog", "Index", "BricklinkCatalog", new { area = "" }, null)</li>
+							<li>@Html.ActionLink("Orders", "List", "BricklinkSlip", new { area = "" }, null)</li>
+							<li>@Html.ActionLink("Part Out Set", "Index", "BricklinkCatalog", new { area = "" }, null)</li>
 							<li>@Html.ActionLink("Query Inventory", "Index", "Inventory", new { area = "" }, null)</li>
 						</ul>
 					</li>
@@ -39,7 +39,7 @@
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							<li>@Html.ActionLink("eBay Slips", "List", "eBaySlip", new { area = "" }, null)</li>
+							<li>@Html.ActionLink("Orders", "List", "eBaySlip", new { area = "" }, null)</li>
 							<li>@Html.ActionLink("Postage Bands", "Index", "Postage", new { area = "" }, null)</li>
 							<li>@Html.ActionLink("Listing Generator", "Index", "ListingGenerator", new { area = "" }, null)</li>
 						</ul>

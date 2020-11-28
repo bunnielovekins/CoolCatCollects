@@ -2,6 +2,7 @@
 using CoolCatCollects.Bricklink.Models;
 using CoolCatCollects.Services;
 using System;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using System.Xml.Serialization;
@@ -118,6 +119,26 @@ namespace CoolCatCollects.Controllers
 				serializer.Serialize(stringwriter, obj);
 
 				return Content(stringwriter.ToString(), "application/xml");
+			}
+		}
+
+		[HttpPost]
+		public ActionResult ExportXmlDownload(BLXMLItem[] items)
+		{
+			var obj = new BLXmlRoot
+			{
+				Items = items.Where(x => x.INCLUDE == "on").ToArray()
+			};
+
+			using (var stringwriter = new StringWriter())
+			{
+				var serializer = new XmlSerializer(obj.GetType());
+				using (var memoryStream = new MemoryStream())
+				{
+					serializer.Serialize(memoryStream, obj);
+
+					return File(memoryStream.ToArray(), "application/xml", $"resume-{DateTime.Now:yyyy-MM-dd}.xml");
+				}
 			}
 		}
 
