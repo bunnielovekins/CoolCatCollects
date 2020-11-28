@@ -96,7 +96,7 @@ namespace CoolCatCollects.Ebay
 				if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep != null)
 				{
 					mod.BuyerName = data.fulfillmentStartInstructions[0].shippingStep.shipTo.fullName;
-					mod.ShippingMethod = GetShippingMethod(data.fulfillmentStartInstructions[0].shippingStep.shippingServiceCode);
+					mod.ShippingMethod = PostageHelper.FriendlyPostageName(data.fulfillmentStartInstructions[0].shippingStep.shippingServiceCode);
 				}
 
 				var entity = _dataService.AddOrder(data);
@@ -156,7 +156,7 @@ namespace CoolCatCollects.Ebay
 				if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep != null)
 				{
 					mod.BuyerName = data.fulfillmentStartInstructions[0].shippingStep.shipTo.fullName;
-					mod.ShippingMethod = GetShippingMethod(data.fulfillmentStartInstructions[0].shippingStep.shippingServiceCode);
+					mod.ShippingMethod = PostageHelper.FriendlyPostageName(data.fulfillmentStartInstructions[0].shippingStep.shippingServiceCode);
 				}
 
 				var entity = _dataService.AddOrder(data);
@@ -195,34 +195,6 @@ namespace CoolCatCollects.Ebay
 			var model = new EbayOrdersListModel(items, 0, 1000);
 
 			return model;
-		}
-
-		/// <summary>
-		/// Gets nicer names for the shipping method
-		/// </summary>
-		/// <param name="method"></param>
-		/// <returns></returns>
-		private string GetShippingMethod(string method)
-		{
-			switch (method)
-			{
-				case "UK_RoyalMailSecondClassStandard":
-					return "RM 2nd";
-				case "UK_RoyalMailFirstClassStandard":
-					return "RM 1st";
-				case "UK_RoyalMailAirmailInternational":
-					return "RM Intl Std";
-				case "UK_eBayDeliveryPacklinkIntl":
-					return "Packlink International";
-				case "UK_RoyalMailSecondClassRecorded":
-					return "RM 2nd Recorded";
-				case "UK_RoyalMailFirstClassRecorded":
-					return "RM 1st Recorded";
-				case "UK_myHermesDoorToDoorService":
-					return "MyHermes";
-			}
-
-			return method;
 		}
 
 		/// <summary>

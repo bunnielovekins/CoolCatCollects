@@ -91,33 +91,12 @@ namespace CoolCatCollects.Ebay.Models
 			if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep != null)
 			{
 				BuyerName = data.fulfillmentStartInstructions[0].shippingStep.shipTo.fullName;
-				ShippingMethod = GetShippingMethod(data.fulfillmentStartInstructions[0].shippingStep.shippingServiceCode);
+				ShippingMethod = PostageHelper.FriendlyPostageName(data.fulfillmentStartInstructions[0].shippingStep.shippingServiceCode);
 			}
 			ItemCount = data.lineItems.Sum(x => x.quantity);
 
 			Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x));
 			Cancelled = data.cancelStatus.cancelState != "NONE_REQUESTED";
-		}
-
-		public string GetShippingMethod(string method)
-		{
-			switch (method)
-			{
-				case "UK_RoyalMailSecondClassStandard":
-					return "RM Second Class";
-				case "UK_RoyalMailFirstClassStandard":
-					return "RM First Class";
-				case "UK_RoyalMailAirmailInternational":
-					return "RM International Standard";
-				case "UK_eBayDeliveryPacklinkIntl":
-					return "eBay Packlink International";
-				case "UK_RoyalMailSecondClassRecorded":
-					return "RM Second Class Recorded";
-				case "UK_RoyalMailFirstClassRecorded":
-					return "RM First Class Recorded";
-			}
-
-			return method;
 		}
 
 		public string OrderId { get; set; }

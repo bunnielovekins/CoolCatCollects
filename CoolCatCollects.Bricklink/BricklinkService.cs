@@ -256,7 +256,7 @@ namespace CoolCatCollects.Bricklink
 			{
 				BuyerName = orderEntity.BuyerName,
 				UserName = data.buyer_name,
-				ShippingMethod = orderEntity.ShippingMethod,
+				ShippingMethod = PostageHelper.FriendlyPostageName(orderEntity.ShippingMethod),
 				OrderTotal = orderEntity.Subtotal.ToString(),
 				Buyer = new Buyer(data.shipping.address),
 				OrderNumber = orderEntity.OrderId,

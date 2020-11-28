@@ -19,7 +19,7 @@ namespace CoolCatCollects.Bricklink.Models
 			var data = order.data;
 			BuyerName = data.shipping.address.name.full;
 			UserName = data.buyer_name;
-			ShippingMethod = data.shipping.method;
+			ShippingMethod = PostageHelper.FriendlyPostageName(data.shipping.method);
 			OrderTotal = data.cost.subtotal;
 
 			Buyer = new Buyer(data.shipping.address);
