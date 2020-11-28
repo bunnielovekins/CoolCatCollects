@@ -1,16 +1,15 @@
 ﻿@model CoolCatCollects.Bricklink.Models.OrdersModel
 @{
-	ViewBag.Title = "Packed Bricklink Orders";
+	ViewBag.Title = "Bricklink Orders for Postage";
 }
 
-<h2>List of Bricklink Orders Marked as Packed</h2>
+<h2>Bricklink Orders for Postage</h2>
 
 @using (Html.BeginForm("Export", "BricklinkPostage"))
 {
-	<input type="submit" value="Generate CSV" class="btn btn-primary" />
-
-	<p>Warning! The app has to query bricklink for each of these orders. It may take a while.</p>
-
+	<input type="submit" value="Export" class="btn btn-primary" />
+	<br />
+	<br />
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
 			<tr>
@@ -27,17 +26,16 @@
 			{
 				<tr>
 					@Html.HiddenFor(o => Model.Orders[i].OrderId)
-					@Html.HiddenFor(o => Model.Orders[i].TotalPieces)
-					@Html.HiddenFor(o => Model.Orders[i].UniquePieces)
-					@Html.HiddenFor(o => Model.Orders[i].RealName)
-					@Html.HiddenFor(o => Model.Orders[i].Total)
 					<td>
 						@Html.CheckBoxFor(o => Model.Orders[i].Selected)
 					</td>
 					<td>@Model.Orders[i].OrderId</td>
 					<td>@Model.Orders[i].TotalPieces</td>
 					<td>@Model.Orders[i].UniquePieces</td>
-					<td>@Model.Orders[i].Username</td>
+					<td>
+						@Model.Orders[i].Username<br />
+						(@HttpUtility.HtmlDecode(Model.Orders[i].RealName))
+					</td>
 					<td>@Model.Orders[i].Total</td>
 				</tr>
 			}

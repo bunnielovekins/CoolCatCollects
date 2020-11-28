@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CoolCatCollects.Core;
 using System.ComponentModel;
 
 namespace CoolCatCollects.Bricklink.Models
@@ -29,12 +29,12 @@ namespace CoolCatCollects.Bricklink.Models
 				return;
 			}
 
-			Name = data.shipping.address.name.full;
-			Address1 = data.shipping.address.address1;
-			Address2 = data.shipping.address.address2;
-			AddressCity = data.shipping.address.city;
-			AddressPostcode = data.shipping.address.postal_code;
-			AddressCounty = data.shipping.address.state;
+			Name = data.shipping.address.name.full.HtmlDecode();
+			Address1 = data.shipping.address.address1.HtmlDecode();
+			Address2 = data.shipping.address.address2.HtmlDecode();
+			AddressCity = data.shipping.address.city.HtmlDecode();
+			AddressPostcode = data.shipping.address.postal_code.HtmlDecode();
+			AddressCounty = data.shipping.address.state.HtmlDecode();
 			AddressCountry = data.shipping.address.country_code;
 			OrderReference = data.order_id.ToString();
 			OrderValue = Core.StaticFunctions.FormatCurrency(data.cost?.subtotal ?? "0").ToString();
@@ -47,6 +47,7 @@ namespace CoolCatCollects.Bricklink.Models
 			UnitPrice = Core.StaticFunctions.FormatCurrency(data.cost?.subtotal ?? "0").ToString();
 			Quantity = "1";
 			UnitWeight = Weight;
+			EmailAddress = data.buyer_email;
 		}
 
 		private string GetPackageSize()
@@ -153,5 +154,7 @@ namespace CoolCatCollects.Bricklink.Models
 		public string Quantity { get; set; }
 		[DisplayName("Unit Weight")]
 		public string UnitWeight { get; set; }
+		[DisplayName("Email Address")]
+		public string EmailAddress { get; set; }
 	}
 }

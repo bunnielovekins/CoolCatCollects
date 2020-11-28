@@ -51,9 +51,14 @@ namespace CoolCatCollects.Core
 		/// </summary>
 		/// <param name="str"></param>
 		/// <returns></returns>
-		public static IHtmlString FormatNewLines(string str)
+		public static IHtmlString FormatNewLines(this string str)
 		{
 			return new HtmlString(str.Replace("\n", "<br/>"));
+		}
+
+		public static string HtmlDecode(this string str)
+		{
+			return HttpUtility.HtmlDecode(str);
 		}
 	}
 }
