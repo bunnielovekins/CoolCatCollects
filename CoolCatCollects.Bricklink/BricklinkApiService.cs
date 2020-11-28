@@ -99,6 +99,12 @@ namespace CoolCatCollects.Bricklink
 			partInv.ItemType = item.item.type;
 			partInv.CategoryId = item.item.category_id;
 
+			if (item.is_stock_room)
+			{
+				partInv.Location = "";
+				partInv.Quantity = 0;
+			}
+
 			return partInv;
 		}
 
@@ -148,6 +154,12 @@ namespace CoolCatCollects.Bricklink
 				partInv.Location = item.description;
 			}
 
+			if (item.is_stock_room)
+			{
+				partInv.Quantity = 0;
+				partInv.Location = "";
+			}
+
 			partInv.LastUpdated = DateTime.Now;
 
 			return partInv;
@@ -192,6 +204,12 @@ namespace CoolCatCollects.Bricklink
 			if (string.IsNullOrEmpty(partInv.Location))
 			{
 				partInv.Location = item.description;
+			}
+
+			if (item.is_stock_room)
+			{
+				partInv.Quantity = 0;
+				partInv.Location = "";
 			}
 
 			partInv.LastUpdated = DateTime.Now;

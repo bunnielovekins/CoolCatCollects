@@ -29,7 +29,7 @@
 					@Html.HiddenFor(o => Model.Orders[i].OrderId)
 					@Html.HiddenFor(o => Model.Orders[i].TotalPieces)
 					@Html.HiddenFor(o => Model.Orders[i].UniquePieces)
-					@Html.HiddenFor(o => Model.Orders[i].BuyerName)
+					@Html.HiddenFor(o => Model.Orders[i].RealName)
 					@Html.HiddenFor(o => Model.Orders[i].Total)
 					<td>
 						@Html.CheckBoxFor(o => Model.Orders[i].Selected)
@@ -37,7 +37,7 @@
 					<td>@Model.Orders[i].OrderId</td>
 					<td>@Model.Orders[i].TotalPieces</td>
 					<td>@Model.Orders[i].UniquePieces</td>
-					<td>@Model.Orders[i].BuyerName</td>
+					<td>@Model.Orders[i].Username</td>
 					<td>@Model.Orders[i].Total</td>
 				</tr>
 			}
