@@ -17,9 +17,10 @@ namespace CoolCatCollects.Models
         public string Colour { get; set; }
         [DisplayName("Colour Description")]
         public string ColourDescription { get; set; }
+        [DisplayName("Pluralise")]
+        public bool Plural { get; set; }
 
         public IHtmlString Html { get; set; }
-
 
         public ListingGeneratorFormModel NoHtml()
         {
@@ -30,7 +31,8 @@ namespace CoolCatCollects.Models
                 Number = Number,
                 Condition = Condition,
                 ColourDescription = ColourDescription,
-                Colour = Colour
+                Colour = Colour,
+                Plural = Plural
             };
         }
     }

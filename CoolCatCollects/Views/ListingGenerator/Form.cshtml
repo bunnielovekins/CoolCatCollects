@@ -34,7 +34,7 @@
 					show = ['Title', 'Number'];
 					break;
 				case 'UsedFigSingle':
-					show = ['Title', 'Number', 'Condition'];
+					show = ['Title', 'Number', 'Condition', 'Plural'];
 					break;
 				case 'UsedFigMulti':
 					show = ['Title', 'Condition'];
@@ -107,6 +107,14 @@
 			<div class="col-md-4">
 				@Html.EditorFor(model => model.Condition, new { htmlAttributes = new { @class = "form-control" } })
 				@Html.ValidationMessageFor(model => model.Condition, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group" data-section="Plural">
+			@Html.LabelFor(model => model.Plural, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-4">
+				@Html.EditorFor(model => model.Plural, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Plural, "", new { @class = "text-danger" })
 			</div>
 		</div>
 
