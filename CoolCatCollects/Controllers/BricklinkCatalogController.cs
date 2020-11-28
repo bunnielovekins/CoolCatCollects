@@ -56,12 +56,12 @@ namespace CoolCatCollects.Controllers
 			return View(model: parts);
 		}
 
-		public ActionResult ExportRemarks(string remarks, string set)
+		public ActionResult ExportRemarks(string remarks, string set, int page)
 		{
 			var allRemarks = remarks.Split(',');
 
 			var service = new WordExportService();
-			var filename = service.ExportRemarks(allRemarks, set, Server.MapPath("~/App_Data/"));
+			var filename = service.ExportRemarks(allRemarks, set, Server.MapPath("~/App_Data/"), page);
 
 			byte[] content = System.IO.File.ReadAllBytes(filename);
 			Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";

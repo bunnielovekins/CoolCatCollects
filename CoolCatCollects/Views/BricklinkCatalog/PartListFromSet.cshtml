@@ -16,6 +16,13 @@
 @{
 	int i = 0;
 	ViewBag.Title = "New Set";
+
+	var partsWithRemarks = Model.Parts.Where(x => !x.Remark.IsEmpty());
+	var partsWithRemarksCount = partsWithRemarks.Count();
+	var partsPages = partsWithRemarks
+		.Select((val, index) => new { page = index / 190, val })
+		.GroupBy(x => x.page, x => x.val);
+
 }
 
 <h1>Parts List</h1>
@@ -28,13 +35,12 @@
 
 <br />
 
-<button type="button" class="btn btn-default" id="exportRemarksPrepare">
-	Prepare to Print Remarks
-</button>
-<a href="#" target="_blank" id="exportRemarks" class="disabled btn btn-primary" disabled download
-	data-href="@Url.Action("ExportRemarks", new { set = Request.QueryString["set"] })">
-	Print Remarks
-</a>
+@foreach(var page in partsPages)
+{
+	var remarkStr = page.Select(x => x.Remark).Aggregate((current, next) => current + "," + next);
+	<a href="@Url.Action("ExportRemarks", new { set = Request.QueryString["set"], page = page.Key, remarks = remarkStr })" 
+	   download target="_blank" class="btn btn-primary">Export Stickers - Page @(page.Key + 1)</a>
+}
 
 <br />
 <br />

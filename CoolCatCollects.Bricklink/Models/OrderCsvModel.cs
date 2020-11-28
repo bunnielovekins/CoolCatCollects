@@ -37,14 +37,14 @@ namespace CoolCatCollects.Bricklink.Models
 			AddressCounty = data.shipping.address.state.HtmlDecode();
 			AddressCountry = data.shipping.address.country_code;
 			OrderReference = data.order_id.ToString();
-			OrderValue = Core.StaticFunctions.FormatCurrency(data.cost?.subtotal ?? "0").ToString();
-			ShippingCost = Core.StaticFunctions.FormatCurrency(data.cost?.shipping ?? "0").ToString();
+			OrderValue = StaticFunctions.FormatCurrency(data.cost?.subtotal ?? "0").ToString();
+			ShippingCost = StaticFunctions.FormatCurrency(data.cost?.shipping ?? "0").ToString();
 			Weight = formatWeight(data.total_weight);
 			ShippingMethod = data.shipping.method;
 			PackageSize = GetPackageSize();
 
 			ProductName = "Mixed Lego (No Batteries)";
-			UnitPrice = Core.StaticFunctions.FormatCurrency(data.cost?.subtotal ?? "0").ToString();
+			UnitPrice = StaticFunctions.FormatCurrency(data.cost?.subtotal ?? "0").ToString();
 			Quantity = "1";
 			UnitWeight = Weight;
 			EmailAddress = data.buyer_email;

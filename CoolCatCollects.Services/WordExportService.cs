@@ -5,21 +5,13 @@ namespace CoolCatCollects.Services
 {
 	public class WordExportService
 	{
-		public string ExportRemarks(string[] allRemarks, string set, string path)
+		public string ExportRemarks(string[] allRemarks, string set, string path, int page)
 		{
-			if (allRemarks.Length < 189)
-			{
-				var lst = allRemarks.ToList();
+			allRemarks = allRemarks.Skip(190 * (page - 1)).ToArray();
 
-				while(lst.Count < 189)
-				{
-					lst.Add("");
-				}
+			allRemarks = FillInBlanks(allRemarks);
 
-				allRemarks = lst.ToArray();
-			}
-
-			string filename = path + $"output-{set}.docx";
+			string filename = path + $"Remarks-{set}-{page}.docx";
 			string template = path + "Avery_Template.docx";
 
 			using (var templateDoc = DocX.Load(template))
@@ -33,6 +25,23 @@ namespace CoolCatCollects.Services
 			}
 
 			return filename;
+
+			string[] FillInBlanks(string[] arr)
+			{
+				if (arr.Length < 189)
+				{
+					var lst = arr.ToList();
+
+					while (lst.Count < 189)
+					{
+						lst.Add("");
+					}
+
+					arr = lst.ToArray();
+				}
+
+				return arr;
+			}
 		}
 	}
 }

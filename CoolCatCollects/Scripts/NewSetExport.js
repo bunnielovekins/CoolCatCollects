@@ -48,27 +48,6 @@
 		$('#exportRemarks').attr('disabled', 'disabled');
 	});
 
-	$('#exportRemarksPrepare').click(function () {
-		var str = "";
-
-		$('.remark').each(function () {
-			var val = $(this).val();
-			if (val.length > 0) {
-				str += $(this).val() + ",";
-			}
-		});
-
-		str = str.substr(0, str.length - 1);
-
-		var btn = $('#exportRemarks');
-
-		btn.removeAttr('disabled');
-		btn.removeClass('disabled');
-		btn.attr('href', btn.attr('data-href') + '&remarks=' + str)
-
-		return false;
-	});
-
 	$('#updateDb').click(function () {
 		var btn = $(this);
 
@@ -125,7 +104,7 @@
 		$('#resumeBox').hide();
 	});
 
-	$('.js-break').click(function() {
+	$('.js-break').click(function () {
 		var btn = $(this);
 
 		var number = btn.attr('data-number');
@@ -227,7 +206,7 @@ function AddNewRow(table, part, qty) {
 	var newRow = lastRow.clone(true, true);
 
 	newRow.find('input')
-		.each(function() {
+		.each(function () {
 			var elem = $(this);
 			var name = elem.attr('name').replace('[' + i + ']', '[' + newIndex + ']');
 			elem.attr('name', name);
