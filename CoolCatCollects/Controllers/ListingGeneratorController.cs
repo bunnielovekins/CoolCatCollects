@@ -73,6 +73,8 @@ namespace CoolCatCollects.Controllers
 
         public ActionResult FormResult(ListingGeneratorFormModel model)
         {
+            model.Title = AddMinifigToTitle(model.Title);
+
             model.Html = Render();
 
             return View(model);
@@ -98,6 +100,20 @@ namespace CoolCatCollects.Controllers
             string ViewLocation()
             {
                 return $"~/Views/ListingGenerator/Templates/{model.Type}.cshtml";
+            }
+
+            string AddMinifigToTitle(string title)
+            {
+                if (!model.Type.Contains("Fig"))
+                {
+                    return title;
+                }
+                if (title.Contains("Minifigure"))
+                {
+                    return title;
+                }
+
+                return title + " Minifigure";
             }
         }
     }
