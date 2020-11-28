@@ -10,6 +10,7 @@
         <th>Title</th>
         <th>Number</th>
         <th>Condition</th>
+        <th>Plural</th>
         <th></th>
     </tr>
     @foreach (var item in Model)
@@ -26,6 +27,9 @@
                 </td>
                 <td class="medium">
                     <input class="form-control" type="text" value="@item.Condition" name="model.Condition" />
+                </td>
+                <td class="thinnest">
+                    <input class="form-control" type="checkbox" name="model.Plural" value="true" />
                 </td>
                 <td class="thinner">
                     <input class="btn btn-default js-create" type="submit" value="Create" />
@@ -55,6 +59,10 @@
 
         .thinner {
             width: 70px;
+        }
+
+        .thinnest {
+            width: 0;
         }
 
         .medium {
