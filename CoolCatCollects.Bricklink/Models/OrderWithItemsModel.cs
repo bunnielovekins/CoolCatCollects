@@ -77,13 +77,13 @@ namespace CoolCatCollects.Bricklink.Models
 	{
 		public Buyer(BricklinkAddress address)
 		{
-			Name = address.name.full;
-			Address1 = address.address1;
-			Address2 = address.address2;
-			PostCode = address.postal_code;
+			Name = address.name.full.HtmlDecode();
+			Address1 = address.address1.HtmlDecode();
+			Address2 = address.address2.HtmlDecode();
+			PostCode = address.postal_code.HtmlDecode();
 			Country = address.country_code;
-			City = address.city;
-			FullAddress = address.full;
+			City = address.city.HtmlDecode();
+			FullAddress = address.full.HtmlDecode();
 		}
 
 		public Buyer()

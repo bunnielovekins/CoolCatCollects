@@ -6,22 +6,12 @@
 
 @section styles {
 	<link href="~/Content/bricklinkpartlist.css?v=2" rel="stylesheet" />
+	<link href="~/Content/checkbox.css" rel="stylesheet" />
 }
 
 @section scripts {
 	@Scripts.Render("~/bundles/jquery")
-	<script>
-		$(function () {
-			$('table.parts tbody tr.checkable').click(function () {
-				var checkbox = $(this).find('input');
-				if (checkbox.prop('checked')) {
-					checkbox.prop('checked', false);
-				} else {
-					checkbox.prop('checked', true);
-				}
-			});
-		});
-	</script>
+	<script src="~/Scripts/checkbox.js"></script>
 }
 
 <h2>Unfulfilled eBay Orders: @DateTime.Now.ToString("dd/MM/yyyy")</h2>
@@ -51,7 +41,7 @@
 				<tr>
 					<td colspan="2">Order: <strong>@order.OrderId</strong></td>
 					<td colspan="2">
-						Subtotal: <strong>@order.PriceSubtotal</strong><br/>
+						Subtotal: <strong>@order.PriceSubtotal</strong><br />
 						Date: <strong>@order.OrderDate.ToString("dd/MM/yyyy")</strong>
 					</td>
 					<td colspan="2"><strong>@order.ShippingMethod</strong></td>
@@ -68,7 +58,13 @@
 						<td>
 							<img src="@item.Image" class="image" />
 						</td>
-						<td>@item.Name</td>
+						<td>
+							@item.Name
+							@if (!item.Character.IsEmpty())
+							{
+								<br /><small>@item.Character</small>
+							}
+						</td>
 						<td class="font-xlarge">@item.Quantity</td>
 						<td class="center">@item.Cost</td>
 						<td></td>
