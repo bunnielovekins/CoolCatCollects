@@ -63,7 +63,7 @@
 			</tr>
 		}
 	</table>
-	<img class="right-float" alt="eBay" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/EBay_logo.svg" style="height: 68px;">
+	<img class="right-float" alt="eBay" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/EBay_logo.svg" style="height: @(Model.OrderPaid.IsEmpty() ? "46" : "68")px;">
 	<hr class="clear" />
 	<h2>Items in Order</h2>
 	<table class="invoice single">
