@@ -7,9 +7,9 @@
 			switch (method)
 			{
 				case "UK_RoyalMailSecondClassStandard":
-					return "RM 48";
+					return "RM 2nd";
 				case "UK_RoyalMailFirstClassStandard":
-					return "RM 24";
+					return "RM 1st";
 				case "UK_RoyalMailAirmailInternational":
 					return "RM Intl Standard";
 				case "UK_eBayDeliveryPacklinkIntl":
@@ -25,13 +25,13 @@
 				case "RoyalMail - Standard Large Letter":
 					return "RM Intl Standard - Large Letter";
 				case "RoyalMail - Standard 2nd Class Large Letter":
-					return "RM 48 - Large Letter";
+					return "RM 2nd - Large Letter";
 				case "RoyalMail - Standard 2nd Class Small Parcel":
-					return "RM 48 - Small Parcel";
+					return "RM 2nd - Small Parcel";
 				case "RoyalMail - Standard 1st Class Large Letter":
-					return "RM 24 - Large Letter";
+					return "RM 1st - Large Letter";
 				case "RoyalMail - Standard 1st Class Small Parcel":
-					return "RM 24 - Small Parcel";
+					return "RM 1st - Small Parcel";
 			}
 
 			return method;

@@ -55,10 +55,13 @@
 			<td>Order Date:</td>
 			<td>@Model.OrderDate</td>
 		</tr>
-		<tr>
-			<td>Paid On:</td>
-			<td>@Model.OrderPaid</td>
-		</tr>
+		@if (!Model.OrderPaid.IsEmpty())
+		{
+			<tr>
+				<td>Paid On:</td>
+				<td>@Model.OrderPaid</td>
+			</tr>
+		}
 	</table>
 	<img class="right-float" alt="eBay" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/EBay_logo.svg" style="height: 68px;">
 	<hr class="clear" />
@@ -83,26 +86,26 @@
 		<tbody>
 			@foreach (var item in Model.Items)
 			{
-			<tr>
-				@if (!noImages)
-				{
-					<td><img src="@item.Image" /></td>
-				}
-				<td>
-					@item.Name
-					@if (!string.IsNullOrEmpty(item.Variant))
+				<tr>
+					@if (!noImages)
 					{
-						<br /><small>@item.Variant</small>
+						<td><img src="@item.Image" /></td>
 					}
-				</td>
-				<td>@item.UnitPrice</td>
-				@if (!Model.IsInternationalOrder)
-				{
-					<td>@item.Discount</td>
-				}
-				<td>@item.Quantity</td>
-				<td>@item.SubTotal</td>
-			</tr>
+					<td>
+						@item.Name
+						@if (!string.IsNullOrEmpty(item.Variant))
+						{
+							<br /><small>@item.Variant</small>
+						}
+					</td>
+					<td>@item.UnitPrice</td>
+					@if (!Model.IsInternationalOrder)
+					{
+						<td>@item.Discount</td>
+					}
+					<td>@item.Quantity</td>
+					<td>@item.SubTotal</td>
+				</tr>
 			}
 		</tbody>
 	</table>

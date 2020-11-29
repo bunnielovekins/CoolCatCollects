@@ -30,7 +30,14 @@ namespace CoolCatCollects.Ebay.Models
 			IsInternationalOrder = true;
 			OrderNumber = data.orderId;
 			OrderDate = data.creationDate.ToString("yyyy-MM-dd");
-			OrderPaid = data.paymentSummary.payments[0].paymentDate.ToString("yyyy-MM-dd");
+			if (data.paymentSummary.payments[0].paymentDate != DateTime.MinValue)
+			{
+				OrderPaid = data.paymentSummary.payments[0].paymentDate.ToString("yyyy-MM-dd");
+			}
+			else
+			{
+				OrderPaid = "";
+			}
 			SubTotal = StaticFunctions.FormatCurrencyStr(data.pricingSummary.priceSubtotal.convertedFromValue);
 			PostagePackaging = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0"));
 			if (data.pricingSummary.adjustment != null)
@@ -62,7 +69,14 @@ namespace CoolCatCollects.Ebay.Models
 			IsInternationalOrder = false;
 			OrderNumber = data.orderId;
 			OrderDate = data.creationDate.ToString("yyyy-MM-dd");
-			OrderPaid = data.paymentSummary.payments[0].paymentDate.ToString("yyyy-MM-dd");
+			if (data.paymentSummary.payments[0].paymentDate != DateTime.MinValue)
+			{
+				OrderPaid = data.paymentSummary.payments[0].paymentDate.ToString("yyyy-MM-dd");
+			}
+			else
+			{
+				OrderPaid = "";
+			}
 			SubTotal = StaticFunctions.FormatCurrencyStr(data.pricingSummary.priceSubtotal.convertedFromValue);
 			PostagePackaging = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0"));
 			if (data.pricingSummary.priceDiscount != null)
