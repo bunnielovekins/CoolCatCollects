@@ -65,14 +65,17 @@
 				<td>Order Date:</td>
 				<td>@order.OrderDate</td>
 			</tr>
-			<tr>
-				<td>Paid On:</td>
-				<td>@order.OrderPaid</td>
-			</tr>
+			@if (!order.OrderPaid.IsEmpty())
+			{
+				<tr>
+					<td>Paid On:</td>
+					<td>@order.OrderPaid</td>
+				</tr>
+			}
 		</table>
 		if (order.OrderNumber == orderOne.OrderNumber)
 		{
-			<img class="right-float" alt="eBay" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/EBay_logo.svg" style="height: 68px;">
+			<img class="right-float" alt="eBay" src="https://upload.wikimedia.org/wikipedia/commons/1/1b/EBay_logo.svg" style="height: @(order.OrderPaid.IsEmpty() ? "46" : "68")px;">
 		}
 
 		<hr class="clear" />

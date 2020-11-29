@@ -39,7 +39,13 @@
 				<td>@order.OrderId</td>
 				<td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
 				<td>
+					@if (order.PaymentStatus != "PAID")
+					{
+						@:Payment Status: @order.PaymentStatus<br/>
+					}
+
 					@order.Status
+					
 					@if (order.Cancelled)
 					{
 						<br />

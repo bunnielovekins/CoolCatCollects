@@ -77,28 +77,7 @@ namespace CoolCatCollects.Ebay
 
 			var items = obj.orders.Select(data =>
 			{
-				var mod = new EbayOrdersListItemModel
-				{
-					OrderId = data.orderId,
-					LegacyOrderId = data.legacyOrderId,
-					OrderDate = data.creationDate,
-					Status = data.orderFulfillmentStatus,
-					BuyerUsername = data.buyer.username,
-					PriceSubtotal = data.pricingSummary.priceSubtotal.ToString(),
-					PriceDiscount = data.pricingSummary.priceDiscount?.ToString(),
-					PriceDelivery = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0")),
-					PriceTotal = data.pricingSummary.total.ToString(),
-					ItemCount = data.lineItems.Sum(x => x.quantity),
-					Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x)),
-					Cancelled = data.cancelStatus.cancelState != "NONE_REQUESTED"
-				};
-
-				if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep != null)
-				{
-					mod.BuyerName = data.fulfillmentStartInstructions[0].shippingStep.shipTo.fullName;
-					mod.ShippingMethod = PostageHelper.FriendlyPostageName(data.fulfillmentStartInstructions[0].shippingStep.shippingServiceCode);
-				}
-
+				var mod = new EbayOrdersListItemModel(data);
 				var entity = _dataService.AddOrder(data);
 
 				mod.Items = mod.Items.Select(x =>
@@ -135,30 +114,9 @@ namespace CoolCatCollects.Ebay
 
 			var obj = JsonConvert.DeserializeObject<GetOrdersResponseModel>(response);
 
-			var items = obj.orders.Select(data =>
+			var items = obj.orders.Where(x => x.cancelStatus.cancelState == "NONE_REQUESTED" && x.orderPaymentStatus == "PAID").Select(data =>
 			{
-				var mod = new EbayOrdersListItemModel
-				{
-					OrderId = data.orderId,
-					LegacyOrderId = data.legacyOrderId,
-					OrderDate = data.creationDate,
-					Status = data.orderFulfillmentStatus,
-					BuyerUsername = data.buyer.username,
-					PriceSubtotal = data.pricingSummary.priceSubtotal.ToString(),
-					PriceDiscount = data.pricingSummary.priceDiscount?.ToString(),
-					PriceDelivery = StaticFunctions.FormatCurrencyStr(decimal.Parse(data.pricingSummary.deliveryCost.convertedFromValue) - decimal.Parse(data.pricingSummary.deliveryDiscount?.convertedFromValue ?? "0")),
-					PriceTotal = data.pricingSummary.total.ToString(),
-					ItemCount = data.lineItems.Sum(x => x.quantity),
-					Items = data.lineItems.Select(x => new EbayOrdersListItemItemModel(x)),
-					Cancelled = data.cancelStatus.cancelState != "NONE_REQUESTED"
-				};
-
-				if (data.fulfillmentStartInstructions.Any() && data.fulfillmentStartInstructions[0].shippingStep != null)
-				{
-					mod.BuyerName = data.fulfillmentStartInstructions[0].shippingStep.shipTo.fullName;
-					mod.ShippingMethod = PostageHelper.FriendlyPostageName(data.fulfillmentStartInstructions[0].shippingStep.shippingServiceCode);
-				}
-
+				var mod = new EbayOrdersListItemModel(data);
 				var entity = _dataService.AddOrder(data);
 
 				mod.Items = mod.Items.Select(x =>
