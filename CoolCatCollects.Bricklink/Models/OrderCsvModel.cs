@@ -63,7 +63,7 @@ namespace CoolCatCollects.Bricklink.Models
 			}
 			else if (ShippingMethod.ToLower().Contains("parcel"))
 			{
-				return "small parcel";
+				return "parcel";
 			}
 			else if (ShippingMethod.ToLower().Contains("letter"))
 			{
