@@ -77,6 +77,11 @@ namespace CoolCatCollects.Bricklink
 			return model;
 		}
 
+		public BricklinkItem GetPart(string number, string type = "PART")
+		{
+			return _apiService.GetRequest<GetItemResponse>($"items/{type}/{number}").data;
+		}
+
 		public void UpdateInventoryForParts(IEnumerable<MiniPartModel> parts)
 		{
 			foreach (var part in parts)
@@ -334,7 +339,7 @@ namespace CoolCatCollects.Bricklink
 					}
 
 					if (!string.IsNullOrEmpty(part.PartInventory.Image))
-                    {
+					{
 						x.Image = part.PartInventory.Image;
 					}
 

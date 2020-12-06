@@ -40,7 +40,7 @@
 {
 	var remarkStr = page.Select(x => x.Remark).Aggregate((current, next) => current + "," + next);
 	<a href="@Url.Action("ExportRemarks", new { set = set, page = page.Key, remarks = remarkStr })"
-	   download target="_blank" class="btn btn-primary">Export Stickers - Page @(page.Key + 1)</a>
+	   download target="_blank" class="btn btn-primary">Print Remarks - Page @(page.Key + 1)</a>
 }
 
 <br />
@@ -69,6 +69,7 @@
 				<th>Remark</th>
 				<th>My Price</th>
 				<th>Avg Price</th>
+				<th>Weight</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -123,6 +124,7 @@
 					<td><input class="form-control remark" type="text" name="items[@i].REMARKS" value="@part.Remark" data-val="@part.Remark" data-field="remark" /></td>
 					<td><input class="form-control price" type="text" name="items[@i].pricestr" value="@part.MyPrice" data-val="@part.MyPrice" data-field="price" /></td>
 					<td class="avgprice">@part.AveragePrice</td>
+					<td class="js-weight" data-href="@Url.Action("GetWeight", "BricklinkCatalog", new { num = part.Number, type = part.Type })">Loading...</td>
 				</tr>
 
 				i++;

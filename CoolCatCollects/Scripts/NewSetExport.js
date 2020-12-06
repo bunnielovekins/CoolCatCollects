@@ -149,14 +149,18 @@
 			});
 
 			$('#resume-dialog').modal('hide');
-		}, function () {
+		}, function (err) {
 			// failed
+			console.log("Failed");
+			console.log(err);
 		})
 	});
 
 	$('#resumeInput').change(function () {
 		$('.js-resume-upload').removeClass('disabled').removeAttr('disabled');
 	});
+
+	$('.js-weight').each(function () { getPartWeight($(this)); });
 });
 
 function RecalculateIndexes() {
@@ -177,6 +181,14 @@ function ConsolidateNewPart(tr, part, qty) {
 	var qtyInput = tr.find('.qty');
 	qtyInput.attr('data-val', +qtyInput.attr('data-val') + part.Quantity);
 	qtyInput.val(+qtyInput.val() + (part.Quantity * qty));
+}
+
+function getPartWeight (td) {
+	$.get(td.attr('data-href')).then(function (res) {
+		td.text(res);
+	}, function () {
+		td.text('---');
+	});
 }
 
 function AddNewRow(table, part, qty) {
@@ -237,6 +249,11 @@ function AddNewRow(table, part, qty) {
 		.val(part.MyPrice);
 	newRow.find('.avgprice')
 		.empty().text(part.AveragePrice);
+
+	newRow.find('.js-weight')
+		.attr('data-href', '/BricklinkCatalog/GetWeight?num=' + part.Number + '&type=' + part.Type);
+
+	getPartWeight(newRow.find('.js-weight'));
 }
 
 function getNode(items, category, colour, itemId) {

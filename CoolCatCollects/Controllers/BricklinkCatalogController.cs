@@ -74,6 +74,13 @@ namespace CoolCatCollects.Controllers
 			return Content("");
 		}
 
+		public ActionResult GetWeight(string num, string type)
+		{
+			var part = _service.GetPart(num, type);
+
+			return Json(part.weight, JsonRequestBehavior.AllowGet);
+		}
+
 		[HttpPost]
 		public ActionResult UpdateDatabase(BLXMLItem[] items)
 		{
